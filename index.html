@@ -1,0 +1,1506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LoanSplit — DE × IN</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   TOKENS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+:root {
+  --navy:    #0f1f38;
+  --navy2:   #162845;
+  --navy3:   #1e3460;
+  --cream:   #faf8f4;
+  --paper:   #ffffff;
+  --rule:    #e4ddd3;
+  --rule2:   #f0ebe4;
+
+  --ink:     #1a1410;
+  --ink2:    #3d342a;
+  --ink3:    #7a6e64;
+  --ink4:    #b0a59b;
+
+  --green:   #1a6b42;
+  --green-bg:#edf7f1;
+  --green-b: #b3ddc5;
+
+  --red:     #be2a2a;
+  --red-bg:  #fdf0f0;
+  --red-b:   #f0bcbc;
+
+  --amber:   #a85c00;
+  --amber-bg:#fff8ed;
+  --amber-b: #f0d4a0;
+
+  --purple:  #5b21b6;
+  --purple-bg:#f3f0ff;
+  --purple-b: #c4b5fd;
+
+  --blue:    #1d4ed8;
+  --blue-bg: #eff4ff;
+
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+
+  --shadow-sm: 0 1px 4px rgba(15,31,56,.07);
+  --shadow-md: 0 4px 16px rgba(15,31,56,.10);
+  --shadow-lg: 0 12px 40px rgba(15,31,56,.14);
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   RESET & BASE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Subtle halftone background texture */
+body::after {
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+  background-image: radial-gradient(circle, rgba(15,31,56,.035) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.wrap { max-width: 1120px; margin:0 auto; padding:0 20px 80px; position:relative; z-index:1; }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   MASTHEAD / HEADER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.masthead {
+  background: var(--navy);
+  padding: 36px 0 32px;
+  position: relative;
+  overflow: hidden;
+}
+.masthead::before {
+  content:'';
+  position:absolute; inset:0;
+  background: repeating-linear-gradient(
+    0deg, transparent, transparent 39px,
+    rgba(255,255,255,.04) 39px, rgba(255,255,255,.04) 40px
+  );
+}
+.masthead-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+  flex-wrap: wrap;
+  position: relative;
+}
+.masthead-left {}
+.mast-eyebrow {
+  font-family: 'Calibri', sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.45);
+  margin-bottom: 10px;
+}
+.mast-title {
+  font-family: 'Calibri', sans-serif;
+  font-size: clamp(32px,5vw,54px);
+  font-weight: 400;
+  color: #fff;
+  line-height: 1.05;
+  letter-spacing: -.5px;
+}
+.mast-title em {
+  font-style: italic;
+  color: rgba(255,255,255,.65);
+}
+.mast-sub {
+  margin-top: 10px;
+  font-size: 13px;
+  color: rgba(255,255,255,.45);
+  font-weight: 400;
+}
+.mast-flags {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.flag-chip {
+  display: flex; align-items: center; gap: 7px;
+  background: rgba(255,255,255,.1);
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 99px;
+  padding: 7px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255,255,255,.85);
+  backdrop-filter: blur(4px);
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   RATE PANEL (static, no shimmer)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.rate-panel {
+  background: var(--navy2);
+  padding: 0;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.rate-panel-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  flex-wrap: wrap;
+}
+.rp-cell {
+  padding: 18px 24px 18px 0;
+  border-right: 1px solid rgba(255,255,255,.08);
+  margin-right: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.rp-cell:last-child { border-right:none; margin-right:0; }
+.rp-label {
+  font-family: 'Calibri', sans-serif;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.4);
+}
+.rp-value {
+  font-family: 'Calibri', sans-serif;
+  font-size: 26px;
+  color: #fff;
+  font-weight: 400;
+}
+.rp-sub {
+  font-size: 11px;
+  color: rgba(255,255,255,.35);
+  font-family: 'Calibri', sans-serif;
+}
+.rp-source {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-family: 'Calibri', sans-serif;
+  color: #4ade80;
+  margin-top: 2px;
+  letter-spacing: .3px;
+}
+.rp-source::before {
+  content:'●';
+  font-size: 7px;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   PAGE BODY SPACING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.section { margin-top: 28px; }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   KPI GRID
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+}
+@media(max-width:900px){ .kpi-grid { grid-template-columns: repeat(3,1fr); } }
+@media(max-width:540px){ .kpi-grid { grid-template-columns: repeat(2,1fr); } }
+
+.kpi {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-md);
+  padding: 18px 16px 16px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow .2s, transform .2s;
+}
+.kpi:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.kpi::after {
+  content:''; position:absolute; top:0; left:0; right:0;
+  height: 3px; border-radius: var(--r-md) var(--r-md) 0 0;
+}
+.kpi.k-blue::after   { background: var(--blue); }
+.kpi.k-orange::after { background: #d97706; }
+.kpi.k-green::after  { background: var(--green); }
+.kpi.k-red::after    { background: var(--red); }
+.kpi.k-navy::after   { background: var(--navy); }
+
+.kpi-label {
+  font-family: 'Calibri', sans-serif;
+  font-size: 9px;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: var(--ink4);
+  margin-bottom: 10px;
+}
+.kpi-value {
+  font-family: 'Calibri', sans-serif;
+  font-size: 32px;
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1;
+}
+.kpi-sub {
+  font-size: 11px;
+  color: var(--ink4);
+  margin-top: 6px;
+  font-weight: 400;
+}
+.kpi-inr {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink3);
+  margin-top: 5px;
+  font-family: 'Calibri', sans-serif;
+}
+.kpi-eur {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--ink4);
+  margin-top: 4px;
+  font-family: 'Calibri', sans-serif;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   PROGRESS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.progress-card {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-lg);
+  padding: 22px 24px;
+  box-shadow: var(--shadow-sm);
+}
+.prog-title {
+  font-family: 'Calibri', sans-serif;
+  font-size: 18px;
+  color: var(--ink);
+  margin-bottom: 18px;
+}
+.prog-row { margin-bottom: 14px; }
+.prog-row:last-child { margin-bottom: 0; }
+.prog-meta { display:flex; justify-content:space-between; margin-bottom:6px; }
+.prog-name { font-size: 12px; font-weight: 600; color: var(--ink2); }
+.prog-pct  { font-size: 12px; font-weight: 700; color: var(--ink); font-family:'Calibri',sans-serif; }
+.prog-track { height: 7px; background: var(--rule2); border-radius: 99px; overflow:hidden; }
+.prog-fill  { height: 100%; border-radius: 99px; transition: width 1.2s cubic-bezier(.16,1,.3,1); }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   FILTER TOOLBAR
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.toolbar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.t-btn {
+  padding: 7px 16px;
+  border-radius: 99px;
+  border: 1.5px solid var(--rule);
+  background: var(--paper);
+  color: var(--ink3);
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .15s;
+  box-shadow: var(--shadow-sm);
+}
+.t-btn:hover { border-color: var(--navy); color: var(--navy); }
+.t-btn.active {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: #fff;
+  box-shadow: 0 3px 10px rgba(15,31,56,.2);
+}
+.t-count {
+  margin-left: auto;
+  font-family: 'Calibri', sans-serif;
+  font-size: 11px;
+  color: var(--ink4);
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   MONTH CARD
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.month-list { display: flex; flex-direction: column; gap: 1px; }
+
+/* Group month cards with a shared border */
+.month-list { border: 1px solid var(--rule); border-radius: var(--r-lg); overflow: visible; box-shadow: var(--shadow-sm); }
+
+.mcard {
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule2);
+  overflow: visible;
+  transition: background .15s;
+  animation: slideIn .25s ease both;
+}
+.mcard:last-child { border-bottom: none; }
+@keyframes slideIn { from{opacity:0;transform:translateX(-6px)} to{opacity:1;transform:translateX(0)} }
+
+.mcard.mc-current  { background: var(--amber-bg); }
+.mcard.mc-paid     { background: #fcfffe; }
+.mcard.mc-partial  { background: var(--purple-bg); }
+.mcard.mc-past     { }
+.mcard.mc-upcoming { background: var(--paper); }
+
+/* Left accent stripe */
+.mcard::before {
+  content:'';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+}
+.mcard { position: relative; }
+.mcard.mc-current::before  { background: var(--amber); }
+.mcard.mc-paid::before     { background: var(--green); }
+.mcard.mc-partial::before  { background: var(--purple); }
+.mcard.mc-upcoming::before { background: var(--rule); }
+.mcard.mc-past.mc-unpaid::before { background: var(--red); }
+
+/* ── CARD BODY ── */
+.mcard-body {
+  display: grid;
+  grid-template-columns: 44px 1fr repeat(4, minmax(88px,auto)) 108px;
+  align-items: center;
+  gap: 0;
+  padding: 0;
+  padding-left: 3px; /* accent stripe offset */
+}
+
+/* Number bubble */
+.mc-num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  padding: 22px 0;
+  font-family: 'Calibri', sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--ink4);
+  align-self: stretch;
+  border-right: 1px solid var(--rule2);
+}
+.mc-current .mc-num  { color: var(--ink4); }
+.mc-paid    .mc-num  { color: var(--ink4); }
+.mc-partial .mc-num  { color: var(--ink4); }
+
+/* Month info */
+.mc-info {
+  padding: 18px 16px;
+  border-right: 1px solid var(--rule2);
+  min-width: 0;
+}
+.mc-month-name {
+  font-family: 'Calibri', sans-serif;
+  font-size: 20px;
+  color: var(--ink);
+  line-height: 1.15;
+  white-space: nowrap;
+}
+.mc-badge {
+  display: inline-block;
+  background: var(--amber);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 4px;
+  margin-left: 7px;
+  vertical-align: middle;
+  font-family: 'Calibri', sans-serif;
+}
+.mc-sub {
+  font-size: 10px;
+  color: var(--ink4);
+  margin-top: 4px;
+  font-family: 'Calibri', sans-serif;
+  letter-spacing: .3px;
+}
+.mc-log-btn {
+  display: inline-block;
+  margin-top: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--blue);
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-family: 'IBM Plex Sans', sans-serif;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.mc-log-btn:hover { color: var(--navy); }
+
+/* Data cell */
+.mc-cell {
+  padding: 18px 14px;
+  border-right: 1px solid var(--rule2);
+  text-align: right;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+}
+.mc-cell:last-of-type { border-right: none; }
+.col-cumul { border-right: none; }
+.mc-cell-label {
+  font-family: 'Calibri', sans-serif;
+  font-size: 8px;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: var(--ink4);
+  opacity: 0.7;
+  margin-bottom: 5px;
+  text-align: right;
+}
+.mc-primary {
+  font-family: 'Calibri', sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1.1;
+}
+.mc-secondary {
+  font-size: 12px;
+  font-weight: 400;
+  font-family: 'Calibri', sans-serif;
+  margin-top: 2px;
+  color: var(--ink3);
+}
+.mc-note {
+  font-size: 9px;
+  color: var(--ink4);
+  opacity: 0.65;
+  font-family: 'Calibri', sans-serif;
+  margin-top: 3px;
+  letter-spacing: .3px;
+}
+
+/* Color utilities — only meaningful states get color */
+.c-blue   { color: var(--ink); }    /* neutralised — due amounts in ink */
+.c-orange { color: var(--ink3); }   /* neutralised — INR amounts in secondary */
+.c-green  { color: var(--green); }  /* paid / settled */
+.c-red    { color: var(--red); }    /* owed / missed */
+.c-purple { color: var(--purple); } /* partial */
+.c-muted  { color: var(--ink4); }
+.c-navy   { color: var(--navy); }
+
+/* Source badge */
+.src-badge {
+  display: inline-block;
+  font-family: 'Calibri', sans-serif;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: .5px;
+  padding: 2px 5px;
+  border-radius: 3px;
+  margin-top: 3px;
+}
+.src-v { background: var(--rule2); color: var(--ink4); }
+.src-null { background: var(--rule2); color: var(--ink4); }
+
+/* Status pill */
+.mc-status {
+  padding: 18px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.status-pill {
+  padding: 7px 14px;
+  border-radius: 99px;
+  border: none;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .15s;
+  white-space: nowrap;
+  min-width: 88px;
+  text-align: center;
+  letter-spacing: .2px;
+}
+.sp-paid    { background: var(--green-bg); color: var(--green); border: 1.5px solid var(--green-b); }
+.sp-paid:hover { background: #d4eddf; }
+.sp-unpaid  { background: var(--red-bg); color: var(--red); border: 1.5px solid var(--red-b); }
+.sp-unpaid:hover { background: #fde0e0; }
+.sp-current { background: var(--amber-bg); color: var(--amber); border: 1.5px solid var(--amber-b); animation: pulse 2.5s infinite; }
+.sp-current:hover { background: #fdeece; }
+.sp-partial { background: var(--purple-bg); color: var(--purple); border: 1.5px solid var(--purple-b); }
+.sp-partial:hover { background: #ede9fe; }
+.sp-upcoming { background: var(--rule2); color: var(--ink4); border: 1.5px solid var(--rule); cursor: default; }
+
+@keyframes pulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(168,92,0,0); }
+  50%      { box-shadow: 0 0 0 4px rgba(168,92,0,.12); }
+}
+
+/* ── PAYMENT DRAWER ── */
+.mc-drawer {
+  border-top: 1px solid var(--rule2);
+  background: #fdfcfb;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .4s cubic-bezier(.16,1,.3,1);
+}
+.mc-drawer.open { max-height: 600px; }
+
+.drawer-pad { padding: 18px 20px 20px 20px; }
+.drawer-head {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink2);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.drawer-rate-note {
+  font-family: 'Calibri', sans-serif;
+  font-size: 11px;
+  color: var(--ink4);
+  font-weight: 400;
+}
+
+.pay-row { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
+.pay-field { display: flex; flex-direction: column; gap: 5px; }
+.pay-field-lbl {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink3);
+  font-family: 'Calibri', sans-serif;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+}
+.pay-wrap {
+  display: flex;
+  align-items: center;
+  border: 1.5px solid var(--rule);
+  border-radius: var(--r-sm);
+  background: var(--paper);
+  overflow: hidden;
+  transition: border-color .15s;
+}
+.pay-wrap:focus-within { border-color: var(--blue); }
+.pay-sym {
+  padding: 10px 12px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #d97706;
+  background: var(--amber-bg);
+  border-right: 1px solid var(--rule);
+  font-family: 'Calibri', sans-serif;
+}
+.pay-input {
+  border: none;
+  background: transparent;
+  padding: 10px 12px;
+  font-family: 'Calibri', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--ink);
+  width: 140px;
+  outline: none;
+}
+.pay-input::placeholder { color: var(--ink4); font-weight: 400; font-size: 14px; }
+
+.pay-equiv {
+  padding: 10px 0;
+  font-size: 12px;
+  color: var(--ink3);
+  font-family: 'Calibri', sans-serif;
+  min-width: 130px;
+}
+.pay-equiv strong { color: var(--blue); font-weight: 700; }
+
+.pay-btns { display: flex; gap: 8px; margin-top: 2px; }
+.pay-save {
+  padding: 10px 20px;
+  border-radius: var(--r-sm);
+  border: none;
+  background: var(--navy);
+  color: #fff;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .15s;
+}
+.pay-save:hover { background: var(--navy3); }
+.pay-clear {
+  padding: 10px 14px;
+  border-radius: var(--r-sm);
+  border: 1.5px solid var(--rule);
+  background: transparent;
+  color: var(--ink3);
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .15s;
+}
+.pay-clear:hover { border-color: var(--red); color: var(--red); }
+
+/* Breakdown strip */
+.pay-breakdown {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-sm);
+  overflow: hidden;
+}
+.pb-cell {
+  padding: 10px 12px;
+  border-right: 1px solid var(--rule);
+  background: var(--paper);
+}
+.pb-cell:last-child { border-right: none; }
+.pb-lbl {
+  font-family: 'Calibri', sans-serif;
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--ink4);
+  margin-bottom: 4px;
+}
+.pb-val {
+  font-family: 'Calibri', sans-serif;
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.2;
+}
+.pb-inr {
+  font-family: 'Calibri', sans-serif;
+  font-size: 11px;
+  margin-top: 2px;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   FOOTNOTE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.footnote {
+  margin-top: 28px;
+  padding: 16px 20px;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-md);
+  font-size: 12px;
+  color: var(--ink3);
+  line-height: 1.7;
+  box-shadow: var(--shadow-sm);
+}
+.footnote strong { color: var(--ink2); }
+.fn-source {
+  display: inline-block;
+  font-family: 'Calibri', sans-serif;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: var(--rule2);
+  color: var(--ink4);
+  font-weight: 500;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   RESPONSIVE — TABLET
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+/* Strip hidden by default on desktop; shown inside media query below */
+.mc-mobile-strip { display: none; }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   RESPONSIVE — TABLET + MOBILE (≤ 860px)
+   Collapse to: num | info-block (with vertical data) | status pill
+   All data cells hidden; mobile-strip shows stacked labels+values
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+@media(max-width:860px){
+  .mcard-body {
+    grid-template-columns: 32px 1fr auto;
+  }
+  /* Hide all desktop data columns — strip handles display */
+  .mc-cell   { display: none; }
+  .mc-status { padding: 14px 14px 14px 8px; }
+  .mc-num    { width: 32px; padding: 18px 0; font-size: 11px; }
+  .mc-info   { padding: 16px 14px; }
+
+  /* Mobile data strip — stacked vertically */
+  .mc-mobile-strip {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  .mms-item {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .mms-label {
+    font-family: 'Calibri', sans-serif;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--ink4);
+    opacity: 0.7;
+  }
+  .mms-val {
+    font-family: 'Calibri', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.15;
+  }
+  .mms-inr {
+    font-family: 'Calibri', sans-serif;
+    font-size: 13px;
+    color: var(--ink3);
+    margin-top: 1px;
+  }
+  .mms-eur {
+    font-family: 'Calibri', sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--ink4);
+    margin-left: 5px;
+    vertical-align: middle;
+  }
+
+  .pay-breakdown { grid-template-columns: repeat(2,1fr); }
+  .rp-cell { padding: 12px 16px 12px 0; }
+  .rp-value { font-size: 18px; }
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   UTILITY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.mt-sm  { margin-top: 12px; }
+.mt-md  { margin-top: 20px; }
+.mt-lg  { margin-top: 28px; }
+.dimmed { opacity: .65; }
+</style>
+</head>
+<body>
+
+<!-- ══ MASTHEAD ══════════════════════════════════════════ -->
+<div class="masthead">
+  <div class="masthead-inner">
+    <div class="masthead-left">
+      <div class="mast-eyebrow">Joint Loan Tracker · Feb 2026 – Dec 2033</div>
+      <div class="mast-title">DE <em>×</em> IN<br>Repayment</div>
+      <div class="mast-sub">€20,000 · 96 months · Friend's share 41.25%</div>
+    </div>
+    <div class="mast-flags">
+      <div class="flag-chip">🇩🇪 You — Germany</div>
+      <div class="flag-chip">🇮🇳 Friend — India</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ RATE PANEL ══════════════════════════════════════════ -->
+<div class="rate-panel">
+  <div class="rate-panel-inner" id="ratePanelInner">
+    <!-- Populated by JS -->
+  </div>
+</div>
+
+<!-- ══ PAGE BODY ══════════════════════════════════════════ -->
+<div class="wrap">
+
+  <!-- KPI ROW -->
+  <div class="section">
+    <div class="kpi-grid">
+      <div class="kpi k-blue">
+        <div class="kpi-label">Monthly EMI</div>
+        <div class="kpi-value" id="kpiEmiInr">₹—</div>
+        <div class="kpi-eur">€268.91</div>
+        <div class="kpi-sub">Full loan instalment</div>
+      </div>
+      <div class="kpi k-orange">
+        <div class="kpi-label">Friend's Share</div>
+        <div class="kpi-value" id="kpiFriendInr">₹—</div>
+        <div class="kpi-eur">€110.93</div>
+        <div class="kpi-sub">41.25% per month</div>
+      </div>
+      <div class="kpi k-green">
+        <div class="kpi-label">Total Received</div>
+        <div class="kpi-value" id="kpiReceivedInr">₹—</div>
+        <div class="kpi-eur" id="kpiReceived">—</div>
+        <div class="kpi-sub" id="kpiReceivedSub">from friend</div>
+      </div>
+      <div class="kpi k-red">
+        <div class="kpi-label">Outstanding</div>
+        <div class="kpi-value" id="kpiOutstandingInr">₹—</div>
+        <div class="kpi-eur" id="kpiOutstanding">—</div>
+        <div class="kpi-sub" id="kpiOutstandingSub">owed by friend</div>
+      </div>
+      <div class="kpi k-navy">
+        <div class="kpi-label">Months Left</div>
+        <div class="kpi-value" id="kpiRemain">—</div>
+        <div class="kpi-inr" id="kpiRemainInr">₹—</div>
+        <div class="kpi-sub" id="kpiRemainSub">in loan period</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="section">
+    <div class="progress-card">
+      <div class="prog-title">Repayment Progress</div>
+      <div class="prog-row">
+        <div class="prog-meta"><span class="prog-name">Loan elapsed</span><span class="prog-pct" id="pp1">0%</span></div>
+        <div class="prog-track"><div class="prog-fill" id="pf1" style="width:0%;background:var(--navy)"></div></div>
+      </div>
+      <div class="prog-row">
+        <div class="prog-meta"><span class="prog-name">Amount collected vs. due so far</span><span class="prog-pct" id="pp2">0%</span></div>
+        <div class="prog-track"><div class="prog-fill" id="pf2" style="width:0%;background:var(--green)"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOOLBAR -->
+  <div class="section toolbar">
+    <button class="t-btn active" onclick="setFilter('all',this)">All</button>
+    <button class="t-btn" onclick="setFilter('paid',this)">✓ Paid</button>
+    <button class="t-btn" onclick="setFilter('partial',this)">◑ Partial</button>
+    <button class="t-btn" onclick="setFilter('unpaid',this)">✗ Unpaid</button>
+    <button class="t-btn" onclick="setFilter('upcoming',this)">Upcoming</button>
+    <span class="t-count" id="tCount"></span>
+  </div>
+
+  <!-- MONTH LIST -->
+  <div class="mt-sm">
+    <div class="month-list" id="monthList"></div>
+  </div>
+
+  <!-- FOOTNOTE -->
+  <div class="footnote mt-lg">
+    <strong>Rate methodology:</strong> Every month uses the EUR→INR mid-market rate recorded on the <strong>10th of that specific month</strong>.
+    Sources: <span class="fn-source">poundsterlinglive.com</span> and <span class="fn-source">Xe.com</span>.
+    Future months show <em>Rate TBD</em> — they will be hardcoded once each 10th passes.
+    &nbsp;·&nbsp; <strong>Net Remaining</strong> = amount due − amount paid for that month.
+    &nbsp;·&nbsp; <strong>Total Remaining</strong> = running total outstanding from Feb 2026 through that row.
+    &nbsp;·&nbsp; All payment data is saved in your browser's localStorage.
+  </div>
+
+</div><!-- /wrap -->
+
+<script>
+/* ══════════════════════════════════════════════════════
+   CONFIG
+══════════════════════════════════════════════════════ */
+var FRIEND_EUR   = 110.93;
+var TOTAL_EMI    = 268.91;
+var TOTAL_MONTHS = 95;
+var FULL_NAMES   = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+var SHORT_NAMES  = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+/* ══════════════════════════════════════════════════════
+   VERIFIED STATIC RATES
+   Source: poundsterlinglive.com & Xe.com
+   Rate = EUR to INR on the 10th of each month.
+   null = not yet reached.
+══════════════════════════════════════════════════════ */
+var RATES = {
+  "2026-2":  { rate: 107.9160, src: "poundsterlinglive.com" },
+  "2026-3":  { rate: 106.8030, src: "Xe.com" },
+  "2026-4":  null, "2026-5":  null, "2026-6":  null,
+  "2026-7":  null, "2026-8":  null, "2026-9":  null,
+  "2026-10": null, "2026-11": null, "2026-12": null,
+  "2027-1":  null, "2027-2":  null, "2027-3":  null,
+  "2027-4":  null, "2027-5":  null, "2027-6":  null,
+  "2027-7":  null, "2027-8":  null, "2027-9":  null,
+  "2027-10": null, "2027-11": null, "2027-12": null,
+  "2028-1":  null, "2028-2":  null, "2028-3":  null,
+  "2028-4":  null, "2028-5":  null, "2028-6":  null,
+  "2028-7":  null, "2028-8":  null, "2028-9":  null,
+  "2028-10": null, "2028-11": null, "2028-12": null,
+  "2029-1":  null, "2029-2":  null, "2029-3":  null,
+  "2029-4":  null, "2029-5":  null, "2029-6":  null,
+  "2029-7":  null, "2029-8":  null, "2029-9":  null,
+  "2029-10": null, "2029-11": null, "2029-12": null,
+  "2030-1":  null, "2030-2":  null, "2030-3":  null,
+  "2030-4":  null, "2030-5":  null, "2030-6":  null,
+  "2030-7":  null, "2030-8":  null, "2030-9":  null,
+  "2030-10": null, "2030-11": null, "2030-12": null,
+  "2031-1":  null, "2031-2":  null, "2031-3":  null,
+  "2031-4":  null, "2031-5":  null, "2031-6":  null,
+  "2031-7":  null, "2031-8":  null, "2031-9":  null,
+  "2031-10": null, "2031-11": null, "2031-12": null,
+  "2032-1":  null, "2032-2":  null, "2032-3":  null,
+  "2032-4":  null, "2032-5":  null, "2032-6":  null,
+  "2032-7":  null, "2032-8":  null, "2032-9":  null,
+  "2032-10": null, "2032-11": null, "2032-12": null,
+  "2033-1":  null, "2033-2":  null, "2033-3":  null,
+  "2033-4":  null, "2033-5":  null, "2033-6":  null,
+  "2033-7":  null, "2033-8":  null, "2033-9":  null,
+  "2033-10": null, "2033-11": null, "2033-12": null
+};
+
+/* ══════════════════════════════════════════════════════
+   STATE
+══════════════════════════════════════════════════════ */
+var payStatus = {};
+var payments  = {};
+try { payStatus = JSON.parse(localStorage.getItem('ls_pay5') || '{}'); } catch(e) {}
+try { payments  = JSON.parse(localStorage.getItem('ls_pmt5') || '{}'); } catch(e) {}
+
+var openDrawers = {};
+
+function persist() {
+  try {
+    localStorage.setItem('ls_pay5', JSON.stringify(payStatus));
+    localStorage.setItem('ls_pmt5', JSON.stringify(payments));
+  } catch(e) {}
+}
+
+/* ══════════════════════════════════════════════════════
+   UTILS
+══════════════════════════════════════════════════════ */
+function mkey(y, m) { return y + '-' + m; }
+
+function today() {
+  var d = new Date();
+  return { y: d.getFullYear(), m: d.getMonth() + 1, day: d.getDate() };
+}
+
+function isPast(y, m) {
+  var t = today();
+  return y < t.y || (y === t.y && m < t.m);
+}
+
+function isCurr(y, m) {
+  var t = today();
+  return y === t.y && m === t.m;
+}
+
+function isUpco(y, m) {
+  return !isPast(y, m) && !isCurr(y, m);
+}
+
+function getMonths() {
+  var list = [], y = 2026, m = 2;
+  for (var i = 0; i < TOTAL_MONTHS; i++) {
+    list.push({ y: y, m: m, idx: i + 1 });
+    m++;
+    if (m > 12) { m = 1; y++; }
+  }
+  return list;
+}
+
+function getRate(y, m) {
+  var k = mkey(y, m);
+  if (RATES.hasOwnProperty(k)) return RATES[k];
+  return null;
+}
+
+/* Indian number formatting without locale API */
+function fmt_inr(n) {
+  /* Indian number grouping: last 3 digits, then groups of 2 from right */
+  var s = String(Math.round(Math.abs(n)));
+  if (s.length <= 3) return '\u20B9' + s;
+  var last3 = s.slice(-3);
+  var rest   = s.slice(0, s.length - 3);
+  var groups = [];
+  while (rest.length > 0) {
+    groups.unshift(rest.slice(-2));
+    rest = rest.slice(0, rest.length - 2);
+  }
+  return '\u20B9' + groups.join(',') + ',' + last3;
+}
+
+function fmt_eur(n) {
+  return '\u20AC' + n.toFixed(2);
+}
+
+/* ══════════════════════════════════════════════════════
+   PAYMENT HELPERS
+══════════════════════════════════════════════════════ */
+function getPaidEur(k) {
+  // Always return the actual stored amount so overpayments flow into cumulative
+  if (payments[k] && payments[k].eur) return payments[k].eur;
+  // payStatus true but no payment record = manually toggled as fully paid
+  if (payStatus[k]) return FRIEND_EUR;
+  return 0;
+}
+
+function monthNet(k) {
+  return parseFloat((FRIEND_EUR - getPaidEur(k)).toFixed(2));
+}
+
+function buildCumulMap() {
+  var map = {}, months = getMonths(), run = 0;
+  for (var i = 0; i < months.length; i++) {
+    var mo = months[i];
+    var k = mkey(mo.y, mo.m);
+    if (!isUpco(mo.y, mo.m)) {
+      run = parseFloat((run + monthNet(k)).toFixed(2));
+      map[k] = run;
+    } else {
+      map[k] = null;
+    }
+  }
+  return map;
+}
+
+/* ══════════════════════════════════════════════════════
+   RATE PANEL
+══════════════════════════════════════════════════════ */
+function renderRatePanel() {
+  var t = today();
+  var ri = getRate(t.y, t.m);
+  var panel = document.getElementById('ratePanelInner');
+  var rateVal  = ri ? ('\u20B9' + ri.rate.toFixed(4)) : 'TBD';
+  var rateSrc  = ri ? ri.src : '\u2014';
+  var rateDate = ri ? ('10 ' + SHORT_NAMES[t.m - 1] + ' ' + t.y) : 'Not yet recorded';
+  var friendInr = ri ? fmt_inr(FRIEND_EUR * ri.rate) : 'TBD';
+
+  panel.innerHTML =
+    '<div class="rp-cell">' +
+      '<div class="rp-label">This month\'s rate</div>' +
+      '<div class="rp-value">' + rateVal + '/\u20AC</div>' +
+      '<div class="rp-sub">' + rateDate + '</div>' +
+      '<div class="rp-source">' + rateSrc + '</div>' +
+    '</div>' +
+    '<div class="rp-cell">' +
+      '<div class="rp-label">Friend pays this month</div>' +
+      '<div class="rp-value">' + friendInr + '</div>' +
+      '<div class="rp-sub">= ' + fmt_eur(FRIEND_EUR) + ' \u00D7 rate</div>' +
+    '</div>' +
+    '<div class="rp-cell">' +
+      '<div class="rp-label">Rate methodology</div>' +
+      '<div class="rp-value" style="font-size:15px;font-family:\'IBM Plex Sans\',sans-serif;font-weight:600;color:rgba(255,255,255,.75)">10th of each month</div>' +
+      '<div class="rp-sub">Static \u00B7 No live fetching</div>' +
+    '</div>';
+}
+
+/* ══════════════════════════════════════════════════════
+   STATS
+══════════════════════════════════════════════════════ */
+function renderStats() {
+  var months = getMonths();
+  var elapsed = 0, totalDue = 0, totalPaid = 0, upcoming = 0;
+  var totalPaidInr = 0; // sum of actual INR stored per month (correct per-month rates)
+  for (var i = 0; i < months.length; i++) {
+    var mo = months[i];
+    var k = mkey(mo.y, mo.m);
+    if (!isUpco(mo.y, mo.m)) {
+      elapsed++;
+      totalDue += FRIEND_EUR;
+      var paidEur = getPaidEur(k);
+      totalPaid += paidEur;
+      // Use stored INR directly (captured at correct month's rate), else convert via that month's rate
+      if (payments[k] && payments[k].inr != null) {
+        totalPaidInr += payments[k].inr;
+      } else if (paidEur > 0) {
+        var mRi = getRate(mo.y, mo.m);
+        totalPaidInr += mRi ? Math.round(paidEur * mRi.rate) : Math.round(paidEur * (getRate(today().y, today().m) ? getRate(today().y, today().m).rate : 1));
+      }
+    } else {
+      upcoming++;
+    }
+  }
+  totalDue  = parseFloat(totalDue.toFixed(2));
+  totalPaid = parseFloat(totalPaid.toFixed(2));
+  totalPaidInr = Math.round(totalPaidInr);
+  var out    = Math.max(0, parseFloat((totalDue - totalPaid).toFixed(2)));
+  // Outstanding in INR: sum of per-month net remaining using each month's own rate
+  var outInr = 0;
+  for (var i = 0; i < months.length; i++) {
+    var mo = months[i];
+    if (!isUpco(mo.y, mo.m)) {
+      var netE = monthNet(mkey(mo.y, mo.m));
+      if (netE > 0) {
+        var mRi2 = getRate(mo.y, mo.m);
+        outInr += mRi2 ? Math.round(netE * mRi2.rate) : 0;
+      }
+    }
+  }
+  var collPct = totalDue > 0 ? Math.min(100, (totalPaid / totalDue) * 100).toFixed(1) : '0.0';
+  var elPct   = ((elapsed / TOTAL_MONTHS) * 100).toFixed(1);
+
+  var t = today();
+  var ri = getRate(t.y, t.m);
+
+  document.getElementById('kpiReceived').textContent    = fmt_eur(totalPaid);
+  document.getElementById('kpiReceivedInr').textContent = totalPaidInr > 0 ? fmt_inr(totalPaidInr) : '\u20B90';
+  document.getElementById('kpiReceivedSub').textContent = elapsed + ' month' + (elapsed !== 1 ? 's' : '') + ' elapsed';
+
+  document.getElementById('kpiOutstanding').textContent = fmt_eur(out);
+  document.getElementById('kpiOutstandingInr').textContent = outInr > 0 ? fmt_inr(outInr) : '\u20B90';
+  document.getElementById('kpiOutstandingSub').textContent = out > 0 ? 'owed by friend' : '\u2713 all settled';
+
+  document.getElementById('kpiRemain').textContent    = upcoming;
+  document.getElementById('kpiRemainInr').textContent = ri ? fmt_inr(upcoming * FRIEND_EUR * ri.rate) : '\u20B9 rate TBD';
+  document.getElementById('kpiRemainSub').textContent = fmt_eur(upcoming * FRIEND_EUR) + ' ahead';
+
+  document.getElementById('kpiEmiInr').textContent    = ri ? fmt_inr(268.91 * ri.rate) : '\u20B9 rate TBD';
+  document.getElementById('kpiFriendInr').textContent = ri ? fmt_inr(FRIEND_EUR * ri.rate) : '\u20B9 rate TBD';
+
+  setTimeout(function() {
+    document.getElementById('pf1').style.width = elPct + '%';
+    document.getElementById('pf2').style.width = collPct + '%';
+  }, 150);
+  document.getElementById('pp1').textContent = elPct + '%';
+  document.getElementById('pp2').textContent = collPct + '%';
+}
+
+/* ══════════════════════════════════════════════════════
+   CARDS
+══════════════════════════════════════════════════════ */
+var activeFilter = 'all';
+
+function setFilter(f, btn) {
+  activeFilter = f;
+  var btns = document.querySelectorAll('.t-btn');
+  for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
+  btn.classList.add('active');
+  renderAll();
+}
+
+function renderAll() { renderStats(); renderCards(); }
+
+function renderCards() {
+  var months  = getMonths();
+  var cmap    = buildCumulMap();
+  var filtered = [];
+
+  for (var i = 0; i < months.length; i++) {
+    var mo = months[i];
+    var y = mo.y, m = mo.m, idx = mo.idx;
+    var k = mkey(y, m);
+    var past = isPast(y, m), curr = isCurr(y, m), upco = isUpco(y, m);
+    var paid = !!payStatus[k];
+    var paidEur = getPaidEur(k);
+    var partial = !paid && paidEur > 0 && paidEur < FRIEND_EUR;
+    var st;
+    if (upco)         st = 'upcoming';
+    else if (paid)    st = 'paid';
+    else if (partial) st = 'partial';
+    else if (curr)    st = 'current';
+    else              st = 'unpaid';
+
+    if (activeFilter === 'paid'     && st !== 'paid')    continue;
+    if (activeFilter === 'partial'  && st !== 'partial') continue;
+    if (activeFilter === 'unpaid'   && st !== 'unpaid' && st !== 'current') continue;
+    if (activeFilter === 'upcoming' && st !== 'upcoming') continue;
+
+    filtered.push({ y:y, m:m, idx:idx, k:k, past:past, curr:curr, upco:upco, paid:paid, paidEur:paidEur, partial:partial, st:st });
+  }
+
+  document.getElementById('tCount').textContent = filtered.length + ' / ' + TOTAL_MONTHS;
+
+  var html = '';
+  for (var i = 0; i < filtered.length; i++) {
+    html += buildCard(filtered[i], i, cmap);
+  }
+  document.getElementById('monthList').innerHTML = html;
+}
+
+function buildCard(mo, i, cmap) {
+  var y = mo.y, m = mo.m, idx = mo.idx, k = mo.k;
+  var upco = mo.upco, curr = mo.curr, past = mo.past;
+  var paid = mo.paid, paidEur = mo.paidEur, partial = mo.partial, st = mo.st;
+
+  var ri      = getRate(y, m);
+  var netEur  = monthNet(k);
+  var cumulEur = cmap[k];
+
+  /* Card CSS class */
+  var mc = 'mc-upcoming';
+  if (curr)         mc = 'mc-current';
+  else if (paid)    mc = 'mc-paid';
+  else if (partial) mc = 'mc-partial';
+  else if (past)    mc = 'mc-past' + (netEur > 0 ? ' mc-unpaid' : '');
+  var dimClass = (past && !paid && !partial) ? 'dimmed' : '';
+
+  var delay = 'animation-delay:' + Math.min(i * 0.018, 0.45) + 's';
+
+  /* DUE cell */
+  var dueInr = ri ? fmt_inr(FRIEND_EUR * ri.rate) : null;
+  var srcBadge = ri
+    ? '<span class="src-badge src-v">\u2713 ' + ri.src + '</span>'
+    : '<span class="src-badge src-null">Rate TBD</span>';
+  var dueHTML =
+    '<div class="mc-cell col-due">' +
+      '<div class="mc-cell-label">Due (friend)</div>' +
+      '<div class="mc-primary c-blue">' + fmt_eur(FRIEND_EUR) + '</div>' +
+      '<div class="mc-secondary c-orange">' + (dueInr || '\u20B9 TBD') + '</div>' +
+      srcBadge +
+    '</div>';
+
+  /* PAID cell */
+  var paidInr = (ri && paidEur > 0) ? fmt_inr(paidEur * ri.rate) : (paidEur > 0 ? '\u20B9\u2014' : '\u2014');
+  var paidHTML;
+  if (upco) {
+    paidHTML = '<div class="mc-cell col-paid"><div class="mc-cell-label">Paid</div><div class="mc-primary c-muted" style="font-size:14px;font-style:italic">\u2014</div></div>';
+  } else {
+    paidHTML =
+      '<div class="mc-cell col-paid">' +
+        '<div class="mc-cell-label">Paid</div>' +
+        '<div class="mc-primary ' + (paidEur > 0 ? 'c-green' : 'c-muted') + '">' + (paidEur > 0 ? fmt_eur(paidEur) : '\u20AC0.00') + '</div>' +
+        '<div class="mc-secondary ' + (paidEur > 0 ? 'c-green' : 'c-muted') + '">' + (paidEur > 0 ? paidInr : '\u20B90') + '</div>' +
+      '</div>';
+  }
+
+  /* NET REMAINING cell — INR only
+     > 0 = owed (red, no sign) | = 0 = settled (green) | < 0 = overpaid credit (green, − sign) */
+  var netClass, netPrim, netNote;
+  if (upco) {
+    netClass = 'c-muted'; netPrim = '\u2014'; netNote = 'not due yet';
+  } else if (netEur === 0) {
+    netClass = 'c-green'; netPrim = '\u20B90'; netNote = 'settled \u2713';
+  } else if (netEur < 0) {
+    netClass = 'c-green'; netPrim = ri ? ('\u2212' + fmt_inr(-netEur * ri.rate)) : '\u20B9 TBD';
+    netNote = 'credit (overpaid)';
+  } else {
+    netClass = 'c-red'; netPrim = ri ? fmt_inr(netEur * ri.rate) : '\u20B9 TBD';
+    netNote = paidEur > 0 ? 'partial' : 'unpaid';
+  }
+  var netHTML =
+    '<div class="mc-cell col-net">' +
+      '<div class="mc-cell-label">Net Remaining</div>' +
+      '<div class="mc-primary ' + netClass + '">' + netPrim + '</div>' +
+      '<div class="mc-note">' + netNote + '</div>' +
+    '</div>';
+
+  /* CUMULATIVE cell — INR only
+     > 0 = total owed (red) | = 0 = all clear (green) | < 0 = net credit (green, − sign) */
+  var cumClass, cumPrim, cumNote;
+  if (cumulEur === null) {
+    cumClass = 'c-muted'; cumPrim = '\u2014'; cumNote = 'upcoming';
+  } else if (cumulEur === 0) {
+    cumClass = 'c-green'; cumPrim = '\u20B90'; cumNote = 'all clear \u2713';
+  } else if (cumulEur < 0) {
+    cumClass = 'c-green';
+    cumPrim = ri ? ('\u2212' + fmt_inr(-cumulEur * ri.rate)) : '\u20B9 TBD';
+    cumNote = 'net credit';
+  } else {
+    cumClass = 'c-red';
+    cumPrim = ri ? fmt_inr(cumulEur * ri.rate) : '\u20B9 TBD';
+    cumNote = 'total owed';
+  }
+  var cumHTML =
+    '<div class="mc-cell col-cumul">' +
+      '<div class="mc-cell-label">Total Remaining</div>' +
+      '<div class="mc-primary ' + cumClass + '">' + cumPrim + '</div>' +
+      '<div class="mc-note">' + cumNote + '</div>' +
+    '</div>';
+
+  /* STATUS PILL */
+  var pill;
+  if      (st === 'paid')     pill = '<button class="status-pill sp-paid"    onclick="togglePaid(\'' + k + '\')">\u2713 Paid</button>';
+  else if (st === 'partial')  pill = '<button class="status-pill sp-partial" onclick="togglePaid(\'' + k + '\')">&#9681; Partial</button>';
+  else if (st === 'current')  pill = '<button class="status-pill sp-current" onclick="togglePaid(\'' + k + '\')">&#11044; Pending</button>';
+  else if (st === 'unpaid')   pill = '<button class="status-pill sp-unpaid"  onclick="togglePaid(\'' + k + '\')">\u2717 Missed</button>';
+  else                        pill = '<button class="status-pill sp-upcoming">Upcoming</button>';
+
+  /* DRAWER */
+  var isOpen    = !!openDrawers[k];
+  var toggleTxt = isOpen ? '\u25B2 close' : '\u25BC log \u20B9 payment';
+  var pmtObj    = payments[k];
+  var savedInr  = (pmtObj && pmtObj.inr != null) ? pmtObj.inr : '';
+  var equivTxt;
+  if (!ri) {
+    equivTxt = 'Rate not yet available for this month';
+  } else if (savedInr) {
+    equivTxt = '\u2248 <strong>' + fmt_inr(savedInr) + '</strong> logged';
+  } else {
+    equivTxt = 'Enter \u20B9 amount above';
+  }
+
+  /* BREAKDOWN inside drawer */
+  var bkdHTML = '';
+  if (paidEur > 0) {
+    var pInr   = ri ? fmt_inr(paidEur * ri.rate) : '\u20B9\u2014';
+    var remEur = netEur;
+    var remInr = (ri && remEur > 0) ? fmt_inr(remEur * ri.rate) : '\u20B90';
+    var cval   = (cumulEur !== null) ? cumulEur : 0;
+    var cInr   = (ri && cval > 0) ? fmt_inr(cval * ri.rate) : '\u20B90';
+    var remColor    = remEur > 0 ? 'c-red' : 'c-green';
+    var remInrDisp  = remEur > 0 ? remInr : (remEur < 0 ? ('\u2212' + fmt_inr(-remEur * (ri ? ri.rate : 1))) : '\u20B90');
+    var cumColor    = cval > 0 ? 'c-red' : 'c-green';
+    var cumInrDisp  = cval > 0 ? cInr : (cval < 0 && ri ? ('\u2212' + fmt_inr(-cval * ri.rate)) : '\u20B90');
+    bkdHTML =
+      '<div class="pay-breakdown">' +
+        '<div class="pb-cell"><div class="pb-lbl">Due</div><div class="pb-val c-blue">' + (ri ? fmt_inr(FRIEND_EUR * ri.rate) : '\u20B9 TBD') + '</div></div>' +
+        '<div class="pb-cell"><div class="pb-lbl">Paid</div><div class="pb-val c-green">' + pInr + '</div></div>' +
+        '<div class="pb-cell"><div class="pb-lbl">Net Remaining</div><div class="pb-val ' + remColor + '">' + remInrDisp + '</div></div>' +
+        '<div class="pb-cell"><div class="pb-lbl">Total Remaining</div><div class="pb-val ' + cumColor + '">' + cumInrDisp + '</div></div>' +
+      '</div>';
+  }
+
+  /* MOBILE STRIP */
+  var mobDue  = dueInr || '\u20B9 TBD';
+  var mobNetC = upco ? 'c-muted' : (netEur < 0 ? 'c-green' : netEur > 0 ? 'c-red' : 'c-green');
+  var mobNet;
+  if (upco)          mobNet = '\u2014';
+  else if (netEur === 0) mobNet = '\u20B90';
+  else if (netEur < 0)   mobNet = ri ? ('\u2212' + fmt_inr(-netEur * ri.rate)) : '\u20B9 TBD';
+  else                   mobNet = ri ? fmt_inr(netEur * ri.rate) : '\u20B9 TBD';
+  /* Paid amount for mobile strip */
+  var mobPaidC = upco ? 'c-muted' : (paidEur > 0 ? 'c-green' : 'c-muted');
+  var mobPaid;
+  if (upco)          mobPaid = '—';
+  else if (paidEur <= 0) mobPaid = '₹0';
+  else               mobPaid = ri ? fmt_inr(paidEur * ri.rate) : (payments[k] && payments[k].inr ? fmt_inr(payments[k].inr) : '₹—');
+
+  var mobCumul = '';
+  if (cumulEur !== null) {
+    var mobCumC = cumulEur > 0 ? 'c-red' : 'c-green';
+    var mobCumV;
+    if (cumulEur === 0)      mobCumV = '\u20B90';
+    else if (cumulEur < 0)   mobCumV = ri ? ('\u2212' + fmt_inr(-cumulEur * ri.rate)) : '\u20B9 TBD';
+    else                     mobCumV = ri ? fmt_inr(cumulEur * ri.rate) : '\u20B9 TBD';
+    mobCumul = '<div class="mms-item"><span class="mms-label">Total Remaining</span><span class="mms-val ' + mobCumC + '">' + mobCumV + '</span></div>';
+  }
+
+  var logBtn = !upco
+    ? '<button class="mc-log-btn" onclick="toggleDrawer(\'' + k + '\')">' + toggleTxt + '</button>'
+    : '';
+
+  var nowBadge = curr ? '<span class="mc-badge">now</span>' : '';
+
+  var drawerRateNote = ri
+    ? ('Rate: \u20B9' + ri.rate.toFixed(4) + '/\u20AC (' + ri.src + ', 10 ' + SHORT_NAMES[m - 1] + ' ' + y + ')')
+    : 'No rate recorded yet';
+
+  var inputDisabled = ri ? '' : 'disabled';
+
+  var drawerClass = 'mc-drawer' + (isOpen ? ' open' : '');
+
+  return (
+    '<div class="mcard ' + mc + ' ' + dimClass + '" id="card-' + k + '" style="' + delay + '">' +
+      '<div class="mcard-body">' +
+        '<div class="mc-num">' + idx + '</div>' +
+        '<div class="mc-info">' +
+          '<div class="mc-month-name">' + FULL_NAMES[m - 1] + ' ' + y + nowBadge + '</div>' +
+          '<div class="mc-sub">mo ' + idx + ' of ' + TOTAL_MONTHS + '</div>' +
+          logBtn +
+          '<div class="mc-mobile-strip">' +
+            '<div class="mms-item"><span class="mms-label">Due</span><span class="mms-val c-blue">' + mobDue + ' <span class="mms-eur">\u20AC110.93</span></span></div>' +
+            '<div class="mms-item"><span class="mms-label">Paid</span><span class="mms-val ' + mobPaidC + '">' + mobPaid + '</span></div>' +
+            '<div class="mms-item"><span class="mms-label">Net Remaining</span><span class="mms-val ' + mobNetC + '">' + mobNet + '</span></div>' +
+            mobCumul +
+          '</div>' +
+        '</div>' +
+        dueHTML + paidHTML + netHTML + cumHTML +
+        '<div class="mc-status">' + pill + '</div>' +
+      '</div>' +
+      '<div class="' + drawerClass + '" id="drawer-' + k + '">' +
+        '<div class="drawer-pad">' +
+          '<div class="drawer-head">Log payment \u2014 ' + FULL_NAMES[m - 1] + ' ' + y + '<span class="drawer-rate-note">' + drawerRateNote + '</span></div>' +
+          '<div class="pay-row">' +
+            '<div class="pay-field">' +
+              '<div class="pay-field-lbl">Amount paid by friend</div>' +
+              '<div class="pay-wrap">' +
+                '<span class="pay-sym">\u20B9</span>' +
+                '<input type="number" class="pay-input" id="inp-' + k + '" placeholder="e.g. 9500" step="1" min="0" value="' + savedInr + '" oninput="onInrInput(\'' + k + '\',' + (ri ? ri.rate : 0) + ')" ' + inputDisabled + ' />' +
+              '</div>' +
+            '</div>' +
+            '<div class="pay-equiv" id="eq-' + k + '">' + equivTxt + '</div>' +
+            '<div class="pay-btns">' +
+              '<button class="pay-save"  onclick="savePayment(\'' + k + '\',' + (ri ? ri.rate : 0) + ')">Save</button>' +
+              '<button class="pay-clear" onclick="clearPayment(\'' + k + '\')">Clear</button>' +
+            '</div>' +
+          '</div>' +
+          bkdHTML +
+        '</div>' +
+      '</div>' +
+    '</div>'
+  );
+}
+
+/* ══════════════════════════════════════════════════════
+   INTERACTIONS
+══════════════════════════════════════════════════════ */
+function toggleDrawer(k) {
+  openDrawers[k] = !openDrawers[k];
+  renderAll();
+}
+
+function onInrInput(k, rate) {
+  var el = document.getElementById('inp-' + k);
+  var eq = document.getElementById('eq-' + k);
+  if (!el || !eq) return;
+  var inr = parseFloat(el.value) || 0;
+  var r   = parseFloat(rate) || 0;
+  if (inr > 0) {
+    eq.innerHTML = '\u2248 <strong>' + fmt_inr(inr) + '</strong> logged';
+  } else {
+    eq.innerHTML = r > 0 ? 'Enter \u20B9 amount above' : 'Rate not available';
+  }
+}
+
+function savePayment(k, rate) {
+  var el  = document.getElementById('inp-' + k);
+  if (!el) return;
+  var inr = parseFloat(el.value);
+  if (isNaN(inr) || inr < 0) { alert('Enter a valid \u20B9 amount.'); return; }
+  var r = parseFloat(rate);
+  if (!r) { alert('Rate not yet available for this month.'); return; }
+  var eur = parseFloat((inr / r).toFixed(2));
+  payments[k]  = { inr: Math.round(inr), eur: eur };
+  payStatus[k] = eur >= FRIEND_EUR;
+  openDrawers[k] = true;
+  persist();
+  renderAll();
+}
+
+function clearPayment(k) {
+  delete payments[k];
+  payStatus[k]   = false;
+  openDrawers[k] = true;
+  persist();
+  renderAll();
+}
+
+function togglePaid(k) {
+  var parts = k.split('-');
+  var ys = parseInt(parts[0], 10);
+  var ms = parseInt(parts[1], 10);
+  if (isUpco(ys, ms)) return;
+  if (payStatus[k]) {
+    payStatus[k] = false;
+    delete payments[k];
+  } else {
+    payStatus[k] = true;
+    var ri = getRate(ys, ms);
+    payments[k] = { eur: FRIEND_EUR, inr: ri ? Math.round(FRIEND_EUR * ri.rate) : null };
+  }
+  persist();
+  renderAll();
+}
+
+/* ══════════════════════════════════════════════════════
+   BOOT
+══════════════════════════════════════════════════════ */
+renderRatePanel();
+renderAll();
+</script>
+</body>
+</html>
