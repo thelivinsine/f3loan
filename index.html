@@ -6,7 +6,9 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LoanSplit — DE × IN</title>
+<title>LoanSplit — DE × IN Repayment Tracker</title>
+<meta name="description" content="Private loan repayment tracker for a €20,000 joint loan between Germany and India. 95 monthly payments, real-time Firebase sync.">
+<meta name="robots" content="noindex, nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -31,7 +33,7 @@
   --ink:  #18140e;
   --ink2: #38302a;
   --ink3: #746660;
-  --ink4: #aea09a;
+  --ink4: #7e706a;
 
   /* Semantic */
   --green:     #15683e;
@@ -66,9 +68,36 @@
   --font-body:    'IBM Plex Sans', sans-serif;
   --font-num:     'Sora', 'Plus Jakarta Sans', sans-serif;
 
-  /* Spacing */
-  --s4:  4px;  --s8:  8px;  --s12: 12px; --s16: 16px;
-  --s20: 20px; --s24: 24px; --s28: 28px; --s32: 32px;
+  /* Spacing scale */
+  --s2:   2px;  --s4:  4px;   --s6:  6px;   --s8:  8px;
+  --s10: 10px;  --s12: 12px;  --s14: 14px;  --s16: 16px;
+  --s20: 20px;  --s24: 24px;  --s28: 28px;  --s32: 32px;
+  --s40: 40px;  --s48: 48px;  --s56: 56px;
+
+  /* Component sizing */
+  --card-pad:       24px;    /* standard card inner padding */
+  --card-pad-sm:    18px;    /* compact card padding (meta strip) */
+  --card-gap:       14px;    /* gap between cards in a grid */
+  --section-gap:    clamp(24px, 5vw, 40px);  /* between page sections */
+
+  /* Typography scale — strict 6 steps */
+  --text-2xs: 9px;    /* micro labels, badges */
+  --text-xs:  11px;   /* secondary labels, sub-text */
+  --text-sm:  12px;   /* body-small, captions */
+  --text-md:  13px;   /* body, button labels */
+  --text-lg:  16px;   /* emphasized body */
+  --text-xl:  20px;   /* card secondary values */
+
+  /* Number display scale */
+  --num-sm:   clamp(18px, 3vw, 22px);   /* meta strip values */
+  --num-md:   clamp(22px, 4vw, 28px);   /* progress pct */
+  --num-lg:   clamp(32px, 5vw, 44px);   /* hero card values */
+
+  /* Semantic surface colors */
+  --amber-dot: #d97706;    /* EMI dot, pay-sym */
+  /* Semantic tints — used for EUR sub-values on tinted cards */
+  --green-eur:  #5a9a78;   /* green card EUR text */
+  --red-eur:    #b36464;   /* red card EUR text */
 }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -94,14 +123,14 @@ body::after {
   background-size: 24px 24px;
 }
 
-.wrap { max-width: 1120px; margin:0 auto; padding:0 20px 80px; position:relative; z-index:1; }
+.wrap { max-width: 1120px; margin:0 auto; padding:4px clamp(14px,4vw,28px) 100px; position:relative; z-index:1; }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    MASTHEAD / HEADER
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .masthead {
   background: var(--navy);
-  padding: 40px 0 36px;
+  padding: 44px 0 40px;
   position: relative;
   overflow: hidden;
 }
@@ -120,14 +149,14 @@ body::after {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  gap: 24px;
+  gap: 20px;
   flex-wrap: wrap;
   position: relative;
 }
-.masthead-left {}
+.masthead-left { min-width: 0; flex: 1; }
 .mast-eyebrow {
   font-family: var(--font-display);
-  font-size: 11px;
+  font-size: var(--text-xs);
   font-weight: 600;
   letter-spacing: 2.5px;
   text-transform: uppercase;
@@ -148,23 +177,36 @@ body::after {
   color: rgba(255,255,255,.60);
 }
 .mast-sub {
-  margin-top: 12px;
-  font-size: 14px;
-  color: rgba(255,255,255,.62);
+  margin-top: var(--s14);
+  font-size: var(--text-md);
+  color: rgba(255,255,255,.55);
   font-weight: 400;
-}
-.mast-flags {
+  letter-spacing: .3px;
   display: flex;
+  align-items: center;
   gap: 10px;
   flex-wrap: wrap;
 }
+.mast-sub-sep {
+  width: 3px; height: 3px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.3);
+  display: inline-block;
+  vertical-align: middle;
+}
+.mast-flags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
 .flag-chip {
-  display: flex; align-items: center; gap: 7px;
+  display: flex; align-items: center; gap: var(--s8);
   background: rgba(255,255,255,.08);
   border: 1px solid rgba(255,255,255,.14);
   border-radius: 99px;
-  padding: 8px 18px;
-  font-size: 13px;
+  padding: var(--s8) 18px;
+  font-size: var(--text-md);
   font-weight: 600;
   color: rgba(255,255,255,.80);
   backdrop-filter: blur(6px);
@@ -197,7 +239,7 @@ body::after {
 .rate-panel-inner {
   max-width: 1120px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 clamp(14px,4vw,28px);
   display: flex;
   align-items: stretch;
   gap: 0;
@@ -214,28 +256,28 @@ body::after {
 .rp-cell:last-child { border-right:none; margin-right:0; }
 .rp-label {
   font-family: 'Sora', sans-serif;
-  font-size: 10px;
-  letter-spacing: 1.5px;
+  font-size: var(--text-2xs);
+  letter-spacing: 1.2px;
   text-transform: uppercase;
-  color: rgba(255,255,255,.58);
+  color: rgba(255,255,255,.5);
 }
 .rp-value {
   font-family: 'Sora', sans-serif;
-  font-size: 28px;
+  font-size: var(--num-sm);
   color: #fff;
-  font-weight: 600;
-  letter-spacing: -.3px;
+  font-weight: 700;
+  letter-spacing: -.4px;
 }
 .rp-sub {
-  font-size: 11px;
-  color: rgba(255,255,255,.55);
+  font-size: var(--text-xs);
+  color: rgba(255,255,255,.48);
   font-family: 'Sora', sans-serif;
 }
 .rp-source {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  font-size: 10px;
+  gap: var(--s4);
+  font-size: var(--text-2xs);
   font-family: 'Sora', sans-serif;
   color: var(--teal);
   margin-top: 2px;
@@ -249,114 +291,368 @@ body::after {
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    PAGE BODY SPACING
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-.section { margin-top: 32px; }
+.section { margin-top: var(--section-gap); }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   KPI GRID
+   SUMMARY — TWO-TIER LAYOUT
+   Tier 1: Hero pair (Outstanding + Total Received) — large, dominant
+   Tier 2: Meta strip (EMI, Share, Months Left) — compact, secondary
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-.kpi-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 14px;
-}
-/* KPI responsive handled by bento grid block below */
 
-.kpi {
+/* ── Tier 1: Hero cards ── */
+.summary-hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--card-gap);
+}
+
+.hero-card {
   background: var(--paper);
-  border: none;
   border-radius: var(--r-xl);
-  padding: 22px 20px 20px;
+  padding: var(--card-pad) var(--card-pad) var(--s20);
+  min-width: 0;
   position: relative;
   overflow: hidden;
   box-shadow: var(--shadow-float);
+  display: flex;
+  flex-direction: column;
   transition: box-shadow .3s cubic-bezier(.16,1,.3,1), transform .3s cubic-bezier(.16,1,.3,1);
 }
-.kpi:hover {
-  box-shadow: 0 4px 10px rgba(12,28,53,.08), 0 20px 40px rgba(12,28,53,.14), 0 40px 64px rgba(12,28,53,.10), inset 0 1.5px 0 rgba(255,255,255,1);
-  transform: translateY(-5px);
+.hero-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(12,28,53,.10), 0 28px 52px rgba(12,28,53,.10), inset 0 1.5px 0 rgba(255,255,255,1);
 }
-/* Top accent bar */
-.kpi::after {
-  content:''; position:absolute; top:0; left:0; right:0;
-  height: 3px; border-radius: var(--r-lg) var(--r-lg) 0 0;
-}
-/* Left inner glow strip */
-.kpi::before {
-  content:''; position:absolute; top:0; left:0; bottom:0;
-  width: 3px; border-radius: var(--r-lg) 0 0 var(--r-lg);
-  opacity: 0;
-  transition: opacity .25s;
-}
-.kpi:hover::before { opacity: 1; }
-.kpi.k-blue::after,  .kpi.k-blue::before  { background: var(--blue); }
-.kpi.k-orange::after,.kpi.k-orange::before { background: #d97706; }
-.kpi.k-green::after, .kpi.k-green::before  { background: var(--green); }
-.kpi.k-red::after,   .kpi.k-red::before    { background: var(--red); }
-.kpi.k-navy::after,  .kpi.k-navy::before   { background: var(--navy); }
 
-.kpi-label {
+/* Coloured top accent bar */
+.hero-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  border-radius: var(--r-xl) var(--r-xl) 0 0;
+}
+.hero-card.hc-received::after { background: linear-gradient(90deg, var(--green), #22c55e); }
+.hero-card.hc-outstanding::after { background: linear-gradient(90deg, var(--red), #f87171); }
+
+/* Subtle tinted background wash */
+.hero-card.hc-received    { background: linear-gradient(160deg, #ffffff 60%, #f0fbf5 100%); }
+.hero-card.hc-outstanding { background: linear-gradient(160deg, #ffffff 60%, #fef5f5 100%); }
+
+.hero-label {
   font-family: var(--font-display);
-  font-size: 9px;
+  font-size: var(--text-2xs);
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--ink4);
   margin-bottom: 12px;
 }
-.kpi-value {
+
+.hero-value {
   font-family: 'Sora', sans-serif;
-  font-size: 32px;
-  font-weight: 600;
-  color: var(--ink);
+  font-size: var(--num-lg);
+  font-weight: 700;
   line-height: 1;
-  letter-spacing: -.5px;
+  letter-spacing: -1.5px;
 }
-.kpi-sub {
-  font-size: 11px;
-  color: var(--ink4);
-  margin-top: 6px;
-  font-weight: 400;
-}
-.kpi-inr {
-  font-size: 13px;
+.hero-card.hc-received    .hero-value { color: var(--green); }
+.hero-card.hc-outstanding .hero-value { color: var(--red); }
+
+.hero-eur {
+  font-family: 'Sora', sans-serif;
+  font-size: var(--text-lg);
   font-weight: 500;
-  color: var(--ink3);
-  margin-top: 5px;
-  font-family: 'Sora', sans-serif;
+  margin-top: 8px;
 }
-.kpi-eur {
-  font-size: 13px;
-  font-weight: 400;
+.hero-card.hc-received    .hero-eur { color: var(--green-eur); }
+.hero-card.hc-outstanding .hero-eur { color: var(--red-eur); }
+
+/* Progress bar embedded in hero card */
+.hero-progress {
+  margin-top: auto;
+  padding-top: 20px;
+}
+.hero-progress-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 7px;
+}
+.hero-progress-label {
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  font-weight: 600;
   color: var(--ink4);
-  margin-top: 4px;
+}
+.hero-progress-pct {
   font-family: 'Sora', sans-serif;
+  font-size: var(--text-md);
+  font-weight: 700;
+  color: var(--ink3);
+}
+.hero-track {
+  height: 5px;
+  background: var(--rule2);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.hero-fill {
+  height: 100%;
+  border-radius: 99px;
+  transition: width 1.2s cubic-bezier(.16,1,.3,1);
+}
+.hc-received    .hero-fill { background: linear-gradient(90deg, #22c55e, var(--green)); }
+.hc-outstanding .hero-fill { background: linear-gradient(90deg, #f87171, var(--red)); }
+
+/* ── Tier 2: Meta strip ── */
+.summary-meta {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--card-gap);
+  margin-top: var(--card-gap);
 }
 
+.meta-card {
+  background: var(--paper);
+  border-radius: var(--r-lg);
+  padding: var(--card-pad-sm) var(--s20);
+  min-width: 0;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: box-shadow .2s, transform .2s;
+}
+.meta-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+/* Colour dot */
+.meta-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 2px;
+  align-self: flex-start;
+}
+.meta-card.mc-emi     .meta-dot { background: var(--blue); }
+.meta-card.mc-share   .meta-dot { background: var(--amber-dot); }
+.meta-card.mc-months  .meta-dot { background: var(--navy); }
+
+.meta-body { flex: 1; min-width: 0; }
+
+.meta-label {
+  font-family: var(--font-display);
+  font-size: var(--text-2xs);
+  font-weight: 700;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: var(--ink4);
+  margin-bottom: 4px;
+}
+
+.meta-value {
+  font-family: 'Sora', sans-serif;
+  font-size: var(--num-sm);
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1;
+  letter-spacing: -.6px;
+}
+
+.meta-sub {
+  font-family: 'Sora', sans-serif;
+  font-size: var(--text-sm);
+  color: var(--ink4);
+  margin-top: 5px;
+  font-weight: 400;
+}
+
+/* Keep old .kpi* names as no-ops so JS id= hooks still work fine
+   (the JS only targets ids like kpiReceivedInr, not class names) */
+.kpi-grid { display: contents; } /* dissolve the wrapper */
+.kpi, .kpi-label, .kpi-value, .kpi-sub, .kpi-inr, .kpi-eur { /* legacy — unused */ }
+
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   PROGRESS
+   PROGRESS CARD — redesigned
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .progress-card {
   background: var(--paper);
-  border: none;
   border-radius: var(--r-xl);
-  padding: 22px 24px;
+  padding: var(--card-pad) var(--card-pad) var(--s20);
   box-shadow: var(--shadow-float);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 var(--s40);
 }
-.prog-title {
+
+/* Each progress track block */
+.prog-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.prog-block + .prog-block {
+  border-left: 1px solid var(--rule2);
+  padding-left: 40px;
+}
+
+/* Top row: label left, percentage right */
+.prog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 10px;
+}
+.prog-label {
   font-family: var(--font-display);
-  font-size: 16px;
+  font-size: var(--text-2xs);
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--ink4);
+}
+.prog-pct {
+  font-family: 'Sora', sans-serif;
+  font-size: var(--num-md);
   font-weight: 700;
   color: var(--ink);
-  margin-bottom: 20px;
-  letter-spacing: -.2px;
+  letter-spacing: -1px;
+  line-height: 1;
 }
-.prog-row { margin-bottom: 14px; }
-.prog-row:last-child { margin-bottom: 0; }
-.prog-meta { display:flex; justify-content:space-between; margin-bottom:6px; }
-.prog-name { font-size: 12px; font-weight: 600; color: var(--ink2); }
-.prog-pct  { font-size: 12px; font-weight: 700; color: var(--ink); font-family:'Sora',sans-serif; }
-.prog-track { height: 8px; background: var(--rule2); border-radius: 99px; overflow:hidden; box-shadow: inset 0 1px 2px rgba(0,0,0,.06); }
-.prog-fill  { height: 100%; border-radius: 99px; transition: width 1.2s cubic-bezier(.16,1,.3,1); }
+.prog-pct-unit {
+  font-size: var(--text-lg);
+  font-weight: 500;
+  color: var(--ink3);
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
+/* Track */
+.prog-track {
+  position: relative;
+  height: 8px;
+  background: var(--rule2);
+  border-radius: 99px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,.06);
+}
+.prog-fill {
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  border-radius: 99px;
+  transition: width 1.4s cubic-bezier(.16,1,.3,1);
+  min-width: 0;
+}
+
+/* Tick marks at 25 / 50 / 75 % — accessible landmark hints */
+.prog-ticks {
+  position: relative;
+  height: 6px;
+  margin-top: 3px;
+}
+.prog-tick {
+  position: absolute;
+  top: 0;
+  width: 1px;
+  height: 5px;
+  background: var(--rule);
+  transform: translateX(-50%);
+}
+.prog-tick-label {
+  position: absolute;
+  top: 7px;
+  font-family: 'Sora', sans-serif;
+  font-size: var(--text-2xs);
+  color: var(--ink4);
+  transform: translateX(-50%);
+  white-space: nowrap;
+  letter-spacing: .2px;
+}
+
+/* Caption below track */
+.prog-caption {
+  margin-top: var(--s14);
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  color: var(--ink3);
+  line-height: 1.55;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.prog-caption-icon {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  margin-top: 1px;
+}
+.prog-caption-text strong {
+  color: var(--ink2);
+  font-weight: 600;
+}
+
+/* Milestone dot on track */
+.prog-track-wrap {
+  position: relative;
+}
+.prog-milestone {
+  position: absolute;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 2px solid var(--rule);
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  transition: border-color .3s;
+}
+.prog-milestone.reached {
+  background: var(--paper);
+  border-color: currentColor;
+}
+
+/* Responsive */
+@media (max-width: 680px) {
+  .progress-card {
+    grid-template-columns: 1fr;
+    gap: 24px 0;
+    padding: 20px 20px 20px;
+  }
+  .prog-block + .prog-block {
+    border-left: none;
+    padding-left: 0;
+    border-top: 1px solid var(--rule2);
+    padding-top: 24px;
+  }
+  .prog-pct { font-size: var(--num-sm); }
+}
+
+/* Dark mode */
+html.dark .progress-card { background: var(--paper); }
+html.dark .prog-block + .prog-block { border-left-color: var(--rule); }
+html.dark .prog-track { background: var(--rule2); box-shadow: inset 0 1px 2px rgba(0,0,0,.2); }
+html.dark .prog-tick  { background: var(--rule); }
+html.dark .prog-milestone { background: var(--paper); border-color: var(--rule); }
+html.dark .prog-milestone.reached { background: var(--paper); }
+
+/* Print */
+@media print {
+  .progress-card { border: 1px solid #ddd !important; padding: 10px 14px !important; break-inside: avoid !important; gap: 0 24px !important; }
+  .prog-pct      { font-size: 18px !important; }
+  .prog-track    { height: 5px !important; }
+  .prog-caption  { font-size: 9px !important; margin-top: 8px !important; }
+}
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    FILTER TOOLBAR
@@ -366,20 +662,31 @@ body::after {
   gap: 8px;
   align-items: center;
   flex-wrap: wrap;
+  padding: 4px 0;
+}
+.toolbar-label {
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink4);
+  margin-right: 4px;
 }
 .t-btn {
-  padding: 8px 18px;
+  padding: var(--s10) 18px;
   border-radius: 99px;
   border: 1.5px solid var(--rule);
   background: var(--paper);
   color: var(--ink3);
   font-family: var(--font-display);
-  font-size: 13px;
+  font-size: var(--text-md);
   font-weight: 600;
   cursor: pointer;
   transition: all .18s;
   box-shadow: var(--shadow-sm);
-  min-height: 36px;
+  min-height: 44px;
+  min-width: 44px;
 }
 .t-btn:hover { border-color: var(--navy); color: var(--navy); background: var(--cream); }
 .t-btn:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
@@ -392,8 +699,8 @@ body::after {
 .t-count {
   margin-left: auto;
   font-family: 'Sora', sans-serif;
-  font-size: 11px;
-  color: var(--ink4);
+  font-size: var(--text-xs);
+  color: var(--ink3);
 }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -408,11 +715,12 @@ body::after {
   background: var(--paper);
   border-bottom: 1px solid rgba(0,0,0,.032);
   overflow: visible;
+  position: relative;
   transition: background .2s;
   animation: slideIn .32s cubic-bezier(.16,1,.3,1) both;
 }
 .mcard:last-child { border-bottom: none; }
-.mcard:hover { background: #fdfcfb; }
+.mcard:hover { background: var(--cream); }
 @keyframes slideIn {
   from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -424,30 +732,37 @@ body::after {
 .mcard.mc-past     { }
 .mcard.mc-upcoming { background: var(--paper); }
 
-/* Left accent stripe — subtle */
+/* Left accent stripe — distinct per status, width 3px */
 .mcard::before {
   content:'';
   position: absolute;
   left: 0; top: 12px; bottom: 12px;
-  width: 2px;
+  width: 3px;
   border-radius: 99px;
-  opacity: .7;
+  opacity: .8;
 }
-.mcard { position: relative; }
-.mcard.mc-current::before  { background: var(--amber); }
+/* position: relative merged into .mcard above */
+.mcard.mc-current::before  { background: var(--amber); opacity: 1; }
 .mcard.mc-paid::before     { background: var(--green); }
 .mcard.mc-partial::before  { background: var(--purple); }
-.mcard.mc-upcoming::before { background: var(--rule); }
-.mcard.mc-past.mc-unpaid::before { background: var(--red); }
+.mcard.mc-upcoming::before { background: var(--rule); opacity: .5; }
+.mcard.mc-past.mc-unpaid::before { background: var(--red); opacity: 1; }
 
 /* ── CARD BODY ── */
 .mcard-body {
   display: grid;
-  grid-template-columns: 44px 1fr repeat(4, minmax(88px,auto)) 108px;
+  grid-template-columns: 44px 1fr repeat(4, minmax(92px,auto)) 112px;
   align-items: center;
   gap: 0;
   padding: 0;
   padding-left: 3px; /* accent stripe offset */
+}
+
+/* Tabular figures — ensures numbers align in columns */
+.mc-primary, .mc-secondary, .kpi-value, .hero-value,
+.meta-value, .prog-pct, .rp-value, .sb-value,
+.ph-amount, .pb-val, .mms-val {
+  font-variant-numeric: tabular-nums;
 }
 
 /* Number bubble */
@@ -456,7 +771,7 @@ body::after {
   align-items: center;
   justify-content: center;
   width: 44px;
-  padding: 22px 0;
+  padding: var(--s20) 0;
   font-family: 'Sora', sans-serif;
   font-size: 11px;
   font-weight: 400;
@@ -470,38 +785,40 @@ body::after {
 
 /* Month info */
 .mc-info {
-  padding: 18px 16px;
+  padding: var(--s16) var(--s16);
   border-right: 1px solid rgba(0,0,0,.04);
   min-width: 0;
 }
 .mc-month-name {
   font-family: var(--font-display);
-  font-size: 19px;
+  font-size: clamp(15px, 2.5vw, 18px);
   font-weight: 700;
   color: var(--ink);
   line-height: 1.2;
   white-space: nowrap;
-  letter-spacing: -.3px;
+  letter-spacing: -.2px;
 }
 .mc-badge {
   display: inline-block;
   background: var(--amber);
   color: #fff;
-  font-size: 9px;
+  font-size: var(--text-2xs);
   font-weight: 800;
-  letter-spacing: 1.2px;
+  letter-spacing: 1px;
   text-transform: uppercase;
-  padding: 3px 8px;
-  border-radius: 5px;
+  padding: var(--s4) var(--s8);
+  border-radius: var(--r-sm);
   margin-left: 8px;
   vertical-align: middle;
   font-family: var(--font-display);
-  box-shadow: 0 1px 4px rgba(160,84,0,.35);
+  box-shadow: 0 1px 4px rgba(160,84,0,.3);
+  /* Ensure text never wraps */
+  white-space: nowrap;
 }
 .mc-sub {
-  font-size: 10px;
-  color: var(--ink4);
-  margin-top: 4px;
+  font-size: var(--text-2xs);
+  color: var(--ink3);
+  margin-top: var(--s4);
   font-family: var(--font-display);
   font-weight: 500;
   letter-spacing: .3px;
@@ -509,20 +826,20 @@ body::after {
 .mc-log-btn {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  margin-top: 5px;
-  font-size: 11px;
+  gap: var(--s4);
+  margin-top: var(--s4);
+  font-size: var(--text-xs);
   font-weight: 700;
   color: var(--teal);
   cursor: pointer;
   background: none;
   border: none;
   font-family: var(--font-display);
-  padding: 3px 8px 3px 0;
+  padding: 6px 8px 6px 0;
   text-decoration: none;
   border-bottom: 1px solid rgba(13,148,136,.3);
   transition: color .18s, border-color .18s;
-  min-height: 24px;
+  min-height: 44px;
   letter-spacing: .2px;
 }
 .mc-log-btn:hover { color: #0a7a70; border-color: rgba(13,148,136,.7); }
@@ -530,43 +847,44 @@ body::after {
 
 /* Data cell */
 .mc-cell {
-  padding: 18px 14px;
+  padding: var(--s16) var(--s12);
   border-right: 1px solid rgba(0,0,0,.04);
   text-align: right;
   align-self: stretch;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 2px;
+  gap: var(--s4);
+  min-width: 0;
 }
 .mc-cell:last-of-type { border-right: none; }
 .col-cumul { border-right: none; }
 .mc-cell-label {
   font-family: 'Sora', sans-serif;
-  font-size: 8px;
-  letter-spacing: 1.8px;
+  font-size: var(--text-2xs);
+  letter-spacing: 1.4px;
   text-transform: uppercase;
   color: var(--ink4);
-  opacity: 0.7;
-  margin-bottom: 5px;
+  opacity: 0.6;
+  margin-bottom: 6px;
   text-align: right;
 }
 .mc-primary {
   font-family: 'Sora', sans-serif;
-  font-size: 20px;
-  font-weight: 600;
+  font-size: var(--text-xl);
+  font-weight: 700;
   line-height: 1.1;
-  letter-spacing: -.2px;
+  letter-spacing: -.3px;
 }
 .mc-secondary {
-  font-size: 12px;
+  font-size: var(--text-xs);
   font-weight: 400;
   font-family: 'Sora', sans-serif;
-  margin-top: 2px;
-  color: var(--ink3);
+  margin-top: 3px;
+  color: var(--ink4);
 }
 .mc-note {
-  font-size: 9px;
+  font-size: var(--text-2xs);
   color: var(--ink4);
   opacity: 0.65;
   font-family: 'Sora', sans-serif;
@@ -587,7 +905,7 @@ body::after {
 .src-badge {
   display: inline-block;
   font-family: 'Sora', sans-serif;
-  font-size: 9px;
+  font-size: var(--text-2xs);
   font-weight: 400;
   letter-spacing: .5px;
   padding: 2px 5px;
@@ -599,27 +917,32 @@ body::after {
 
 /* Status pill */
 .mc-status {
-  padding: 18px 14px;
+  padding: var(--s16) var(--s14);
   display: flex;
   align-items: center;
   justify-content: flex-end;
 }
 .status-pill {
-  padding: 8px 16px;
+  padding: var(--s10) var(--s16);
   border-radius: 99px;
   border: none;
   font-family: var(--font-display);
-  font-size: 12px;
+  font-size: var(--text-sm);
   font-weight: 700;
   cursor: pointer;
   transition: all .18s;
   white-space: nowrap;
   min-width: 90px;
-  min-height: 36px;
+  min-height: 44px;
   text-align: center;
   letter-spacing: .2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
 }
 .status-pill:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+/* Status pill icon glyphs use aria-hidden spans in JS */
 .sp-paid    { background: var(--green-bg); color: var(--green); border: 1.5px solid var(--green-b); }
 .sp-paid:hover { background: #d4eddf; box-shadow: 0 2px 10px rgba(21,104,62,.2); }
 .sp-unpaid  { background: var(--red-bg); color: var(--red); border: 1.5px solid var(--red-b); }
@@ -628,7 +951,7 @@ body::after {
 .sp-current:hover { background: #fdeece; box-shadow: 0 2px 10px rgba(160,84,0,.2); }
 .sp-partial { background: var(--purple-bg); color: var(--purple); border: 1.5px solid var(--purple-b); }
 .sp-partial:hover { background: #ede9fe; box-shadow: 0 2px 10px rgba(83,24,176,.2); }
-.sp-upcoming { background: var(--rule2); color: var(--ink4); border: 1.5px solid var(--rule); cursor: default; }
+.sp-upcoming { background: var(--rule2); color: var(--ink3); border: 1.5px solid var(--rule); cursor: default; user-select: none; }
 
 @keyframes pulse {
   0%,100% { box-shadow: 0 0 0 0 rgba(168,92,0,0); }
@@ -639,36 +962,47 @@ body::after {
 .mc-drawer {
   border-top: 2px solid var(--rule2);
   border-left: 3px solid var(--teal);
-  background: linear-gradient(135deg, #fdfcfb 0%, #f9f7f4 100%);
+  background: var(--cream);
   max-height: 0;
   overflow: hidden;
   transition: max-height .45s cubic-bezier(.16,1,.3,1);
 }
 .mc-drawer.open { max-height: 620px; }
 
-.drawer-pad { padding: 18px 20px 20px 20px; }
+.drawer-pad { padding: var(--card-pad-sm) var(--s20) var(--s20); }
 .drawer-head {
   font-family: var(--font-display);
-  font-size: 14px;
+  font-size: var(--text-lg);
   font-weight: 700;
   color: var(--ink2);
-  margin-bottom: 16px;
+  margin-bottom: var(--s16);
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--s10);
   flex-wrap: wrap;
 }
 .drawer-rate-note {
   font-family: 'Sora', sans-serif;
-  font-size: 11px;
+  font-size: var(--text-xs);
   color: var(--ink4);
   font-weight: 400;
 }
 
-.pay-row { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
-.pay-field { display: flex; flex-direction: column; gap: 5px; }
+.pay-row {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--s12);
+  flex-wrap: wrap;
+}
+@media (max-width: 480px) {
+  .pay-row { flex-direction: column; align-items: stretch; gap: var(--s10); }
+  .pay-btns { justify-content: stretch; }
+  .pay-save, .pay-clear { flex: 1; }
+  .pay-equiv { min-width: 0; }
+}
+.pay-field { display: flex; flex-direction: column; gap: var(--s6); }
 .pay-field-lbl {
-  font-size: 11px;
+  font-size: var(--text-xs);
   font-weight: 600;
   color: var(--ink3);
   font-family: 'Sora', sans-serif;
@@ -686,10 +1020,10 @@ body::after {
 }
 .pay-wrap:focus-within { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(13,148,136,.12); }
 .pay-sym {
-  padding: 10px 12px;
-  font-size: 16px;
+  padding: var(--s10) var(--s12);
+  font-size: var(--text-lg);
   font-weight: 700;
-  color: #d97706;
+  color: var(--amber-dot);
   background: var(--amber-bg);
   border-right: 1px solid var(--rule);
   font-family: 'Sora', sans-serif;
@@ -697,9 +1031,9 @@ body::after {
 .pay-input {
   border: none;
   background: transparent;
-  padding: 10px 12px;
+  padding: var(--s10) var(--s12);
   font-family: 'Sora', sans-serif;
-  font-size: 16px;
+  font-size: var(--text-lg);
   font-weight: 500;
   color: var(--ink);
   width: 140px;
@@ -708,23 +1042,23 @@ body::after {
 .pay-input::placeholder { color: var(--ink4); font-weight: 400; font-size: 14px; }
 
 .pay-equiv {
-  padding: 10px 0;
-  font-size: 12px;
+  padding: var(--s10) 0;
+  font-size: var(--text-sm);
   color: var(--ink3);
   font-family: 'Sora', sans-serif;
   min-width: 130px;
 }
 .pay-equiv strong { color: var(--blue); font-weight: 700; }
 
-.pay-btns { display: flex; gap: 8px; margin-top: 2px; }
+.pay-btns { display: flex; gap: var(--s8); margin-top: var(--s4); }
 .pay-save {
-  padding: 11px 22px;
+  padding: var(--s10) var(--s24);
   border-radius: var(--r-sm);
   border: none;
   background: var(--teal);
   color: #fff;
   font-family: var(--font-display);
-  font-size: 13px;
+  font-size: var(--text-md);
   font-weight: 700;
   cursor: pointer;
   transition: background .18s, box-shadow .18s;
@@ -733,13 +1067,13 @@ body::after {
 .pay-save:hover { background: #0a7a70; box-shadow: 0 3px 12px rgba(13,148,136,.35); }
 .pay-save:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
 .pay-clear {
-  padding: 11px 16px;
+  padding: var(--s10) var(--s16);
   border-radius: var(--r-sm);
   border: 1.5px solid var(--rule);
   background: transparent;
   color: var(--ink3);
   font-family: var(--font-display);
-  font-size: 13px;
+  font-size: var(--text-md);
   font-weight: 600;
   cursor: pointer;
   transition: all .18s;
@@ -750,7 +1084,7 @@ body::after {
 
 /* Breakdown strip */
 .pay-breakdown {
-  margin-top: 14px;
+  margin-top: var(--s14);
   display: grid;
   grid-template-columns: repeat(4,1fr);
   border: none;
@@ -759,7 +1093,7 @@ body::after {
   box-shadow: 0 1px 2px rgba(12,28,53,.04), 0 4px 12px rgba(12,28,53,.07), inset 0 1px 0 rgba(255,255,255,.8);
 }
 .pb-cell {
-  padding: 12px 14px;
+  padding: var(--s12) var(--s14);
   border-right: 1px solid rgba(0,0,0,.05);
   background: var(--paper);
   transition: background .15s;
@@ -768,7 +1102,7 @@ body::after {
 .pb-cell:hover { background: var(--cream); }
 .pb-lbl {
   font-family: var(--font-display);
-  font-size: 9px;
+  font-size: var(--text-2xs);
   font-weight: 700;
   letter-spacing: 1.2px;
   text-transform: uppercase;
@@ -777,7 +1111,7 @@ body::after {
 }
 .pb-val {
   font-family: 'Sora', sans-serif;
-  font-size: 19px;
+  font-size: var(--text-xl);
   font-weight: 600;
   line-height: 1.2;
   letter-spacing: -.2px;
@@ -788,26 +1122,11 @@ body::after {
   margin-top: 2px;
 }
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   FOOTNOTE
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-.footnote {
-  margin-top: 28px;
-  padding: 16px 20px 16px 22px;
-  background: var(--paper);
-  border: none;
-  border-left: 3px solid var(--teal);
-  border-radius: var(--r-lg);
-  font-size: 12px;
-  color: var(--ink3);
-  line-height: 1.75;
-  box-shadow: var(--shadow-float);
-}
-.footnote strong { color: var(--ink2); }
+/* fn-source pill — used inside the methodology disclosure */
 .fn-source {
   display: inline-block;
   font-family: 'Sora', sans-serif;
-  font-size: 10px;
+  font-size: var(--text-2xs);
   padding: 2px 6px;
   border-radius: 3px;
   background: var(--rule2);
@@ -822,25 +1141,52 @@ body::after {
 .mc-mobile-strip { display: none; }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   RESPONSIVE — TABLET + MOBILE (≤ 860px)
-   Collapse to: num | info-block (with vertical data) | status pill
-   All data cells hidden; mobile-strip shows stacked labels+values
+   RESPONSIVE — TABLET (≤ 960px)
+   Show 3 data columns instead of 4; hide cumulative column
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-@media(max-width:860px){
+@media (max-width: 960px) {
   .mcard-body {
-    grid-template-columns: 32px 1fr auto;
+    grid-template-columns: 40px 1fr repeat(3, minmax(80px, auto)) 104px;
   }
-  /* Hide all desktop data columns — strip handles display */
+  /* Hide cumulative "Total Remaining" column at tablet — too wide */
+  .col-cumul { display: none; }
+  .rp-cell   { padding: var(--s14) var(--s20) var(--s14) 0; }
+  .rp-value  { font-size: var(--text-xl); }
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   RESPONSIVE — MOBILE (≤ 680px)
+   Collapse to: stripe | info+strip | status pill
+   All desktop data cells hidden; mobile-strip replaces them
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+@media (max-width: 680px) {
+  /* Masthead: stack controls below title */
+  .masthead-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--s16);
+  }
+  .mast-flags {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .mast-title { font-size: clamp(26px, 7vw, 40px); }
+
+  /* Month card: 3-col grid */
+  .mcard-body {
+    grid-template-columns: 28px 1fr auto;
+  }
   .mc-cell   { display: none; }
-  .mc-status { padding: 14px 14px 14px 8px; }
-  .mc-num    { width: 32px; padding: 18px 0; font-size: 10px; font-weight: 700; }
-  .mc-info   { padding: 16px 14px; }
-  /* Card-by-card feel on mobile */
+  .mc-status { padding: var(--s14) var(--s14) var(--s14) var(--s6); }
+  .mc-num    { width: 28px; padding: var(--s16) 0; font-size: var(--text-2xs); font-weight: 700; }
+  .mc-info   { padding: var(--s16) var(--s12); }
+
+  /* Individual floating cards on mobile */
   .month-list { border: none; box-shadow: none; border-radius: 0; background: transparent; }
   .mcard {
     border: none;
     border-radius: var(--r-xl) !important;
-    margin-bottom: 12px;
+    margin-bottom: var(--s10);
     box-shadow: var(--shadow-float);
   }
   .mcard:last-child { margin-bottom: 0; }
@@ -848,35 +1194,41 @@ body::after {
   .mcard.mc-paid    { box-shadow: 0 4px 8px rgba(12,28,53,.04), 0 12px 28px rgba(21,104,62,.12), 0 24px 40px rgba(12,28,53,.06), inset 0 1px 0 rgba(255,255,255,.9); }
   .mcard.mc-unpaid  { box-shadow: 0 4px 8px rgba(12,28,53,.04), 0 12px 28px rgba(184,36,36,.10), 0 24px 40px rgba(12,28,53,.06), inset 0 1px 0 rgba(255,255,255,.9); }
 
-  /* Mobile data strip — stacked vertically */
+  /* Mobile data strip — 2-column grid instead of vertical stack */
   .mc-mobile-strip {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--s12) var(--s16);
+    margin-top: var(--s12);
+    padding-top: var(--s12);
+    border-top: 1px solid var(--rule2);
   }
   .mms-item {
     display: flex;
     flex-direction: column;
     gap: 3px;
   }
+  /* Full-width items for cumulative total */
+  .mms-item:last-child:nth-child(odd) {
+    grid-column: span 2;
+  }
   .mms-label {
     font-family: 'Sora', sans-serif;
     font-size: 9px;
-    letter-spacing: 1.5px;
+    letter-spacing: 1.3px;
     text-transform: uppercase;
-    color: var(--ink4);
-    opacity: 0.7;
+    color: var(--ink3);
   }
   .mms-val {
     font-family: 'Sora', sans-serif;
-    font-size: 20px;
+    font-size: var(--text-xl);
     font-weight: 600;
-    line-height: 1.15;
+    line-height: 1.2;
+    font-variant-numeric: tabular-nums;
   }
   .mms-inr {
     font-family: 'Sora', sans-serif;
-    font-size: 13px;
+    font-size: 12px;
     color: var(--ink3);
     margin-top: 1px;
   }
@@ -885,28 +1237,83 @@ body::after {
     font-size: 11px;
     font-weight: 400;
     color: var(--ink4);
-    margin-left: 5px;
+    margin-left: 4px;
     vertical-align: middle;
   }
 
+  /* Rate panel: smaller numbers */
+  .rp-cell  { padding: var(--s10) var(--s14) var(--s10) 0; }
+  .rp-value { font-size: var(--text-lg); }
+
+  /* Toolbar: scrollable row */
+  .toolbar {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+    /* hide scrollbar visually but keep functional */
+    scrollbar-width: none;
+  }
+  .toolbar::-webkit-scrollbar { display: none; }
+  .t-btn { flex-shrink: 0; }
+  .t-count { flex-shrink: 0; }
+
+  /* Payment breakdown: 2-col */
   .pay-breakdown { grid-template-columns: repeat(2,1fr); }
-  .rp-cell { padding: 12px 16px 12px 0; }
-  .rp-value { font-size: 18px; }
+
+  /* Progress card: single col, tighter */
+  .progress-card { gap: 20px 0; }
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   RESPONSIVE — SMALL MOBILE (≤ 400px)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+@media (max-width: 400px) {
+  .mc-month-name { font-size: var(--text-md); }
+  .mms-val { font-size: var(--text-lg); }
+  .status-pill { min-width: 76px; font-size: 11px; padding: 8px 10px; }
+  .wrap { padding-left: var(--s14); padding-right: var(--s14); }
+  .mast-title { letter-spacing: -.5px; }
 }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    UTILITY & ACCESSIBILITY
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-.mt-sm  { margin-top: 12px; }
-.mt-md  { margin-top: 20px; }
-.mt-lg  { margin-top: 28px; }
+.mt-sm  { margin-top: var(--s14); }
+.mt-md  { margin-top: var(--s24); }
+.mt-lg  { margin-top: var(--s32); }
 .dimmed { opacity: .65; }
+
+/* Section headings */
+.section-head {
+  display: flex;
+  align-items: center;
+  gap: var(--s10);
+  margin-bottom: var(--s12);
+}
+.section-head-label {
+  font-family: var(--font-display);
+  font-size: var(--text-2xs);
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink3);
+}
+.section-head-line {
+  flex: 1;
+  height: 1px;
+  background: var(--rule2);
+}
 
 /* Global focus ring — keyboard navigation */
 :focus-visible {
   outline: 2px solid var(--teal);
-  outline-offset: 2px;
-  border-radius: 3px;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+/* Suppress focus ring for mouse users */
+:focus:not(:focus-visible) {
+  outline: none;
 }
 /* Skip link for screen readers */
 .skip-link {
@@ -938,7 +1345,7 @@ body::after {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-top: 1px solid rgba(13,148,136,.3);
-  padding: 10px 20px;
+  padding: var(--s10) var(--s20);
   display: flex;
   align-items: center;
   gap: 0;
@@ -967,14 +1374,14 @@ body::after {
   display: flex;
   flex-direction: column;
   gap: 1px;
-  padding: 0 16px;
+  padding: 0 var(--s16);
   border-right: 1px solid rgba(255,255,255,.08);
 }
 .sb-item:first-child { padding-left: 0; }
 .sb-item:last-child  { border-right: none; padding-right: 0; }
 .sb-label {
   font-family: var(--font-display);
-  font-size: 9px;
+  font-size: var(--text-2xs);
   font-weight: 600;
   letter-spacing: 1.5px;
   text-transform: uppercase;
@@ -982,19 +1389,27 @@ body::after {
 }
 .sb-value {
   font-family: 'Sora', sans-serif;
-  font-size: 18px;
+  font-size: clamp(14px, 2.5vw, 18px);
   font-weight: 600;
   color: #fff;
   letter-spacing: -.2px;
   white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  min-width: 4ch;
 }
 .sb-value.sb-red    { color: #f87171; }
 .sb-value.sb-green  { color: #4ade80; }
 .sb-value.sb-amber  { color: #fbbf24; }
-@media(max-width:540px) {
+@media (max-width: 540px) {
   .sb-item:nth-child(4) { display: none; }
-  .sb-value { font-size: 15px; }
-  .sticky-bar { padding: 8px 14px; }
+  .sb-value  { font-size: var(--text-md); }
+  .sb-label  { font-size: var(--text-2xs); letter-spacing: 1px; }
+  .sticky-bar { padding: var(--s8) var(--s14); }
+}
+@media (max-width: 360px) {
+  /* On the narrowest phones hide the 3rd item too */
+  .sb-item:nth-child(3) { display: none; }
+  .sb-value { font-size: var(--text-md); }
 }
 
 /* Year separator */
@@ -1015,7 +1430,7 @@ body::after {
 }
 .year-sep span {
   font-family: var(--font-display);
-  font-size: 11px;
+  font-size: var(--text-xs);
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -1036,7 +1451,7 @@ body::after {
 }
 .ph-title {
   font-family: var(--font-display);
-  font-size: 11px;
+  font-size: var(--text-xs);
   font-weight: 700;
   letter-spacing: 1.5px;
   text-transform: uppercase;
@@ -1067,14 +1482,14 @@ body::after {
 .ph-body { flex: 1; min-width: 0; }
 .ph-amount {
   font-family: 'Sora', sans-serif;
-  font-size: 16px;
+  font-size: var(--text-lg);
   font-weight: 600;
   color: var(--green);
   letter-spacing: -.2px;
 }
 .ph-meta {
   font-family: var(--font-display);
-  font-size: 11px;
+  font-size: var(--text-xs);
   color: var(--ink4);
   margin-top: 2px;
 }
@@ -1082,15 +1497,23 @@ body::after {
   background: none;
   border: 1px solid var(--rule);
   border-radius: 50%;
-  width: 22px; height: 22px;
+  width: 32px; height: 32px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 13px;
+  font-size: var(--text-lg);
   color: var(--ink4);
   cursor: pointer;
   flex-shrink: 0;
   transition: all .15s;
   line-height: 1;
   padding: 0;
+  /* Expand touch target beyond visible border */
+  position: relative;
+}
+.ph-delete::before {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
 }
 .ph-delete:hover { border-color: var(--red); color: var(--red); background: var(--red-bg); }
 
@@ -1102,18 +1525,18 @@ body::after {
 .export-btn {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
+  gap: var(--s6);
+  padding: var(--s10) 18px;
   background: rgba(13,148,136,.15);
   border: 1px solid rgba(13,148,136,.4);
   border-radius: 99px;
   color: #5eead4;
   font-family: var(--font-display);
-  font-size: 13px;
+  font-size: var(--text-md);
   font-weight: 700;
   cursor: pointer;
   transition: all .2s;
-  min-height: 36px;
+  min-height: 44px;
 }
 .export-btn:hover {
   background: rgba(13,148,136,.28);
@@ -1173,7 +1596,7 @@ body::after {
     flex-wrap: nowrap !important;
   }
   .mast-eyebrow { font-size: 9px !important; color: #0d9488 !important; margin-bottom: 4px !important; }
-  .mast-title   { font-size: 20px !important; color: #fff !important; line-height: 1.1 !important; }
+  .mast-title   { font-size: var(--text-xl) !important; color: #fff !important; line-height: 1.1 !important; }
   .mast-sub     { font-size: 10px !important; color: rgba(255,255,255,.6) !important; margin-top: 4px !important; }
   .mast-flags   { gap: 6px !important; }
   .flag-chip    { font-size: 10px !important; padding: 4px 10px !important; color: rgba(255,255,255,.8) !important; border: 1px solid rgba(255,255,255,.2) !important; background: rgba(255,255,255,.08) !important; }
@@ -1212,11 +1635,10 @@ body::after {
   .kpi::before { display: none !important; }
   .kpi-label  { font-size: 7px !important; margin-bottom: 4px !important; }
   .kpi-value  { font-size: 18px !important; }
-  .kpi-eur, .kpi-inr, .kpi-sub { font-size: 9px !important; }
+  .kpi-eur, .kpi-inr, .kpi-sub { font-size: var(--text-2xs) !important; }
 
   /* ── Progress card ── */
-  .progress-card { border: 1px solid #ddd !important; padding: 10px 12px !important; break-inside: avoid !important; }
-  .prog-title    { font-size: 11px !important; margin-bottom: 8px !important; }
+  .progress-card { border: 1px solid #ddd !important; padding: 10px 14px !important; break-inside: avoid !important; gap: 0 24px !important; }
   .prog-track    { background: #e0d7cd !important; height: 6px !important; }
 
   /* ── Chart ── */
@@ -1287,7 +1709,8 @@ body::after {
   .year-sep span { font-size: 8px !important; }
 
   /* Footnote */
-  .footnote { border: 1px solid #ddd !important; padding: 8px 12px !important; font-size: 9px !important; break-inside: avoid !important; }
+  /* Footnote / disclosure — expand and flatten for print */
+  .method-disclosure { border: 1px solid #ddd !important; break-inside: avoid !important; }
 
   /* Print date */
   .print-date { display: block !important; font-size: 9px !important; color: #999 !important; text-align: right !important; margin-bottom: 6px !important; }
@@ -1310,12 +1733,12 @@ body::after {
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .sync-bar {
   background: rgba(0,0,0,.25);
-  padding: 6px 20px;
+  padding: var(--s6) 20px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--s8);
   font-family: var(--font-display);
-  font-size: 11px;
+  font-size: var(--text-xs);
   font-weight: 600;
   letter-spacing: .3px;
   max-width: 1120px;
@@ -1352,6 +1775,9 @@ body::after {
   cursor: pointer;
 }
 .theme-toggle:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; border-radius: 99px; }
+.theme-toggle:focus-visible .toggle-track {
+  box-shadow: 0 0 0 3px rgba(13,148,136,.25), 0 2px 8px rgba(0,0,0,.25);
+}
 .toggle-track {
   display: flex;
   align-items: center;
@@ -1416,7 +1842,7 @@ html.dark {
   --ink:    #f0ece6;
   --ink2:   #d4cec7;
   --ink3:   #9e9890;
-  --ink4:   #6a6460;
+  --ink4:   #8a8684;
 
   /* Semantic — brighter for dark bg readability */
   --green:     #22c55e;
@@ -1440,8 +1866,7 @@ html.dark .kpi {
   box-shadow: 0 2px 4px rgba(0,0,0,.3), 0 8px 20px rgba(0,0,0,.25), 0 20px 40px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.08);
 }
 html.dark .kpi:hover { border-color: var(--teal); }
-html.dark .progress-card,
-html.dark .footnote { background: var(--paper); border-color: var(--rule); }
+html.dark .fn-source { background: var(--rule2); color: var(--ink3); }
 html.dark .month-list {
   background: var(--paper);
   box-shadow: 0 2px 4px rgba(0,0,0,.2), 0 8px 20px rgba(0,0,0,.18), 0 20px 40px rgba(0,0,0,.14), inset 0 1px 0 rgba(255,255,255,.05);
@@ -1453,6 +1878,7 @@ html.dark .mc-num  { border-right-color: rgba(255,255,255,.06); }
 html.dark .mc-info { border-right-color: rgba(255,255,255,.06); }
 html.dark .mc-cell { border-right-color: rgba(255,255,255,.06); }
 html.dark .mcard   { border-bottom-color: rgba(255,255,255,.06); }
+html.dark .mc-mobile-strip { border-top-color: var(--rule); }
 
 html.dark .mcard:hover { background: #222838; }
 html.dark .mcard.mc-current  { background: linear-gradient(135deg, #211d12 0%, #2e2515 100%); }
@@ -1474,6 +1900,24 @@ html.dark .ph-delete { border-color: var(--rule); background: transparent; }
 html.dark .year-sep { background: #0c1018; }
 html.dark .year-sep span { background: var(--paper); border-color: var(--rule); }
 html.dark .mini-card { background: #1c2230; border-color: var(--rule); }
+html.dark .section-head-line { background: var(--rule); }
+
+/* Dark mode — new summary cards */
+html.dark .hero-card {
+  box-shadow: 0 2px 4px rgba(0,0,0,.3), 0 8px 20px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.06);
+}
+html.dark .hero-card.hc-received    { background: linear-gradient(160deg, var(--paper) 60%, #0f2a1a 100%); }
+html.dark .hero-card.hc-outstanding { background: linear-gradient(160deg, var(--paper) 60%, #2a0f0f 100%); }
+html.dark .hero-card.hc-received    .hero-eur { color: #4ade80; }
+html.dark .hero-card.hc-outstanding .hero-eur { color: #f87171; }
+html.dark .hero-track { background: var(--rule2); }
+html.dark .hero-progress-label { color: var(--ink3); }
+html.dark .meta-card {
+  background: var(--paper);
+  box-shadow: 0 1px 2px rgba(0,0,0,.2), 0 4px 12px rgba(0,0,0,.18);
+}
+html.dark .meta-value { color: var(--ink); }
+html.dark .meta-sub   { color: var(--ink4); }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    PER-CARD PAYMENT PROGRESS BAR
@@ -1508,48 +1952,409 @@ html.dark .mcard.mc-upcoming::before { opacity: .2; }
 }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   BENTO KPI GRID
+   SUMMARY RESPONSIVE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-.kpi-grid {
+/* ── Summary grid breakpoints — mobile-first ── */
+/* 960px: three column meta, hero stays 2-col */
+@media (max-width: 960px) {
+  .summary-hero { gap: 12px; }
+  .summary-meta { gap: 12px; }
+}
+/* 760px: switch hero to stacked, meta to 3-col */
+@media (max-width: 760px) {
+  .summary-hero {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .hero-card { padding: var(--s20) var(--s20) var(--s16); }
+  .hero-value { font-size: clamp(28px, 8vw, 44px); }
+}
+/* 540px: meta strip → 2-col, months card spans full */
+@media (max-width: 540px) {
+  .summary-meta {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--s10);
+  }
+  .meta-card.mc-months { grid-column: span 2; }
+  .meta-value { font-size: var(--num-sm); }
+  .meta-card { padding: var(--s16); gap: var(--s12); }
+}
+/* 380px: all single column */
+@media (max-width: 380px) {
+  .summary-meta { grid-template-columns: 1fr; }
+  .meta-card.mc-months { grid-column: span 1; }
+  .meta-value { font-size: clamp(18px, 5vw, 22px); }
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   SKELETON / LOADING STATES
+   Strategy: shimmer animation on placeholder blocks;
+   body.is-loading hides real content and shows skeletons,
+   body.data-ready hides skeletons and reveals real content.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+/* Shimmer keyframe — moves a highlight stripe L→R */
+@keyframes shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position:  600px 0; }
+}
+
+/* Base skeleton block */
+.skel {
+  display: inline-block;
+  border-radius: 6px;
+  background: linear-gradient(
+    90deg,
+    var(--rule2) 25%,
+    var(--rule)  50%,
+    var(--rule2) 75%
+  );
+  background-size: 600px 100%;
+  animation: shimmer 1.6s infinite linear;
+  /* Prevent text rendering inside skeleton blocks from shifting layout */
+  color: transparent !important;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* val-real wrapper — block so it doesn't collapse as inline */
+.val-real { display: block; }
+
+/* Skeleton size variants */
+.skel-num-lg  { height: 44px; width: 160px; border-radius: 8px; }
+.skel-num-md  { height: 32px; width: 110px; border-radius: 6px; }
+.skel-num-sm  { height: 20px; width:  80px; border-radius: 4px; }
+.skel-label   { height: 11px; width:  70px; border-radius: 3px; }
+.skel-sub     { height: 13px; width: 120px; border-radius: 3px; }
+.skel-bar     { height:  6px; width: 100%;  border-radius: 99px; }
+.skel-pill    { height: 28px; width:  90px; border-radius: 99px; }
+.skel-rate    { height: 26px; width:  80px; border-radius: 5px; }
+.skel-rate-sm { height: 13px; width:  56px; border-radius: 3px; }
+
+/* ── Skeleton visibility gating ── */
+
+/* While loading: hide real value nodes, show skeleton twins */
+body.is-loading div.val-real  { visibility: hidden; height: 0; overflow: hidden; margin: 0; padding: 0; }
+body.is-loading span.val-real { visibility: hidden; }
+body.is-loading .skel-twin    { display: block !important; }
+
+/* After load: hide skeleton twins, show real values */
+body.data-ready .skel-twin    { display: none !important; }
+body.data-ready div.val-real  { visibility: visible; height: auto; overflow: visible; }
+body.data-ready span.val-real { visibility: visible; }
+
+/* Skeleton twin default: hidden until loading class applied */
+.skel-twin { display: none; }
+
+/* ── Rate panel skeleton ── */
+.rp-skel-wrap {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  padding: 14px 0;
+}
+.rp-skel-cell {
+  padding: 4px 24px 4px 0;
+  margin-right: 24px;
+  border-right: 1px solid rgba(255,255,255,.08);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.rp-skel-cell:last-child { border-right: none; margin-right: 0; }
+
+/* Rate panel skeleton uses lighter shimmer (dark bg) */
+.rate-panel .skel {
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,.08) 25%,
+    rgba(255,255,255,.16) 50%,
+    rgba(255,255,255,.08) 75%
+  );
+  background-size: 600px 100%;
+}
+
+/* ── Month list skeleton rows ── */
+.month-skel-list {
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-float);
+  background: var(--paper);
+}
+.month-skel-row {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  grid-template-rows: auto auto;
+  grid-template-columns: 44px 1fr repeat(3, minmax(88px,auto)) 108px;
+  align-items: center;
+  padding: 18px 14px 18px 3px;
+  border-bottom: 1px solid rgba(0,0,0,.032);
   gap: 14px;
 }
-/* Monthly EMI — standard */
-.kpi.k-blue   { grid-column: span 2; }
-/* Friend's Share — standard */
-.kpi.k-orange { grid-column: span 2; }
-/* Months Left — standard */
-.kpi.k-navy   { grid-column: span 2; }
-/* Total Received — larger, prominent */
-.kpi.k-green  { grid-column: span 3; grid-row: span 1; }
-/* Outstanding — larger, prominent */
-.kpi.k-red    { grid-column: span 3; grid-row: span 1; }
-.kpi.k-green .kpi-value,
-.kpi.k-red   .kpi-value { font-size: 38px; }
+.month-skel-row:last-child { border-bottom: none; }
+.month-skel-num  { display: flex; justify-content: center; }
+.month-skel-info { display: flex; flex-direction: column; gap: 7px; padding: 0 6px; }
+.month-skel-cell { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.month-skel-pill { display: flex; justify-content: flex-end; }
 
-@media(max-width:900px) {
-  .kpi-grid { grid-template-columns: repeat(4, 1fr); }
-  .kpi.k-blue   { grid-column: span 2; }
-  .kpi.k-orange { grid-column: span 2; }
-  .kpi.k-navy   { grid-column: span 2; grid-row: auto; }
-  .kpi.k-green  { grid-column: span 2; grid-row: auto; }
-  .kpi.k-red    { grid-column: span 2; grid-row: auto; }
-  .kpi.k-green .kpi-value,
-  .kpi.k-red   .kpi-value { font-size: 32px; }
+/* Stagger the shimmer phase per row so they don't pulse in unison */
+.month-skel-row:nth-child(2) .skel { animation-delay:  .1s; }
+.month-skel-row:nth-child(3) .skel { animation-delay:  .2s; }
+.month-skel-row:nth-child(4) .skel { animation-delay:  .3s; }
+.month-skel-row:nth-child(5) .skel { animation-delay:  .4s; }
+.month-skel-row:nth-child(6) .skel { animation-delay:  .1s; }
+
+/* Skeleton section visibility */
+body.is-loading .skel-section  { display: block !important; }
+body.data-ready .skel-section  { display: none  !important; }
+.skel-section { display: none; }
+
+body.is-loading .real-section  { display: none  !important; }
+body.data-ready .real-section  { display: block !important; }
+.real-section { display: block; }
+
+/* ── Value transition on reveal ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-@media(max-width:540px) {
-  .kpi-grid { grid-template-columns: 1fr 1fr; }
-  .kpi.k-blue   { grid-column: span 1; }
-  .kpi.k-orange { grid-column: span 1; }
-  .kpi.k-navy   { grid-column: span 2; }
-  .kpi.k-green  { grid-column: span 2; }
-  .kpi.k-red    { grid-column: span 2; }
-  .kpi.k-green .kpi-value,
-  .kpi.k-red   .kpi-value { font-size: 28px; }
-  .kpi-value { font-size: 24px; }
+body.data-ready .hero-value,
+body.data-ready .meta-value,
+body.data-ready .hero-eur {
+  animation: fadeUp .3s cubic-bezier(.16,1,.3,1) both;
 }
+
+/* ── Error state ── */
+.load-error {
+  display: none;
+  margin: 32px 0;
+  padding: 20px 24px;
+  background: var(--red-bg);
+  border: 1px solid var(--red-b);
+  border-radius: var(--r-lg);
+  color: var(--red);
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+}
+body.load-failed .load-error  { display: block; }
+body.load-failed .skel-section { display: none !important; }
+
+/* Dark mode skeleton */
+html.dark .skel {
+  background: linear-gradient(
+    90deg,
+    var(--rule2) 25%,
+    var(--rule)  50%,
+    var(--rule2) 75%
+  );
+  background-size: 600px 100%;
+}
+html.dark .month-skel-list { background: var(--paper); }
+html.dark .month-skel-row  { border-bottom-color: rgba(255,255,255,.06); }
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   METHODOLOGY DISCLOSURE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.method-disclosure {
+  border: 1px solid var(--rule);
+  border-radius: var(--r-lg);
+  background: var(--paper);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+/* Summary / trigger row */
+.method-summary {
+  display: flex;
+  align-items: center;
+  gap: var(--s8);
+  padding: var(--s12) 18px;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+  color: var(--ink3);
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: .2px;
+  transition: background .15s, color .15s;
+}
+/* Remove default marker in all browsers */
+.method-summary::-webkit-details-marker { display: none; }
+.method-summary::marker { content: ''; }
+
+.method-summary:hover {
+  background: var(--cream);
+  color: var(--ink2);
+}
+.method-summary:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: -2px;
+  border-radius: var(--r-lg);
+}
+
+.method-summary-icon {
+  display: flex;
+  align-items: center;
+  color: var(--teal);
+  flex-shrink: 0;
+}
+.method-summary-text {
+  flex: 1;
+}
+.method-summary-chevron {
+  display: flex;
+  align-items: center;
+  color: var(--ink4);
+  transition: transform .25s cubic-bezier(.16,1,.3,1);
+  flex-shrink: 0;
+}
+.method-disclosure[open] .method-summary-chevron {
+  transform: rotate(180deg);
+}
+.method-disclosure[open] .method-summary {
+  color: var(--ink2);
+  border-bottom: 1px solid var(--rule2);
+}
+
+/* Body — the expanded content */
+.method-body {
+  padding: var(--s20) var(--s20) var(--s24);
+  animation: methodReveal .22s cubic-bezier(.16,1,.3,1) both;
+}
+@keyframes methodReveal {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Three-column grid inside the body */
+.method-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0 var(--s32);
+}
+@media (max-width: 680px) {
+  .method-grid {
+    grid-template-columns: 1fr;
+    gap: 18px 0;
+  }
+  .method-section + .method-section {
+    border-top: 1px solid var(--rule2);
+    padding-top: 18px;
+  }
+  .method-body { padding: 16px 16px 18px; }
+}
+
+.method-section-title {
+  font-family: var(--font-display);
+  font-size: var(--text-2xs);
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--ink4);
+  margin-bottom: var(--s10);
+}
+.method-section p {
+  font-size: var(--text-sm);
+  color: var(--ink3);
+  line-height: 1.65;
+  margin-bottom: 8px;
+}
+.method-section p:last-child { margin-bottom: 0; }
+.method-section strong { color: var(--ink2); font-weight: 600; }
+.method-section em { color: var(--ink3); font-style: italic; }
+.method-section code {
+  font-family: 'IBM Plex Mono', 'Menlo', monospace;
+  font-size: var(--text-xs);
+  background: var(--rule2);
+  color: var(--ink2);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+/* Definition list for column defs */
+.method-dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px 12px;
+  margin: 0;
+}
+.method-dl dt {
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--ink2);
+  white-space: nowrap;
+  padding-top: 1px;
+}
+.method-dl dd {
+  font-size: var(--text-sm);
+  color: var(--ink3);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Vertical dividers between grid columns on desktop */
+@media (min-width: 681px) {
+  .method-section + .method-section {
+    border-left: 1px solid var(--rule2);
+    padding-left: 32px;
+  }
+}
+
+/* Dark mode */
+html.dark .method-disclosure {
+  background: var(--paper);
+  border-color: var(--rule);
+}
+html.dark .method-summary:hover { background: var(--rule2); }
+html.dark .method-disclosure[open] .method-summary { border-bottom-color: var(--rule); }
+html.dark .method-section code { background: var(--rule2); color: var(--ink); }
+html.dark .method-section + .method-section { border-color: var(--rule); }
+
+/* Print — expand disclosure fully, no interactive chrome */
+@media print {
+  .method-disclosure { border: 1px solid #ddd !important; break-inside: avoid !important; }
+  .method-summary    { display: none !important; }
+  .method-body       { display: block !important; padding: 8px 12px !important; }
+  .method-grid       { grid-template-columns: repeat(3,1fr) !important; gap: 0 16px !important; }
+  .method-section-title { font-size: 8px !important; }
+  .method-section p, .method-dl dd { font-size: 9px !important; }
+  .method-dl dt { font-size: 9px !important; }
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   EXTRACTED INLINE STYLES — replaces style="" attrs
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+/* Hero card value+EUR wrapper — stable height prevents CLS */
+.hero-value-wrap {
+  min-height: 54px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--s6);
+}
+
+/* Sync bar wrap */
+.sync-bar-wrap {
+  background: rgba(0,0,0,.18);
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+
+/* Progress caption icon color variants */
+.pci-blue  { background: var(--blue-bg);  color: var(--blue); }
+.pci-green { background: var(--green-bg); color: var(--green); }
+
+/* Unpaid dash cell — italic placeholder, smaller than number */
+.mc-dash {
+  font-size: var(--text-lg);
+  font-style: italic;
+  opacity: .5;
+}
+
+/* Dark mode tints for new tokens */
+html.dark .hero-card.hc-received    .hero-eur { color: var(--green); }
+html.dark .hero-card.hc-outstanding .hero-eur { color: var(--red); }
 </style>
   <!-- Firebase SDK (compat v9 — works in plain HTML, no bundler needed) -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -1589,7 +2394,7 @@ function toggleTheme() {
 })();
   </script>
 </head>
-<body>
+<body class="is-loading">
 <!-- ══ FIXED THEME TOGGLE (top-right, always visible) ══ -->
 <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()"
   aria-label="Toggle dark mode" role="switch" aria-checked="false">
@@ -1602,11 +2407,11 @@ function toggleTheme() {
 <a href="#month-list-anchor" class="skip-link">Skip to month list</a>
 
 <!-- ══ MASTHEAD ══════════════════════════════════════════ -->
-<div class="masthead">
+<header class="masthead" role="banner">
   <div class="masthead-inner">
     <div class="masthead-left">
       <div class="mast-eyebrow">Joint Loan Tracker · Feb 2026 – Dec 2033</div>
-      <div class="mast-title">DE <em>×</em> IN<br>Repayment</div>
+      <h1 class="mast-title">DE <em>×</em> IN<br>Repayment</h1>
       <div class="mast-sub">€20,000 · 96 months · Friend's share 41.25%</div>
     </div>
     <div class="mast-flags">
@@ -1618,99 +2423,310 @@ function toggleTheme() {
       </button>
     </div>
   </div>
-</div>
+</header>
 
 <!-- ══ RATE PANEL ══════════════════════════════════════════ -->
 <div class="rate-panel">
-  <div class="sync-bar-wrap" style="background:rgba(0,0,0,.18);border-bottom:1px solid rgba(255,255,255,.06);">
+  <div class="sync-bar-wrap">
     <div class="sync-bar">
       <div class="sync-dot connecting" id="syncDot"></div>
-      <span class="sync-text" id="syncText">Connecting to Firebase…</span>
+      <span class="sync-text" id="syncText" aria-live="polite" aria-atomic="true">Connecting to Firebase…</span>
     </div>
   </div>
   <div class="rate-panel-inner" id="ratePanelInner">
-    <!-- Populated by JS -->
+    <!-- Skeleton shown until JS populates real rate cells -->
+    <div class="rp-skel-wrap skel-section" id="rateSkel">
+      <div class="rp-skel-cell">
+        <span class="skel skel-rate-sm"></span>
+        <span class="skel skel-rate"></span>
+        <span class="skel skel-rate-sm" style="width:96px"></span>
+      </div>
+      <div class="rp-skel-cell">
+        <span class="skel skel-rate-sm" style="width:48px"></span>
+        <span class="skel skel-rate" style="width:64px"></span>
+        <span class="skel skel-rate-sm" style="width:80px"></span>
+      </div>
+      <div class="rp-skel-cell">
+        <span class="skel skel-rate-sm" style="width:56px"></span>
+        <span class="skel skel-rate" style="width:72px"></span>
+        <span class="skel skel-rate-sm" style="width:88px"></span>
+      </div>
+    </div>
+    <!-- Real content injected by renderRatePanel() -->
   </div>
 </div>
 
 <!-- ══ PAGE BODY ══════════════════════════════════════════ -->
-<main class="wrap" role="main" aria-label="Loan repayment dashboard">
+<main class="wrap" aria-label="Loan repayment dashboard">
 
-  <!-- KPI ROW -->
+  <!-- SUMMARY — TIER 1: Hero pair + TIER 2: Meta strip -->
   <div class="section">
-    <div class="kpi-grid">
-      <div class="kpi k-blue">
-        <div class="kpi-label">Monthly EMI</div>
-        <div class="kpi-value" id="kpiEmiInr">₹—</div>
-        <div class="kpi-eur">€268.91</div>
-        <div class="kpi-sub">Full loan instalment</div>
+    <div class="section-head"><span class="section-head-label">Summary</span><span class="section-head-line"></span></div>
+
+    <!-- Tier 1: Two hero cards — the numbers that matter most -->
+    <div class="summary-hero">
+
+      <!-- Total Received -->
+      <div class="hero-card hc-received">
+        <div class="hero-label">Total Received</div>
+        <div class="hero-value-wrap">
+          <span class="skel skel-twin skel-num-lg"></span>
+          <span class="skel skel-twin skel-sub"></span>
+          <div class="val-real">
+            <div class="hero-value" id="kpiReceivedInr">₹0</div>
+            <div class="hero-eur" id="kpiReceived">€0.00</div>
+          </div>
+        </div>
+        <div class="hero-progress">
+          <div class="hero-progress-meta">
+            <span class="hero-progress-label" id="kpiReceivedSub">from friend</span>
+            <span class="val-real hero-progress-pct" id="heroCollPct">0%</span>
+            <span class="skel skel-twin skel-label" style="width:32px"></span>
+          </div>
+          <div class="hero-track">
+            <div class="hero-fill" id="heroFillColl" style="width:0%"></div>
+          </div>
+        </div>
       </div>
-      <div class="kpi k-orange">
-        <div class="kpi-label">Friend's Share</div>
-        <div class="kpi-value" id="kpiFriendInr">₹—</div>
-        <div class="kpi-eur">€110.93</div>
-        <div class="kpi-sub">41.25% per month</div>
+
+      <!-- Outstanding -->
+      <div class="hero-card hc-outstanding">
+        <div class="hero-label">Outstanding</div>
+        <div class="hero-value-wrap">
+          <span class="skel skel-twin skel-num-lg"></span>
+          <span class="skel skel-twin skel-sub"></span>
+          <div class="val-real">
+            <div class="hero-value" id="kpiOutstandingInr">₹0</div>
+            <div class="hero-eur" id="kpiOutstanding">€0.00</div>
+          </div>
+        </div>
+        <div class="hero-progress">
+          <div class="hero-progress-meta">
+            <span class="hero-progress-label" id="kpiOutstandingSub">owed by friend</span>
+            <span class="val-real hero-progress-pct" id="heroElPct">0%</span>
+            <span class="skel skel-twin skel-label" style="width:32px"></span>
+          </div>
+          <div class="hero-track">
+            <div class="hero-fill" id="heroFillEl" style="width:0%;background:linear-gradient(90deg,var(--navy3),var(--navy))"></div>
+          </div>
+        </div>
       </div>
-      <div class="kpi k-green">
-        <div class="kpi-label">Total Received</div>
-        <div class="kpi-value" id="kpiReceivedInr">₹—</div>
-        <div class="kpi-eur" id="kpiReceived">—</div>
-        <div class="kpi-sub" id="kpiReceivedSub">from friend</div>
+
+    </div><!-- /summary-hero -->
+
+    <!-- Tier 2: Three secondary meta cards -->
+    <div class="summary-meta">
+
+      <div class="meta-card mc-emi">
+        <div class="meta-dot"></div>
+        <div class="meta-body">
+          <div class="meta-label">Monthly EMI</div>
+          <span class="skel skel-twin skel-num-md"></span>
+          <div class="val-real meta-value" id="kpiEmiInr">₹—</div>
+          <div class="meta-sub">€268.91 · full instalment</div>
+        </div>
       </div>
-      <div class="kpi k-red">
-        <div class="kpi-label">Outstanding</div>
-        <div class="kpi-value" id="kpiOutstandingInr">₹—</div>
-        <div class="kpi-eur" id="kpiOutstanding">—</div>
-        <div class="kpi-sub" id="kpiOutstandingSub">owed by friend</div>
+
+      <div class="meta-card mc-share">
+        <div class="meta-dot"></div>
+        <div class="meta-body">
+          <div class="meta-label">Friend's Share</div>
+          <span class="skel skel-twin skel-num-md"></span>
+          <div class="val-real meta-value" id="kpiFriendInr">₹—</div>
+          <div class="meta-sub">€110.93 · 41.25% per month</div>
+        </div>
       </div>
-      <div class="kpi k-navy">
-        <div class="kpi-label">Months Left</div>
-        <div class="kpi-value" id="kpiRemain">—</div>
-        <div class="kpi-inr" id="kpiRemainInr">₹—</div>
-        <div class="kpi-sub" id="kpiRemainSub">in loan period</div>
+
+      <div class="meta-card mc-months">
+        <div class="meta-dot"></div>
+        <div class="meta-body">
+          <div class="meta-label">Months Left</div>
+          <span class="skel skel-twin skel-num-md" style="width:60px"></span>
+          <div class="val-real meta-value" id="kpiRemain">—</div>
+          <div class="meta-sub" id="kpiRemainSub">in loan period · <span id="kpiRemainInr">₹—</span> remaining</div>
+        </div>
       </div>
-    </div>
+
+    </div><!-- /summary-meta -->
   </div>
 
   <!-- PROGRESS -->
   <div class="section">
-    <div class="progress-card">
-      <div class="prog-title">Repayment Progress</div>
-      <div class="prog-row">
-        <div class="prog-meta"><span class="prog-name">Loan elapsed</span><span class="prog-pct" id="pp1">0%</span></div>
-        <div class="prog-track"><div class="prog-fill" id="pf1" style="width:0%;background:linear-gradient(90deg,var(--navy3),var(--navy))"></div></div>
+    <div class="section-head"><span class="section-head-label">Repayment Progress</span><span class="section-head-line"></span></div>
+    <div class="progress-card" role="group" aria-label="Repayment progress overview">
+
+      <!-- Block 1: Loan elapsed -->
+      <div class="prog-block">
+        <div class="prog-header">
+          <span class="prog-label">Time elapsed</span>
+          <span class="prog-pct" id="pp1" aria-live="polite">0<span class="prog-pct-unit">%</span></span>
+        </div>
+        <div class="prog-track-wrap">
+          <div class="prog-track" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Loan time elapsed" id="pt1">
+            <div class="prog-fill" id="pf1" style="width:0%; background: linear-gradient(90deg, var(--navy3), var(--navy));"></div>
+          </div>
+          <div class="prog-ticks" aria-hidden="true">
+            <div class="prog-tick" style="left:25%">
+              <span class="prog-tick-label">25%</span>
+            </div>
+            <div class="prog-tick" style="left:50%">
+              <span class="prog-tick-label">50%</span>
+            </div>
+            <div class="prog-tick" style="left:75%">
+              <span class="prog-tick-label">75%</span>
+            </div>
+          </div>
+        </div>
+        <div class="prog-caption">
+          <div class="prog-caption-icon pci-blue">⏱</div>
+          <div class="prog-caption-text" id="pc1">
+            <strong>—</strong> of 95 months complete
+          </div>
+        </div>
       </div>
-      <div class="prog-row">
-        <div class="prog-meta"><span class="prog-name">Amount collected vs. due so far</span><span class="prog-pct" id="pp2">0%</span></div>
-        <div class="prog-track"><div class="prog-fill" id="pf2" style="width:0%;background:linear-gradient(90deg,#22c55e,var(--green))"></div></div>
+
+      <!-- Block 2: Amount collected -->
+      <div class="prog-block">
+        <div class="prog-header">
+          <span class="prog-label">Amount collected</span>
+          <span class="prog-pct" id="pp2" aria-live="polite">0<span class="prog-pct-unit">%</span></span>
+        </div>
+        <div class="prog-track-wrap">
+          <div class="prog-track" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Amount collected vs due" id="pt2">
+            <div class="prog-fill" id="pf2" style="width:0%; background: linear-gradient(90deg, #16a34a, var(--green));"></div>
+          </div>
+          <div class="prog-ticks" aria-hidden="true">
+            <div class="prog-tick" style="left:25%">
+              <span class="prog-tick-label">25%</span>
+            </div>
+            <div class="prog-tick" style="left:50%">
+              <span class="prog-tick-label">50%</span>
+            </div>
+            <div class="prog-tick" style="left:75%">
+              <span class="prog-tick-label">75%</span>
+            </div>
+          </div>
+        </div>
+        <div class="prog-caption">
+          <div class="prog-caption-icon pci-green">₹</div>
+          <div class="prog-caption-text" id="pc2">
+            <strong>—</strong> received of amount due so far
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TOOLBAR + MONTH LIST -->
+  <div class="section">
+    <div class="section-head"><span class="section-head-label">Monthly Payments</span><span class="section-head-line"></span></div>
+    <div class="toolbar">
+      <button class="t-btn active" onclick="setFilter('all',this)" aria-label="Show all months" aria-pressed="true">All</button>
+      <button class="t-btn" onclick="setFilter('paid',this)" aria-label="Show paid months" aria-pressed="false">✓ Paid</button>
+      <button class="t-btn" onclick="setFilter('partial',this)" aria-label="Show partially paid months" aria-pressed="false">◑ Partial</button>
+      <button class="t-btn" onclick="setFilter('unpaid',this)" aria-label="Show unpaid months" aria-pressed="false">✗ Unpaid</button>
+      <button class="t-btn" onclick="setFilter('upcoming',this)" aria-label="Show upcoming months" aria-pressed="false">Upcoming</button>
+      <span class="t-count" id="tCount" aria-live="polite" aria-atomic="true"></span>
+    </div>
+    <div class="mt-sm">
+      <div class="month-list" id="monthList" aria-label="Monthly repayment list" role="list"></div>
+
+      <!-- Month list skeleton — 6 placeholder rows shown while Firebase loads -->
+      <div class="month-skel-list skel-section" id="monthSkel" aria-hidden="true">
+        <div class="month-skel-row">
+          <div class="month-skel-num"><span class="skel skel-label" style="width:20px"></span></div>
+          <div class="month-skel-info"><span class="skel" style="height:18px;width:90px;border-radius:5px"></span><span class="skel skel-label" style="width:60px"></span></div>
+          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel" style="height:18px;width:88px;border-radius:5px"></span><span class="skel skel-label" style="width:52px"></span></div>
+          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel" style="height:18px;width:72px;border-radius:5px"></span></div>
+          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel" style="height:18px;width:88px;border-radius:5px"></span></div>
+          <div class="month-skel-pill"><span class="skel skel-pill"></span></div>
+        </div>
+        <div class="month-skel-row">
+          <div class="month-skel-num"><span class="skel skel-label" style="width:20px"></span></div>
+          <div class="month-skel-info"><span class="skel" style="height:18px;width:76px;border-radius:5px"></span><span class="skel skel-label" style="width:52px"></span></div>
+          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel" style="height:18px;width:88px;border-radius:5px"></span><span class="skel skel-label" style="width:48px"></span></div>
+          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel" style="height:18px;width:80px;border-radius:5px"></span></div>
+          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel" style="height:18px;width:96px;border-radius:5px"></span></div>
+          <div class="month-skel-pill"><span class="skel skel-pill"></span></div>
+        </div>
+        <div class="month-skel-row">
+          <div class="month-skel-num"><span class="skel skel-label" style="width:20px"></span></div>
+          <div class="month-skel-info"><span class="skel" style="height:18px;width:84px;border-radius:5px"></span><span class="skel skel-label" style="width:64px"></span></div>
+          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel" style="height:18px;width:88px;border-radius:5px"></span><span class="skel skel-label" style="width:56px"></span></div>
+          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel" style="height:18px;width:72px;border-radius:5px"></span></div>
+          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel" style="height:18px;width:88px;border-radius:5px"></span></div>
+          <div class="month-skel-pill"><span class="skel skel-pill" style="width:80px"></span></div>
+        </div>
+        <div class="month-skel-row">
+          <div class="month-skel-num"><span class="skel skel-label" style="width:20px"></span></div>
+          <div class="month-skel-info"><span class="skel" style="height:18px;width:68px;border-radius:5px"></span><span class="skel skel-label" style="width:48px"></span></div>
+          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel" style="height:18px;width:88px;border-radius:5px"></span><span class="skel skel-label" style="width:60px"></span></div>
+          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel" style="height:18px;width:88px;border-radius:5px"></span></div>
+          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel" style="height:18px;width:72px;border-radius:5px"></span></div>
+          <div class="month-skel-pill"><span class="skel skel-pill"></span></div>
+        </div>
+        <div class="month-skel-row">
+          <div class="month-skel-num"><span class="skel skel-label" style="width:20px"></span></div>
+          <div class="month-skel-info"><span class="skel" style="height:18px;width:80px;border-radius:5px"></span><span class="skel skel-label" style="width:56px"></span></div>
+          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel" style="height:18px;width:88px;border-radius:5px"></span><span class="skel skel-label" style="width:44px"></span></div>
+          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel" style="height:18px;width:64px;border-radius:5px"></span></div>
+          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel" style="height:18px;width:96px;border-radius:5px"></span></div>
+          <div class="month-skel-pill"><span class="skel skel-pill" style="width:96px"></span></div>
+        </div>
+        <div class="month-skel-row">
+          <div class="month-skel-num"><span class="skel skel-label" style="width:20px"></span></div>
+          <div class="month-skel-info"><span class="skel" style="height:18px;width:72px;border-radius:5px"></span><span class="skel skel-label" style="width:52px"></span></div>
+          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel" style="height:18px;width:88px;border-radius:5px"></span><span class="skel skel-label" style="width:52px"></span></div>
+          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel" style="height:18px;width:80px;border-radius:5px"></span></div>
+          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel" style="height:18px;width:88px;border-radius:5px"></span></div>
+          <div class="month-skel-pill"><span class="skel skel-pill"></span></div>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- TOOLBAR -->
-  <div class="section toolbar">
-    <button class="t-btn active" onclick="setFilter('all',this)" aria-label="Show all months">All</button>
-    <button class="t-btn" onclick="setFilter('paid',this)">✓ Paid</button>
-    <button class="t-btn" onclick="setFilter('partial',this)">◑ Partial</button>
-    <button class="t-btn" onclick="setFilter('unpaid',this)">✗ Unpaid</button>
-    <button class="t-btn" onclick="setFilter('upcoming',this)">Upcoming</button>
-    <span class="t-count" id="tCount"></span>
-  </div>
+      <div class="load-error" role="alert">
+        ⚠ Could not connect to Firebase. Showing empty state — check your connection and refresh.
+      </div>
 
-  <!-- MONTH LIST -->
-  <div class="mt-sm">
-    <div class="month-list" id="monthList" aria-label="Monthly repayment list" role="list"></div>
-  </div>
-
-  <!-- FOOTNOTE -->
-  <div class="footnote mt-lg">
-    <strong>Rate methodology:</strong> Every month uses the EUR→INR mid-market rate recorded on the <strong>10th of that specific month</strong>.
-    Sources: <span class="fn-source">poundsterlinglive.com</span> and <span class="fn-source">Xe.com</span>.
-    Future months show <em>Rate TBD</em> — they will be hardcoded once each 10th passes.
-    &nbsp;·&nbsp; <strong>Net Remaining</strong> = amount due − amount paid for that month.
-    &nbsp;·&nbsp; <strong>Total Remaining</strong> = running total outstanding from Feb 2026 through that row.
-    &nbsp;·&nbsp; All payment data syncs in real-time via Firebase. Both you and your friend see live updates.
-  </div>
+  <!-- METHODOLOGY DISCLOSURE -->
+  <details class="method-disclosure mt-lg" id="methodDisclosure">
+    <summary class="method-summary" aria-expanded="false">
+      <span class="method-summary-icon" aria-hidden="true">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      </span>
+      <span class="method-summary-text">How rates &amp; columns are calculated</span>
+      <span class="method-summary-chevron" aria-hidden="true">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </span>
+    </summary>
+    <div class="method-body">
+      <div class="method-grid">
+        <div class="method-section">
+          <div class="method-section-title">Exchange rates</div>
+          <p>Each month uses the EUR→INR mid-market rate recorded on the <strong>10th of that specific month</strong>. Rates are hardcoded — no live API is used, so values are stable and auditable.</p>
+          <p>Sources: <span class="fn-source">poundsterlinglive.com</span> (Feb 2026) and <span class="fn-source">Xe.com</span> (Mar 2026 onwards). Future months show <em>Rate TBD</em> until the 10th of that month passes.</p>
+        </div>
+        <div class="method-section">
+          <div class="method-section-title">Column definitions</div>
+          <dl class="method-dl">
+            <dt>Net Remaining</dt>
+            <dd>Amount due minus amount paid for that specific month</dd>
+            <dt>Total Remaining</dt>
+            <dd>Running total of all outstanding amounts from Feb 2026 through that row</dd>
+            <dt>Friend's Share</dt>
+            <dd>41.25% of the €268.91 total monthly EMI = €110.93 per month</dd>
+          </dl>
+        </div>
+        <div class="method-section">
+          <div class="method-section-title">Data &amp; sync</div>
+          <p>All payment entries are stored in Firebase Realtime Database and sync live between both devices. When your friend logs a payment in India, your dashboard updates within seconds — no refresh needed.</p>
+          <p>The Firebase <code>apiKey</code> in the source is a project identifier, not a secret. Security is enforced by database rules that restrict access to the <code>loandata</code> path only.</p>
+        </div>
+      </div>
+    </div>
+  </details>
 
 </main><!-- /wrap -->
 
@@ -1828,11 +2844,14 @@ dbRef.on('value', function(snapshot) {
     fbReady = true;
     renderRatePanel();
     renderAll();
-        setSyncStatus('synced', 'Synced ✓');
+    /* Transition: hide skeletons, reveal real content */
+    document.body.classList.remove('is-loading');
+    document.body.classList.add('data-ready');
+    setSyncStatus('synced', 'Synced ✓');
   } else {
-    /* Subsequent updates — re-render to reflect the other person\'s changes */
+    /* Subsequent updates — re-render to reflect the other person's changes */
     renderAll();
-        setSyncStatus('synced', 'Updated ✓');
+    setSyncStatus('synced', 'Updated ✓');
   }
 }, function(error) {
   setSyncStatus('error', 'Firebase error: ' + error.message);
@@ -1841,7 +2860,9 @@ dbRef.on('value', function(snapshot) {
     fbReady = true;
     renderRatePanel();
     renderAll();
-      }
+    document.body.classList.remove('is-loading');
+    document.body.classList.add('data-ready', 'load-failed');
+  }
 });
 
 /* ══════════════════════════════════════════════════════
@@ -1937,6 +2958,8 @@ function buildCumulMap() {
    RATE PANEL
 ══════════════════════════════════════════════════════ */
 function renderRatePanel() {
+  var rateSkel = document.getElementById('rateSkel');
+  if (rateSkel) rateSkel.style.display = 'none';
   var t = today();
   var ri = getRate(t.y, t.m);
   var panel = document.getElementById('ratePanelInner');
@@ -1956,11 +2979,6 @@ function renderRatePanel() {
       '<div class="rp-label">Friend pays this month</div>' +
       '<div class="rp-value">' + friendInr + '</div>' +
       '<div class="rp-sub">= ' + fmt_eur(FRIEND_EUR) + ' \u00D7 rate</div>' +
-    '</div>' +
-    '<div class="rp-cell">' +
-      '<div class="rp-label">Rate methodology</div>' +
-      '<div class="rp-value" style="font-size:15px;font-family:\'IBM Plex Sans\',sans-serif;font-weight:600;color:rgba(255,255,255,.75)">10th of each month</div>' +
-      '<div class="rp-sub">Static \u00B7 No live fetching</div>' +
     '</div>';
 }
 
@@ -2030,9 +3048,44 @@ function renderStats() {
   setTimeout(function() {
     document.getElementById('pf1').style.width = elPct + '%';
     document.getElementById('pf2').style.width = collPct + '%';
+    /* Hero card mini-bars */
+    var hfe = document.getElementById('heroFillEl');
+    var hfc = document.getElementById('heroFillColl');
+    if (hfe) hfe.style.width = elPct + '%';
+    if (hfc) hfc.style.width = collPct + '%';
+    /* aria-valuenow for screen readers */
+    var pt1 = document.getElementById('pt1');
+    var pt2 = document.getElementById('pt2');
+    if (pt1) pt1.setAttribute('aria-valuenow', elPct);
+    if (pt2) pt2.setAttribute('aria-valuenow', collPct);
   }, 150);
-  document.getElementById('pp1').textContent = elPct + '%';
-  document.getElementById('pp2').textContent = collPct + '%';
+
+  /* Percentage display — integer + decimal split */
+  function setPct(id, val) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    var parts = String(val).split('.');
+    el.innerHTML = parts[0] + '<span class="prog-pct-unit">.' + (parts[1] || '0') + '%</span>';
+  }
+  setPct('pp1', elPct);
+  setPct('pp2', collPct);
+  /* Hero card pct text (plain, compact) */
+  var hep = document.getElementById('heroElPct');
+  var hcp = document.getElementById('heroCollPct');
+  if (hep) hep.textContent = elPct + '%';
+  if (hcp) hcp.textContent = collPct + '%';
+
+  /* Caption text */
+  var pc1 = document.getElementById('pc1');
+  var pc2 = document.getElementById('pc2');
+  if (pc1) pc1.innerHTML = '<strong>' + elapsed + '</strong> of ' + TOTAL_MONTHS + ' months complete';
+  if (pc2) {
+    if (totalDue > 0) {
+      pc2.innerHTML = '<strong>' + fmt_eur(totalPaid) + '</strong> received of <strong>' + fmt_eur(totalDue) + '</strong> due so far';
+    } else {
+      pc2.innerHTML = 'No payments due yet';
+    }
+  }
 
   /* Update sticky summary bar */
   var sbDue = document.getElementById('sbDue');
@@ -2053,8 +3106,12 @@ var activeFilter = 'all';
 function setFilter(f, btn) {
   activeFilter = f;
   var btns = document.querySelectorAll('.t-btn');
-  for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
+  for (var i = 0; i < btns.length; i++) {
+    btns[i].classList.remove('active');
+    btns[i].setAttribute('aria-pressed', 'false');
+  }
   btn.classList.add('active');
+  btn.setAttribute('aria-pressed', 'true');
   renderAll();
 }
 
@@ -2140,7 +3197,7 @@ function buildCard(mo, i, cmap) {
   var paidInr = (ri && paidEur > 0) ? fmt_inr(paidEur * ri.rate) : (paidEur > 0 ? '\u20B9\u2014' : '\u2014');
   var paidHTML;
   if (upco) {
-    paidHTML = '<div class="mc-cell col-paid"><div class="mc-cell-label">Paid</div><div class="mc-primary c-muted" style="font-size:14px;font-style:italic">\u2014</div></div>';
+    paidHTML = '<div class="mc-cell col-paid"><div class="mc-cell-label">Paid</div><div class="mc-primary c-muted mc-dash">\u2014</div></div>';
   } else {
     paidHTML =
       '<div class="mc-cell col-paid">' +
@@ -2195,12 +3252,13 @@ function buildCard(mo, i, cmap) {
     '</div>';
 
   /* STATUS PILL */
+  var monthLabel = FULL_NAMES[m - 1] + ' ' + y;
   var pill;
-  if      (st === 'paid')     pill = '<button class="status-pill sp-paid"    onclick="togglePaid(\'' + k + '\')">\u2713 Paid</button>';
-  else if (st === 'partial')  pill = '<button class="status-pill sp-partial" onclick="togglePaid(\'' + k + '\')">&#9681; Partial</button>';
-  else if (st === 'current')  pill = '<button class="status-pill sp-current" onclick="togglePaid(\'' + k + '\')">&#11044; Pending</button>';
-  else if (st === 'unpaid')   pill = '<button class="status-pill sp-unpaid"  onclick="togglePaid(\'' + k + '\')">\u2717 Missed</button>';
-  else                        pill = '<button class="status-pill sp-upcoming">Upcoming</button>';
+  if      (st === 'paid')     pill = '<button class="status-pill sp-paid"    onclick="togglePaid(\'' + k + '\')" aria-label="' + monthLabel + ': Paid — click to change" aria-pressed="true"><span aria-hidden="true">✓</span> Paid</button>';
+  else if (st === 'partial')  pill = '<button class="status-pill sp-partial" onclick="togglePaid(\'' + k + '\')" aria-label="' + monthLabel + ': Partially paid — click to change" aria-pressed="mixed"><span aria-hidden="true">◑</span> Partial</button>';
+  else if (st === 'current')  pill = '<button class="status-pill sp-current" onclick="togglePaid(\'' + k + '\')" aria-label="' + monthLabel + ': Payment pending — click to mark paid" aria-pressed="false"><span aria-hidden="true">●</span> Pending</button>';
+  else if (st === 'unpaid')   pill = '<button class="status-pill sp-unpaid"  onclick="togglePaid(\'' + k + '\')" aria-label="' + monthLabel + ': Missed payment — click to mark paid" aria-pressed="false"><span aria-hidden="true">✗</span> Missed</button>';
+  else                        pill = '<span class="status-pill sp-upcoming" role="status" aria-label="' + monthLabel + ': Upcoming — not yet due">Upcoming</span>';
 
   /* DRAWER */
   var isOpen    = !!openDrawers[k];
@@ -2293,10 +3351,10 @@ function buildCard(mo, i, cmap) {
   }
 
   var logBtn = !upco
-    ? '<button class="mc-log-btn" onclick="toggleDrawer(\'' + k + '\')">' + toggleTxt + '</button>'
+    ? '<button class="mc-log-btn" onclick="toggleDrawer(\'' + k + '\')" aria-expanded="' + (isOpen ? 'true' : 'false') + '" aria-controls="drawer-' + k + '" aria-label="' + (isOpen ? 'Close payment drawer for ' : 'Log payment for ') + monthLabel + '">' + toggleTxt + '</button>'
     : '';
 
-  var nowBadge = curr ? '<span class="mc-badge">now</span>' : '';
+  var nowBadge = curr ? '<span class="mc-badge" aria-label="current month">now</span>' : '';
 
   var drawerRateNote = ri
     ? ('Rate: \u20B9' + ri.rate.toFixed(4) + '/\u20AC (' + ri.src + ', 10 ' + SHORT_NAMES[m - 1] + ' ' + y + ')')
@@ -2311,7 +3369,7 @@ function buildCard(mo, i, cmap) {
   var progressBar = upco ? '' : ('<div class="card-progress"><div class="card-progress-fill" style="width:' + pctPaid + '%;background:' + progColor + ';"></div></div>');
 
   return (
-    '<div class="mcard ' + mc + ' ' + dimClass + '" id="card-' + k + '" role="listitem" style="' + delay + '">' +
+    '<div class="mcard ' + mc + ' ' + dimClass + '" id="card-' + k + '" role="listitem" aria-label="' + monthLabel + '" style="' + delay + '">' +
       '<div class="mcard-body">' +
         '<div class="mc-num">' + idx + '</div>' +
         '<div class="mc-info">' +
@@ -2329,7 +3387,7 @@ function buildCard(mo, i, cmap) {
         '<div class="mc-status">' + pill + '</div>' +
       '</div>' +
       progressBar +
-      '<div class="' + drawerClass + '" id="drawer-' + k + '">' +
+      '<div class="' + drawerClass + '" id="drawer-' + k + '" role="region" aria-label="Payment details for ' + monthLabel + '">' +
         '<div class="drawer-pad">' +
           '<div class="drawer-head">Log payment \u2014 ' + FULL_NAMES[m - 1] + ' ' + y + '<span class="drawer-rate-note">' + drawerRateNote + '</span></div>' +
           '<div class="pay-row">' +
@@ -2342,8 +3400,8 @@ function buildCard(mo, i, cmap) {
             '</div>' +
             '<div class="pay-equiv" id="eq-' + k + '">' + equivTxt + '</div>' +
             '<div class="pay-btns">' +
-              '<button class="pay-save"  onclick="savePayment(\'' + k + '\',' + (ri ? ri.rate : 0) + ')">Save</button>' +
-              '<button class="pay-clear" onclick="clearPayment(\'' + k + '\')">Clear</button>' +
+              '<button class="pay-save"  onclick="savePayment(\'' + k + '\',' + (ri ? ri.rate : 0) + ')" aria-label="Save payment for ' + monthLabel + '">Save</button>' +
+              '<button class="pay-clear" onclick="clearPayment(\'' + k + '\')">Clear all entries</button>' +
             '</div>' +
           '</div>' +
           bkdHTML +
@@ -2571,25 +3629,46 @@ function exportPDF() {
 </script>
 
 <!-- ══ STICKY SUMMARY BAR ══════════════════════════════ -->
-<div class="sticky-bar" id="stickyBar" role="complementary" aria-label="Loan summary">
+<div class="sticky-bar" id="stickyBar" role="complementary" aria-label="Loan summary totals">
   <div class="sb-inner">
-    <div class="sb-item">
-      <span class="sb-label">Total Due</span>
-      <span class="sb-value" id="sbDue">—</span>
+    <div class="sb-item" aria-label="Total due to date">
+      <span class="sb-label" aria-hidden="true">Total Due</span>
+      <span class="sb-value" id="sbDue" aria-live="polite">—</span>
     </div>
-    <div class="sb-item">
-      <span class="sb-label">Received</span>
-      <span class="sb-value sb-green" id="sbReceived">—</span>
+    <div class="sb-item" aria-label="Total received from friend">
+      <span class="sb-label" aria-hidden="true">Received</span>
+      <span class="sb-value sb-green" id="sbReceived" aria-live="polite">—</span>
     </div>
-    <div class="sb-item">
-      <span class="sb-label">Outstanding</span>
-      <span class="sb-value sb-red" id="sbOutstanding">—</span>
+    <div class="sb-item" aria-label="Outstanding balance">
+      <span class="sb-label" aria-hidden="true">Outstanding</span>
+      <span class="sb-value sb-red" id="sbOutstanding" aria-live="polite">—</span>
     </div>
-    <div class="sb-item">
-      <span class="sb-label">Months Left</span>
-      <span class="sb-value sb-amber" id="sbMonths">—</span>
+    <div class="sb-item" aria-label="Months remaining in loan">
+      <span class="sb-label" aria-hidden="true">Months Left</span>
+      <span class="sb-value sb-amber" id="sbMonths" aria-live="polite">—</span>
     </div>
   </div>
 </div>
+
+<script>
+/* ══════════════════════════════════════════════════════
+   METHODOLOGY DISCLOSURE — sync aria-expanded
+   <details> toggles natively but doesn't set aria-expanded
+   on the <summary>. We patch this for screen readers.
+══════════════════════════════════════════════════════ */
+(function() {
+  var disc = document.getElementById('methodDisclosure');
+  if (!disc) return;
+  var summ = disc.querySelector('.method-summary');
+  if (!summ) return;
+
+  function syncAria() {
+    summ.setAttribute('aria-expanded', disc.open ? 'true' : 'false');
+  }
+  disc.addEventListener('toggle', syncAria);
+  syncAria(); /* initial state */
+})();
+</script>
+
 </body>
 </html>
