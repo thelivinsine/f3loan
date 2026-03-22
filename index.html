@@ -4,62 +4,76 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LoanSplit — DE × IN</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    TOKENS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 :root {
-  --navy:    #0f1f38;
-  --navy2:   #162845;
-  --navy3:   #1e3460;
-  --cream:   #faf8f4;
-  --paper:   #ffffff;
-  --rule:    #e4ddd3;
-  --rule2:   #f0ebe4;
+  /* Core palette */
+  --navy:       #0c1c35;
+  --navy2:      #122240;
+  --navy3:      #1a3060;
+  --teal:       #0d9488;
+  --teal-light: #ccfbf1;
+  --cream:      #f6f3ee;
+  --paper:      #ffffff;
+  --rule:       #e0d7cd;
+  --rule2:      #ece5de;
 
-  --ink:     #1a1410;
-  --ink2:    #3d342a;
-  --ink3:    #7a6e64;
-  --ink4:    #b0a59b;
+  /* Ink scale */
+  --ink:  #18140e;
+  --ink2: #38302a;
+  --ink3: #746660;
+  --ink4: #aea09a;
 
-  --green:   #1a6b42;
-  --green-bg:#edf7f1;
-  --green-b: #b3ddc5;
+  /* Semantic */
+  --green:     #15683e;
+  --green-bg:  #eaf7f1;
+  --green-b:   #a5d8bc;
+  --red:       #b82424;
+  --red-bg:    #fdf0f0;
+  --red-b:     #ecacac;
+  --amber:     #a05400;
+  --amber-bg:  #fff7ec;
+  --amber-b:   #e9c688;
+  --purple:    #5318b0;
+  --purple-bg: #f2f0ff;
+  --purple-b:  #b9a5f5;
+  --blue:      #1a46cc;
+  --blue-bg:   #eef2ff;
 
-  --red:     #be2a2a;
-  --red-bg:  #fdf0f0;
-  --red-b:   #f0bcbc;
-
-  --amber:   #a85c00;
-  --amber-bg:#fff8ed;
-  --amber-b: #f0d4a0;
-
-  --purple:  #5b21b6;
-  --purple-bg:#f3f0ff;
-  --purple-b: #c4b5fd;
-
-  --blue:    #1d4ed8;
-  --blue-bg: #eff4ff;
-
+  /* Radii */
   --r-sm: 8px;
   --r-md: 12px;
   --r-lg: 16px;
+  --r-xl: 20px;
 
-  --shadow-sm: 0 1px 4px rgba(15,31,56,.07);
-  --shadow-md: 0 4px 16px rgba(15,31,56,.10);
-  --shadow-lg: 0 12px 40px rgba(15,31,56,.14);
+  /* Shadows — richer, layered */
+  --shadow-sm: 0 1px 3px rgba(12,28,53,.07), 0 1px 2px rgba(12,28,53,.04);
+  --shadow-md: 0 4px 16px rgba(12,28,53,.09), 0 2px 6px rgba(12,28,53,.05);
+  --shadow-lg: 0 12px 40px rgba(12,28,53,.13), 0 4px 12px rgba(12,28,53,.06);
+
+  /* Font stacks */
+  --font-display: 'Plus Jakarta Sans', 'IBM Plex Sans', sans-serif;
+  --font-body:    'IBM Plex Sans', sans-serif;
+  --font-num:     'Calibri', 'Plus Jakarta Sans', sans-serif;
+
+  /* Spacing */
+  --s4:  4px;  --s8:  8px;  --s12: 12px; --s16: 16px;
+  --s20: 20px; --s24: 24px; --s28: 28px; --s32: 32px;
 }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    RESET & BASE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
 
 body {
   background: var(--cream);
   color: var(--ink);
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: var(--font-body);
   font-size: 15px;
   line-height: 1.5;
   min-height: 100vh;
@@ -69,7 +83,7 @@ body {
 /* Subtle halftone background texture */
 body::after {
   content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
-  background-image: radial-gradient(circle, rgba(15,31,56,.035) 1px, transparent 1px);
+  background-image: radial-gradient(circle, rgba(12,28,53,.028) 1px, transparent 1px);
   background-size: 24px 24px;
 }
 
@@ -80,17 +94,17 @@ body::after {
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .masthead {
   background: var(--navy);
-  padding: 36px 0 32px;
+  padding: 40px 0 36px;
   position: relative;
   overflow: hidden;
 }
 .masthead::before {
   content:'';
   position:absolute; inset:0;
-  background: repeating-linear-gradient(
-    0deg, transparent, transparent 39px,
-    rgba(255,255,255,.04) 39px, rgba(255,255,255,.04) 40px
-  );
+  background:
+    radial-gradient(ellipse 80% 60% at 10% 110%, rgba(13,148,136,.18) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 80% at 90% -10%, rgba(26,70,204,.25) 0%, transparent 55%),
+    repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,.03) 39px, rgba(255,255,255,.03) 40px);
 }
 .masthead-inner {
   max-width: 1120px;
@@ -105,25 +119,26 @@ body::after {
 }
 .masthead-left {}
 .mast-eyebrow {
-  font-family: 'Calibri', sans-serif;
+  font-family: var(--font-display);
   font-size: 11px;
-  font-weight: 400;
-  letter-spacing: 2px;
+  font-weight: 600;
+  letter-spacing: 2.5px;
   text-transform: uppercase;
-  color: rgba(255,255,255,.45);
-  margin-bottom: 10px;
+  color: rgba(13,148,136,.85);
+  margin-bottom: 12px;
 }
 .mast-title {
-  font-family: 'Calibri', sans-serif;
-  font-size: clamp(32px,5vw,54px);
-  font-weight: 400;
+  font-family: var(--font-display);
+  font-size: clamp(30px,5vw,52px);
+  font-weight: 800;
   color: #fff;
   line-height: 1.05;
-  letter-spacing: -.5px;
+  letter-spacing: -.8px;
 }
 .mast-title em {
   font-style: italic;
-  color: rgba(255,255,255,.65);
+  font-weight: 400;
+  color: rgba(255,255,255,.60);
 }
 .mast-sub {
   margin-top: 10px;
@@ -138,14 +153,19 @@ body::after {
 }
 .flag-chip {
   display: flex; align-items: center; gap: 7px;
-  background: rgba(255,255,255,.1);
-  border: 1px solid rgba(255,255,255,.18);
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.14);
   border-radius: 99px;
-  padding: 7px 16px;
+  padding: 8px 18px;
   font-size: 13px;
   font-weight: 600;
-  color: rgba(255,255,255,.85);
-  backdrop-filter: blur(4px);
+  color: rgba(255,255,255,.80);
+  backdrop-filter: blur(6px);
+  transition: background .2s, border-color .2s;
+}
+.flag-chip:hover {
+  background: rgba(255,255,255,.14);
+  border-color: rgba(13,148,136,.6);
 }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -198,7 +218,7 @@ body::after {
   gap: 4px;
   font-size: 10px;
   font-family: 'Calibri', sans-serif;
-  color: #4ade80;
+  color: var(--teal);
   margin-top: 2px;
   letter-spacing: .3px;
 }
@@ -226,31 +246,45 @@ body::after {
 .kpi {
   background: var(--paper);
   border: 1px solid var(--rule);
-  border-radius: var(--r-md);
-  padding: 18px 16px 16px;
+  border-radius: var(--r-lg);
+  padding: 20px 18px 18px;
   position: relative;
   overflow: hidden;
   box-shadow: var(--shadow-sm);
-  transition: box-shadow .2s, transform .2s;
+  transition: box-shadow .25s, transform .25s, border-color .25s;
 }
-.kpi:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.kpi:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-3px);
+  border-color: var(--rule2);
+}
+/* Top accent bar */
 .kpi::after {
   content:''; position:absolute; top:0; left:0; right:0;
-  height: 3px; border-radius: var(--r-md) var(--r-md) 0 0;
+  height: 3px; border-radius: var(--r-lg) var(--r-lg) 0 0;
 }
-.kpi.k-blue::after   { background: var(--blue); }
-.kpi.k-orange::after { background: #d97706; }
-.kpi.k-green::after  { background: var(--green); }
-.kpi.k-red::after    { background: var(--red); }
-.kpi.k-navy::after   { background: var(--navy); }
+/* Left inner glow strip */
+.kpi::before {
+  content:''; position:absolute; top:0; left:0; bottom:0;
+  width: 3px; border-radius: var(--r-lg) 0 0 var(--r-lg);
+  opacity: 0;
+  transition: opacity .25s;
+}
+.kpi:hover::before { opacity: 1; }
+.kpi.k-blue::after,  .kpi.k-blue::before  { background: var(--blue); }
+.kpi.k-orange::after,.kpi.k-orange::before { background: #d97706; }
+.kpi.k-green::after, .kpi.k-green::before  { background: var(--green); }
+.kpi.k-red::after,   .kpi.k-red::before    { background: var(--red); }
+.kpi.k-navy::after,  .kpi.k-navy::before   { background: var(--navy); }
 
 .kpi-label {
-  font-family: 'Calibri', sans-serif;
+  font-family: var(--font-display);
   font-size: 9px;
-  letter-spacing: 1.8px;
+  font-weight: 700;
+  letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--ink4);
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 .kpi-value {
   font-family: 'Calibri', sans-serif;
@@ -291,17 +325,19 @@ body::after {
   box-shadow: var(--shadow-sm);
 }
 .prog-title {
-  font-family: 'Calibri', sans-serif;
-  font-size: 18px;
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
   color: var(--ink);
-  margin-bottom: 18px;
+  margin-bottom: 20px;
+  letter-spacing: -.2px;
 }
 .prog-row { margin-bottom: 14px; }
 .prog-row:last-child { margin-bottom: 0; }
 .prog-meta { display:flex; justify-content:space-between; margin-bottom:6px; }
 .prog-name { font-size: 12px; font-weight: 600; color: var(--ink2); }
 .prog-pct  { font-size: 12px; font-weight: 700; color: var(--ink); font-family:'Calibri',sans-serif; }
-.prog-track { height: 7px; background: var(--rule2); border-radius: 99px; overflow:hidden; }
+.prog-track { height: 8px; background: var(--rule2); border-radius: 99px; overflow:hidden; box-shadow: inset 0 1px 2px rgba(0,0,0,.06); }
 .prog-fill  { height: 100%; border-radius: 99px; transition: width 1.2s cubic-bezier(.16,1,.3,1); }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -314,24 +350,26 @@ body::after {
   flex-wrap: wrap;
 }
 .t-btn {
-  padding: 7px 16px;
+  padding: 8px 18px;
   border-radius: 99px;
   border: 1.5px solid var(--rule);
   background: var(--paper);
   color: var(--ink3);
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: var(--font-display);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: all .15s;
+  transition: all .18s;
   box-shadow: var(--shadow-sm);
+  min-height: 36px;
 }
-.t-btn:hover { border-color: var(--navy); color: var(--navy); }
+.t-btn:hover { border-color: var(--navy); color: var(--navy); background: var(--cream); }
+.t-btn:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
 .t-btn.active {
   background: var(--navy);
   border-color: var(--navy);
   color: #fff;
-  box-shadow: 0 3px 10px rgba(15,31,56,.2);
+  box-shadow: 0 3px 12px rgba(12,28,53,.22);
 }
 .t-count {
   margin-left: auto;
@@ -346,21 +384,25 @@ body::after {
 .month-list { display: flex; flex-direction: column; gap: 1px; }
 
 /* Group month cards with a shared border */
-.month-list { border: 1px solid var(--rule); border-radius: var(--r-lg); overflow: visible; box-shadow: var(--shadow-sm); }
+.month-list { border: 1px solid var(--rule); border-radius: var(--r-lg); overflow: visible; box-shadow: var(--shadow-md); }
 
 .mcard {
   background: var(--paper);
   border-bottom: 1px solid var(--rule2);
   overflow: visible;
-  transition: background .15s;
-  animation: slideIn .25s ease both;
+  transition: background .2s;
+  animation: slideIn .32s cubic-bezier(.16,1,.3,1) both;
 }
 .mcard:last-child { border-bottom: none; }
-@keyframes slideIn { from{opacity:0;transform:translateX(-6px)} to{opacity:1;transform:translateX(0)} }
+.mcard:hover { background: #fdfcfb; }
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 
-.mcard.mc-current  { background: var(--amber-bg); }
-.mcard.mc-paid     { background: #fcfffe; }
-.mcard.mc-partial  { background: var(--purple-bg); }
+.mcard.mc-current  { background: linear-gradient(135deg, #fffef9 0%, var(--amber-bg) 100%); }
+.mcard.mc-paid     { background: linear-gradient(135deg, #fafffc 0%, var(--green-bg) 70%); }
+.mcard.mc-partial  { background: linear-gradient(135deg, #fdfcff 0%, var(--purple-bg) 100%); }
 .mcard.mc-past     { }
 .mcard.mc-upcoming { background: var(--paper); }
 
@@ -413,48 +455,56 @@ body::after {
   min-width: 0;
 }
 .mc-month-name {
-  font-family: 'Calibri', sans-serif;
-  font-size: 20px;
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 700;
   color: var(--ink);
-  line-height: 1.15;
+  line-height: 1.2;
   white-space: nowrap;
+  letter-spacing: -.3px;
 }
 .mc-badge {
   display: inline-block;
   background: var(--amber);
   color: #fff;
   font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 1px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
   text-transform: uppercase;
-  padding: 2px 7px;
-  border-radius: 4px;
-  margin-left: 7px;
+  padding: 3px 8px;
+  border-radius: 5px;
+  margin-left: 8px;
   vertical-align: middle;
-  font-family: 'Calibri', sans-serif;
+  font-family: var(--font-display);
+  box-shadow: 0 1px 4px rgba(160,84,0,.35);
 }
 .mc-sub {
   font-size: 10px;
   color: var(--ink4);
   margin-top: 4px;
-  font-family: 'Calibri', sans-serif;
+  font-family: var(--font-display);
+  font-weight: 500;
   letter-spacing: .3px;
 }
 .mc-log-btn {
   display: inline-block;
-  margin-top: 4px;
+  margin-top: 5px;
   font-size: 11px;
-  font-weight: 600;
-  color: var(--blue);
+  font-weight: 700;
+  color: var(--teal);
   cursor: pointer;
   background: none;
   border: none;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: var(--font-display);
   padding: 0;
   text-decoration: underline;
-  text-underline-offset: 2px;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  transition: color .15s;
+  min-height: 24px;
 }
-.mc-log-btn:hover { color: var(--navy); }
+.mc-log-btn:hover { color: #0a7a70; }
+.mc-log-btn:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; border-radius: 2px; }
 
 /* Data cell */
 .mc-cell {
@@ -532,19 +582,21 @@ body::after {
   justify-content: flex-end;
 }
 .status-pill {
-  padding: 7px 14px;
+  padding: 8px 16px;
   border-radius: 99px;
   border: none;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: var(--font-display);
   font-size: 12px;
   font-weight: 700;
   cursor: pointer;
-  transition: all .15s;
+  transition: all .18s;
   white-space: nowrap;
-  min-width: 88px;
+  min-width: 90px;
+  min-height: 36px;
   text-align: center;
   letter-spacing: .2px;
 }
+.status-pill:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
 .sp-paid    { background: var(--green-bg); color: var(--green); border: 1.5px solid var(--green-b); }
 .sp-paid:hover { background: #d4eddf; }
 .sp-unpaid  { background: var(--red-bg); color: var(--red); border: 1.5px solid var(--red-b); }
@@ -572,14 +624,15 @@ body::after {
 
 .drawer-pad { padding: 18px 20px 20px 20px; }
 .drawer-head {
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-size: 13px;
+  font-family: var(--font-display);
+  font-size: 14px;
   font-weight: 700;
   color: var(--ink2);
-  margin-bottom: 14px;
+  margin-bottom: 16px;
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-wrap: wrap;
 }
 .drawer-rate-note {
   font-family: 'Calibri', sans-serif;
@@ -641,31 +694,35 @@ body::after {
 
 .pay-btns { display: flex; gap: 8px; margin-top: 2px; }
 .pay-save {
-  padding: 10px 20px;
+  padding: 11px 22px;
   border-radius: var(--r-sm);
   border: none;
-  background: var(--navy);
+  background: var(--teal);
   color: #fff;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: var(--font-display);
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
-  transition: background .15s;
+  transition: background .18s, box-shadow .18s;
+  min-height: 44px;
 }
-.pay-save:hover { background: var(--navy3); }
+.pay-save:hover { background: #0a7a70; box-shadow: 0 3px 12px rgba(13,148,136,.35); }
+.pay-save:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
 .pay-clear {
-  padding: 10px 14px;
+  padding: 11px 16px;
   border-radius: var(--r-sm);
   border: 1.5px solid var(--rule);
   background: transparent;
   color: var(--ink3);
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: var(--font-display);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: all .15s;
+  transition: all .18s;
+  min-height: 44px;
 }
 .pay-clear:hover { border-color: var(--red); color: var(--red); }
+.pay-clear:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
 
 /* Breakdown strip */
 .pay-breakdown {
@@ -707,13 +764,14 @@ body::after {
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .footnote {
   margin-top: 28px;
-  padding: 16px 20px;
+  padding: 16px 20px 16px 22px;
   background: var(--paper);
   border: 1px solid var(--rule);
+  border-left: 3px solid var(--teal);
   border-radius: var(--r-md);
   font-size: 12px;
   color: var(--ink3);
-  line-height: 1.7;
+  line-height: 1.75;
   box-shadow: var(--shadow-sm);
 }
 .footnote strong { color: var(--ink2); }
@@ -796,15 +854,41 @@ body::after {
 }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   UTILITY
+   UTILITY & ACCESSIBILITY
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .mt-sm  { margin-top: 12px; }
 .mt-md  { margin-top: 20px; }
 .mt-lg  { margin-top: 28px; }
 .dimmed { opacity: .65; }
+
+/* Global focus ring — keyboard navigation */
+:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+/* Skip link for screen readers */
+.skip-link {
+  position: absolute; top: -40px; left: 0;
+  background: var(--teal); color: #fff;
+  padding: 8px 16px; border-radius: 0 0 var(--r-sm) 0;
+  font-family: var(--font-display); font-weight: 700; font-size: 13px;
+  text-decoration: none; z-index: 9999;
+  transition: top .2s;
+}
+.skip-link:focus { top: 0; }
+
+/* Reduced motion respect */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+}
 </style>
 </head>
 <body>
+<a href="#month-list-anchor" class="skip-link">Skip to month list</a>
 
 <!-- ══ MASTHEAD ══════════════════════════════════════════ -->
 <div class="masthead">
@@ -829,7 +913,7 @@ body::after {
 </div>
 
 <!-- ══ PAGE BODY ══════════════════════════════════════════ -->
-<div class="wrap">
+<main class="wrap" role="main" aria-label="Loan repayment dashboard">
 
   <!-- KPI ROW -->
   <div class="section">
@@ -884,7 +968,7 @@ body::after {
 
   <!-- TOOLBAR -->
   <div class="section toolbar">
-    <button class="t-btn active" onclick="setFilter('all',this)">All</button>
+    <button class="t-btn active" onclick="setFilter('all',this)" aria-label="Show all months">All</button>
     <button class="t-btn" onclick="setFilter('paid',this)">✓ Paid</button>
     <button class="t-btn" onclick="setFilter('partial',this)">◑ Partial</button>
     <button class="t-btn" onclick="setFilter('unpaid',this)">✗ Unpaid</button>
@@ -894,7 +978,7 @@ body::after {
 
   <!-- MONTH LIST -->
   <div class="mt-sm">
-    <div class="month-list" id="monthList"></div>
+    <div class="month-list" id="monthList" aria-label="Monthly repayment list" role="list"></div>
   </div>
 
   <!-- FOOTNOTE -->
@@ -907,7 +991,7 @@ body::after {
     &nbsp;·&nbsp; All payment data is saved in your browser's localStorage.
   </div>
 
-</div><!-- /wrap -->
+</main><!-- /wrap -->
 
 <script>
 /* ══════════════════════════════════════════════════════
@@ -1248,8 +1332,8 @@ function buildCard(mo, i, cmap) {
   var dueHTML =
     '<div class="mc-cell col-due">' +
       '<div class="mc-cell-label">Due (friend)</div>' +
-      '<div class="mc-primary c-blue">' + fmt_eur(FRIEND_EUR) + '</div>' +
-      '<div class="mc-secondary c-orange">' + (dueInr || '\u20B9 TBD') + '</div>' +
+      '<div class="mc-primary c-blue">' + (dueInr || '\u20B9 TBD') + '</div>' +
+      '<div class="mc-secondary c-muted">' + fmt_eur(FRIEND_EUR) + '</div>' +
       srcBadge +
     '</div>';
 
@@ -1262,8 +1346,8 @@ function buildCard(mo, i, cmap) {
     paidHTML =
       '<div class="mc-cell col-paid">' +
         '<div class="mc-cell-label">Paid</div>' +
-        '<div class="mc-primary ' + (paidEur > 0 ? 'c-green' : 'c-muted') + '">' + (paidEur > 0 ? fmt_eur(paidEur) : '\u20AC0.00') + '</div>' +
-        '<div class="mc-secondary ' + (paidEur > 0 ? 'c-green' : 'c-muted') + '">' + (paidEur > 0 ? paidInr : '\u20B90') + '</div>' +
+        '<div class="mc-primary ' + (paidEur > 0 ? 'c-green' : 'c-muted') + '">' + (paidEur > 0 ? paidInr : '\u20B90') + '</div>' +
+        '<div class="mc-secondary c-muted">' + (paidEur > 0 ? fmt_eur(paidEur) : '\u20AC0.00') + '</div>' +
       '</div>';
   }
 
