@@ -1400,8 +1400,6 @@ html.dark .mini-card { background: #1c2230; border-color: var(--rule); }
 .card-progress {
   height: 3px;
   background: var(--rule2);
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
   overflow: hidden;
 }
 html.dark .card-progress { background: var(--rule2); }
@@ -1472,9 +1470,9 @@ html.dark .card-progress { background: var(--rule2); }
 </style>
   <!-- Firebase SDK (compat v9 — works in plain HTML, no bundler needed) -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-/* ══════════════════════════════════════════════════════
-   DARK MODE TOGGLE
-══════════════════════════════════════════════════════ */
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <!-- Dark mode init — runs before body renders to avoid flash -->
+  <script>
 function applyTheme(dark) {
   var html = document.documentElement;
   var moon = document.querySelector('.icon-moon');
@@ -1489,23 +1487,18 @@ function applyTheme(dark) {
     if (sun)  sun.style.display  = 'none';
   }
 }
-
 function toggleTheme() {
   var isDark = document.documentElement.classList.contains('dark');
   applyTheme(!isDark);
   try { localStorage.setItem('dm_theme', isDark ? 'light' : 'dark'); } catch(e) {}
 }
-
-/* Init theme: saved preference → OS preference → light fallback */
 (function() {
   var saved = null;
   try { saved = localStorage.getItem('dm_theme'); } catch(e) {}
   if (saved === 'dark') { applyTheme(true); return; }
   if (saved === 'light') { applyTheme(false); return; }
-  /* No saved preference — follow OS */
   var mq = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
   if (mq && mq.matches) applyTheme(true);
-  /* Listen for live OS changes */
   if (mq && mq.addEventListener) {
     mq.addEventListener('change', function(e) {
       var hasSaved = false;
@@ -1514,8 +1507,7 @@ function toggleTheme() {
     });
   }
 })();
-</script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  </script>
 </head>
 <body>
 <a href="#month-list-anchor" class="skip-link">Skip to month list</a>
@@ -1704,8 +1696,7 @@ var firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 var db       = firebase.database();
 var dbRef    = db.ref('loandata');
-var payRef   = db.ref('loandata/payStatus');
-var pmtRef   = db.ref('loandata/payments');
+/* payRef / pmtRef removed — not used, full dbRef.set() is used instead */
 
 /* ══════════════════════════════════════════════════════
    STATE
@@ -1832,7 +1823,7 @@ function fmt_eur(n) {
 ══════════════════════════════════════════════════════ */
 function getPaidEur(k) {
   // Always return the actual stored amount so overpayments flow into cumulative
-  if (payments[k] && payments[k].eur) return payments[k].eur;
+  if (payments[k] && payments[k].eur != null) return payments[k].eur;
   // payStatus true but no payment record = manually toggled as fully paid
   if (payStatus[k]) return FRIEND_EUR;
   return 0;
@@ -2014,22 +2005,16 @@ function renderCards() {
 
   document.getElementById('tCount').textContent = filtered.length + ' / ' + TOTAL_MONTHS;
 
-  var html = '';
-  for (var i = 0; i < filtered.length; i++) {
-    html += buildCard(filtered[i], i, cmap);
-  }
-  /* Insert year separator dividers */
+  /* Build cards with year separator dividers — single loop, no duplicate rendering */
   var yearHtml = '';
   var lastYear = 0;
-  for (var idx = 0; idx < filtered.length; idx++) {
-    var f = filtered[idx];
+  for (var ci = 0; ci < filtered.length; ci++) {
+    var f = filtered[ci];
     if (f.y !== lastYear) {
-      if (lastYear !== 0) {
-        yearHtml += '<div class="year-sep" role="separator" aria-label="' + f.y + '"><span>' + f.y + '</span></div>';
-      }
+      yearHtml += '<div class="year-sep" role="separator" aria-label="' + f.y + '"><span>' + f.y + '</span></div>';
       lastYear = f.y;
     }
-    yearHtml += buildCard(f, idx, cmap);
+    yearHtml += buildCard(f, ci, cmap);
   }
   document.getElementById('monthList').innerHTML = yearHtml;
 }
@@ -2180,7 +2165,9 @@ function buildCard(mo, i, cmap) {
       var hDay = hDate.getDate();
       var hMon = SHORT_NAMES[hDate.getMonth()];
       var hYr  = hDate.getFullYear();
-      var hTime = hDate.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+      var hHH = String(hDate.getHours()).padStart(2,'0');
+      var hMM = String(hDate.getMinutes()).padStart(2,'0');
+      var hTime = hHH + ':' + hMM;
       var hColor = hi === hist.length - 1 ? 'ph-entry-latest' : '';
       histHTML += '<div class="ph-entry ' + hColor + '">';
       histHTML += '<div class="ph-dot"></div>';
@@ -2234,9 +2221,12 @@ function buildCard(mo, i, cmap) {
 
   var drawerClass = 'mc-drawer' + (isOpen ? ' open' : '');
 
+  var pctPaid = (FRIEND_EUR > 0) ? Math.min(100, Math.round((paidEur / FRIEND_EUR) * 100)) : 0;
+  var progColor = paidEur >= FRIEND_EUR ? 'var(--green)' : (paidEur > 0 ? '#f59e0b' : 'var(--red)');
+  var progressBar = upco ? '' : ('<div class="card-progress"><div class="card-progress-fill" style="width:' + pctPaid + '%;background:' + progColor + ';"></div></div>');
+
   return (
     '<div class="mcard ' + mc + ' ' + dimClass + '" id="card-' + k + '" role="listitem" style="' + delay + '">' +
-      (upco ? '' : '<div class="card-progress"><div class="card-progress-fill" style="width:' + Math.min(100, Math.round((paidEur/FRIEND_EUR)*100)) + '%;background:' + (paidEur >= FRIEND_EUR ? 'var(--green)' : paidEur > 0 ? '#f59e0b' : 'var(--red)') + ';"></div></div>') + +
       '<div class="mcard-body">' +
         '<div class="mc-num">' + idx + '</div>' +
         '<div class="mc-info">' +
@@ -2253,6 +2243,7 @@ function buildCard(mo, i, cmap) {
         dueHTML + paidHTML + netHTML + cumHTML +
         '<div class="mc-status">' + pill + '</div>' +
       '</div>' +
+      progressBar +
       '<div class="' + drawerClass + '" id="drawer-' + k + '">' +
         '<div class="drawer-pad">' +
           '<div class="drawer-head">Log payment \u2014 ' + FULL_NAMES[m - 1] + ' ' + y + '<span class="drawer-rate-note">' + drawerRateNote + '</span></div>' +
@@ -2322,24 +2313,23 @@ function savePayment(k, rate) {
   openDrawers[k] = true;
   persist();
   renderAll();
-  /* Save confirmation: flash card green + button tick */
-  var cardEl = document.getElementById('card-' + k);
-  var saveBtn = document.querySelector('#drawer-' + k + ' .pay-save');
-  if (cardEl) {
-    cardEl.classList.remove('save-confirmed');
-    void cardEl.offsetWidth; /* force reflow to restart animation */
-    cardEl.classList.add('save-confirmed');
-    setTimeout(function() { cardEl.classList.remove('save-confirmed'); }, 700);
-  }
-  if (saveBtn) {
-    var origTxt = saveBtn.textContent;
-    saveBtn.textContent = '✓ Saved';
-    saveBtn.classList.add('save-ok');
-    setTimeout(function() {
-      saveBtn.textContent = origTxt;
-      saveBtn.classList.remove('save-ok');
-    }, 1400);
-  }
+  /* Save confirmation: query NEW DOM nodes (post-renderAll) then animate */
+  setTimeout(function() {
+    var cardEl2 = document.getElementById('card-' + k);
+    var saveBtn2 = document.querySelector('#drawer-' + k + ' .pay-save');
+    if (cardEl2) {
+      cardEl2.classList.add('save-confirmed');
+      setTimeout(function() { cardEl2.classList.remove('save-confirmed'); }, 700);
+    }
+    if (saveBtn2) {
+      saveBtn2.textContent = '\u2713 Saved';
+      saveBtn2.classList.add('save-ok');
+      setTimeout(function() {
+        saveBtn2.textContent = 'Save';
+        saveBtn2.classList.remove('save-ok');
+      }, 1400);
+    }
+  }, 20);
 }
 
 function deleteHistoryEntry(k, idx) {
@@ -2382,7 +2372,7 @@ function togglePaid(k) {
   } else {
     payStatus[k] = true;
     var ri = getRate(ys, ms);
-    payments[k] = { eur: FRIEND_EUR, inr: ri ? Math.round(FRIEND_EUR * ri.rate) : null };
+    payments[k] = { eur: FRIEND_EUR, inr: ri ? Math.round(FRIEND_EUR * ri.rate) : null, history: [{ inr: ri ? Math.round(FRIEND_EUR * ri.rate) : 0, eur: FRIEND_EUR, rate: ri ? ri.rate : 0, ts: Date.now() }] };
   }
   persist();
   renderAll();
@@ -2420,11 +2410,7 @@ function togglePaid(k) {
             var progress = Math.min((ts - startTime) / duration, 1);
             var ease = 1 - Math.pow(1 - progress, 3);
             var current = Math.floor(ease * target);
-            if (prefix) {
-              el.textContent = prefix ? fmt_inr(current) : current.toString();
-            } else {
-              el.textContent = current.toString();
-            }
+            el.textContent = prefix ? fmt_inr(current) : current.toString();
             if (progress < 1) requestAnimationFrame(step);
             else el.textContent = text; /* restore exact original */
           }
