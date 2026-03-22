@@ -1180,60 +1180,177 @@ body::after {
    PRINT / PDF EXPORT
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 @media print {
-  @page { margin: 15mm; size: A4; }
+  @page { margin: 10mm 12mm; size: A4; }
 
-  body { background: #fff !important; font-size: 11px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  /* ── Reset layout-breaking properties ── */
+  *, *::before, *::after {
+    position: static !important;
+    overflow: visible !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    float: none !important;
+    animation: none !important;
+    transition: none !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  html, body {
+    width: 100% !important;
+    height: auto !important;
+    background: #fff !important;
+    font-size: 10px !important;
+    overflow: visible !important;
+  }
   body::after { display: none !important; }
 
-  /* Hide interactive / non-essential elements */
+  /* ── Hide everything interactive ── */
   .skip-link, .export-btn, .sticky-bar,
-  .t-btn, .toolbar, .mc-log-btn,
-  .mc-drawer, .status-pill,
+  .toolbar, .t-btn, .t-count,
+  .mc-log-btn, .mc-drawer,
   .pay-history, .chart-legend,
-  .rate-panel::after { display: none !important; }
+  .sync-bar-wrap, .rate-panel::after { display: none !important; }
 
-  /* Masthead — use hardcoded hex, not CSS vars, for reliable print rendering */
-  .masthead { background: #0c1c35 !important; color: #fff !important; padding: 20px !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  .mast-title { color: #fff !important; font-size: 28px !important; }
-  .mast-eyebrow { color: #0d9488 !important; }
-  .mast-sub { color: rgba(255,255,255,.6) !important; }
-  .flag-chip { background: rgba(255,255,255,.1) !important; border-color: rgba(255,255,255,.2) !important; color: rgba(255,255,255,.8) !important; }
+  /* ── Masthead: compact, dark, no overflow tricks ── */
+  .masthead {
+    background: #0c1c35 !important;
+    padding: 12px 16px !important;
+    overflow: visible !important;
+  }
+  .masthead::before { display: none !important; }
+  .masthead-inner {
+    max-width: 100% !important;
+    padding: 0 !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+  }
+  .mast-eyebrow { font-size: 9px !important; color: #0d9488 !important; margin-bottom: 4px !important; }
+  .mast-title   { font-size: 20px !important; color: #fff !important; line-height: 1.1 !important; }
+  .mast-sub     { font-size: 10px !important; color: rgba(255,255,255,.6) !important; margin-top: 4px !important; }
+  .mast-flags   { gap: 6px !important; }
+  .flag-chip    { font-size: 10px !important; padding: 4px 10px !important; color: rgba(255,255,255,.8) !important; border: 1px solid rgba(255,255,255,.2) !important; background: rgba(255,255,255,.08) !important; }
 
-  .rate-panel { background: #122240 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  .rp-label { color: rgba(255,255,255,.4) !important; }
-  .rp-value { color: #fff !important; }
-  .rp-sub   { color: rgba(255,255,255,.4) !important; }
-  .rp-source { color: #0d9488 !important; }
-  .masthead-inner, .rate-panel-inner { max-width: 100%; }
+  /* ── Rate panel: compact ── */
+  .rate-panel {
+    background: #122240 !important;
+    overflow: visible !important;
+    border-bottom: 1px solid rgba(255,255,255,.15) !important;
+  }
+  .rate-panel-inner { max-width: 100% !important; padding: 0 16px !important; }
+  .rp-cell   { padding: 8px 16px 8px 0 !important; }
+  .rp-label  { font-size: 8px !important; color: rgba(255,255,255,.45) !important; }
+  .rp-value  { font-size: 16px !important; color: #fff !important; }
+  .rp-sub    { font-size: 9px !important; color: rgba(255,255,255,.4) !important; }
+  .rp-source { font-size: 9px !important; color: #0d9488 !important; }
 
-  .wrap { padding: 0 !important; max-width: 100%; }
+  /* ── Main wrap ── */
+  .wrap {
+    padding: 8px 0 0 !important;
+    max-width: 100% !important;
+    position: static !important;
+    z-index: auto !important;
+  }
+  .section { margin-top: 10px !important; }
 
-  /* KPI cards */
-  .kpi-grid { grid-template-columns: repeat(5, 1fr) !important; gap: 8px !important; }
-  .kpi { box-shadow: none !important; border: 1px solid #e0d7cd !important; padding: 12px !important; break-inside: avoid; }
-  .kpi-value { font-size: 22px !important; }
+  /* ── KPI grid ── */
+  .kpi-grid { grid-template-columns: repeat(5, 1fr) !important; gap: 6px !important; }
+  .kpi {
+    border: 1px solid #ddd !important;
+    border-radius: 6px !important;
+    padding: 8px 10px !important;
+    break-inside: avoid !important;
+    background: #fff !important;
+  }
+  .kpi::before { display: none !important; }
+  .kpi-label  { font-size: 7px !important; margin-bottom: 4px !important; }
+  .kpi-value  { font-size: 18px !important; }
+  .kpi-eur, .kpi-inr, .kpi-sub { font-size: 9px !important; }
 
-  /* Month list */
-  .month-list { border: 1px solid #e0d7cd !important; box-shadow: none !important; background: #fff !important; }
-  .mcard { break-inside: avoid; border-radius: 0 !important; border: none !important; box-shadow: none !important; margin: 0 !important; }
-  .mcard-body { grid-template-columns: 44px 1fr repeat(4, minmax(70px,auto)) 100px !important; }
-  .mc-cell, .mc-info, .mc-status, .mc-num { display: flex !important; }
+  /* ── Progress card ── */
+  .progress-card { border: 1px solid #ddd !important; padding: 10px 12px !important; break-inside: avoid !important; }
+  .prog-title    { font-size: 11px !important; margin-bottom: 8px !important; }
+  .prog-track    { background: #e0d7cd !important; height: 6px !important; }
+
+  /* ── Chart ── */
+  .chart-card { border: 1px solid #ddd !important; padding: 10px 12px !important; break-inside: avoid !important; }
+  .chart-title { font-size: 11px !important; }
+  canvas#balanceChart { height: 120px !important; width: 100% !important; }
+  .chart-xaxis { font-size: 8px !important; }
+
+  /* ── Month list ── */
+  .month-list {
+    border: 1px solid #ddd !important;
+    border-radius: 6px !important;
+    background: #fff !important;
+  }
+  .mcard {
+    break-inside: avoid !important;
+    border-radius: 0 !important;
+    border: none !important;
+    margin: 0 !important;
+    background: #fff !important;
+  }
+  .mcard.mc-paid    { background: #f0fbf5 !important; }
+  .mcard.mc-current { background: #fffbf0 !important; }
+  .mcard.mc-partial { background: #f8f5ff !important; }
+
+  /* Force desktop grid layout regardless of screen width */
+  .mcard-body {
+    display: grid !important;
+    grid-template-columns: 36px 140px repeat(4, 1fr) 80px !important;
+    align-items: center !important;
+  }
+  .mc-cell        { display: flex !important; padding: 8px 8px !important; }
+  .mc-info        { display: flex !important; flex-direction: column !important; padding: 8px 10px !important; border-right: 1px solid #eee !important; }
+  .mc-status      { display: flex !important; padding: 6px 8px !important; }
+  .mc-num         { display: flex !important; padding: 8px 0 !important; font-size: 9px !important; }
   .mc-mobile-strip { display: none !important; }
+  .mc-month-name  { font-size: 11px !important; }
+  .mc-sub         { font-size: 8px !important; }
+  .mc-cell-label  { font-size: 7px !important; }
+  .mc-primary     { font-size: 13px !important; }
+  .mc-secondary   { font-size: 9px !important; }
+  .mc-note        { font-size: 7px !important; }
+  .src-badge      { font-size: 7px !important; }
+  .mc-badge       { font-size: 7px !important; padding: 1px 4px !important; }
 
-  /* Paid/current state backgrounds */
-  .mcard.mc-paid    { background: #eaf7f1 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  .mcard.mc-current { background: #fff7ec !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  /* Status pill — visible but minimal */
+  .status-pill {
+    display: inline-block !important;
+    font-size: 8px !important;
+    padding: 3px 7px !important;
+    border-radius: 99px !important;
+    border: 1px solid #ccc !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    cursor: default !important;
+  }
+  .sp-paid    { background: #eaf7f1 !important; color: #15683e !important; border-color: #a5d8bc !important; }
+  .sp-unpaid  { background: #fdf0f0 !important; color: #b82424 !important; border-color: #ecacac !important; }
+  .sp-current { background: #fff7ec !important; color: #a05400 !important; border-color: #e9c688 !important; }
+  .sp-partial { background: #f2f0ff !important; color: #5318b0 !important; border-color: #b9a5f5 !important; }
+  .sp-upcoming { background: #f5f5f5 !important; color: #888 !important; border-color: #ddd !important; }
 
-  .progress-card, .chart-card, .footnote { box-shadow: none !important; break-inside: avoid; }
-  .prog-track { background: #ece5de !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  /* Accent stripes on cards */
+  .mcard::before {
+    display: block !important;
+    position: absolute !important;
+    width: 3px !important;
+  }
 
-  .print-date { display: block !important; font-size: 11px; color: #746660; text-align: right; margin-bottom: 12px; font-family: sans-serif; }
+  /* Year separators */
+  .year-sep { background: #f5f5f5 !important; padding: 4px 16px !important; }
+  .year-sep span { font-size: 8px !important; }
 
-  canvas#balanceChart { max-width: 100%; height: 140px !important; }
+  /* Footnote */
+  .footnote { border: 1px solid #ddd !important; padding: 8px 12px !important; font-size: 9px !important; break-inside: avoid !important; }
 
-  .year-sep { background: #f6f3ee !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  /* Print date */
+  .print-date { display: block !important; font-size: 9px !important; color: #999 !important; text-align: right !important; margin-bottom: 6px !important; }
 
-  a { text-decoration: none; color: inherit; }
+  a { text-decoration: none !important; color: inherit !important; }
 }
 
 /* Print-only date stamp */
