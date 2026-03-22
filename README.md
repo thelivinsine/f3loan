@@ -1,14 +1,14 @@
 # 🇩🇪 × 🇮🇳 LoanSplit — DE × IN Repayment Tracker
 
-A private, single-file loan repayment dashboard for tracking a joint €20,000 loan between Germany and India. No backend, no login, no server — everything runs in the browser and saves to `localStorage`.
+A private, real-time loan repayment dashboard for tracking a joint €20,000 loan between Germany and India. Single HTML file, no backend, no login — payment data syncs live between both users via Firebase Realtime Database.
 
 ---
 
 ## 🔗 Live Dashboard
 
-Open `loan-dashboard.html` directly in any browser, or host it via GitHub Pages:
+> **`https://thelivinsine.github.io/r5loan/`**
 
-> **GitHub Pages URL:** `https://<your-username>.github.io/<repo-name>/loan-dashboard.html`
+Open directly in any browser. No installation needed.
 
 ---
 
@@ -16,11 +16,11 @@ Open `loan-dashboard.html` directly in any browser, or host it via GitHub Pages:
 
 - Tracks **95 monthly EMI payments** from Feb 2026 → Dec 2033
 - Friend's share: **€110.93/month** (41.25% of €268.91 total EMI)
-- Converts all amounts to **INR using verified 10th-of-month exchange rates**
-- Logs payment history with **timestamps and exchange rates per entry**
-- Shows **cumulative outstanding balance** as an area chart
-- Exports a clean **PDF snapshot** via browser print
-- Fully **offline-capable** — no API calls, no external dependencies except Google Fonts
+- Displays all amounts in **₹ primary, € secondary** — INR is the headline figure
+- Converts using **verified mid-market EUR→INR rates on the 10th of each month** — no live API
+- Logs multiple partial payments per month with timestamps and exchange rates
+- **Real-time sync** — when your friend logs a payment in India, your dashboard updates live
+- Exports a clean **PDF snapshot** via the browser print dialog
 
 ---
 
@@ -28,22 +28,25 @@ Open `loan-dashboard.html` directly in any browser, or host it via GitHub Pages:
 
 | Feature | Details |
 |---|---|
-| **KPI Dashboard** | Monthly EMI, Friend's Share, Total Received, Outstanding, Months Left |
-| **Per-month cards** | Due (₹ + €), Paid, Net Remaining, Total Remaining |
-| **Payment logging** | Log multiple partial payments per month with timestamps |
-| **Payment history** | Full history timeline inside each month's drawer — delete individual entries |
-| **Balance chart** | Canvas area chart showing cumulative ₹ balance over elapsed months |
+| **KPI Dashboard** | Bento-grid layout — Outstanding and Total Received are larger cards for quick scanning |
+| **Per-month cards** | Due (₹ + €), Paid, Net Remaining, Total Remaining — with per-card payment progress bar |
+| **Payment logging** | Log multiple partial payments per month; each entry stores ₹ amount, € equivalent, rate used, and timestamp |
+| **Payment history** | Scrollable timeline inside each month's drawer — delete individual entries |
 | **Filter tabs** | All · Paid · Partial · Unpaid · Upcoming |
-| **Sticky bar** | Fixed summary ribbon showing totals as you scroll |
-| **Export PDF** | One-tap export via browser print dialog |
-| **Mobile-first** | Responsive from 320px — stacked card layout on mobile |
-| **Accessibility** | WCAG 2.1: focus rings, skip link, ARIA labels, reduced motion |
+| **Year separators** | Month list grouped by year with chip dividers |
+| **Sticky summary bar** | Fixed bottom ribbon showing Total Due · Received · Outstanding · Months Left as you scroll |
+| **Export PDF** | One-tap export via browser print — masthead, rate panel, all cards, print-optimised layout |
+| **Dark mode** | Moon/sun toggle in masthead — remembers preference, respects OS theme automatically |
+| **Real-time sync** | Firebase Realtime Database — both users see live updates without refreshing |
+| **Sync indicator** | Animated dot shows Firebase connection status (connecting / synced / error) |
+| **Mobile-first** | Individual rounded cards on mobile (≤860px), grouped table layout on desktop |
+| **Accessibility** | WCAG 2.1: skip link, ARIA labels, focus rings, role="list/listitem", reduced motion support |
 
 ---
 
 ## 💱 Exchange Rates
 
-Rates are hardcoded as **verified mid-market EUR→INR on the 10th of each month**. No live API fetching — values are stable and auditable.
+Rates are **hardcoded** — verified mid-market EUR→INR on the **10th of each month** from Xe.com or poundsterlinglive.com. No live fetching — values are stable and fully auditable.
 
 | Month | Rate (₹/€) | Source |
 |---|---|---|
@@ -51,69 +54,93 @@ Rates are hardcoded as **verified mid-market EUR→INR on the 10th of each month
 | Mar 2026 | 106.8030 | Xe.com |
 | Apr 2026 onwards | TBD | Add each month |
 
-**To add a new month's rate:** Open `loan-dashboard.html`, find the `RATES` object in the `<script>` block, and add:
+### Adding a new month's rate
+
+1. On or after the **10th of the month**, look up the EUR→INR mid-market rate on [Xe.com](https://xe.com)
+2. Open `index.html`, find the `RATES` object in the `<script>` block
+3. Replace `null` with the rate:
 ```js
-"2026-4": { rate: 106.XXXX, src: "Xe.com" },
+"2026-4": { rate: 107.1234, src: "Xe.com" },
+```
+4. Commit and push — the dashboard updates automatically for both users
+
+---
+
+## 🔥 Firebase Setup
+
+Payment data is stored in **Firebase Realtime Database** and syncs live between both devices.
+
+### Database Rules
+The `firebase-rules.json` file contains the database rules. Apply them in the [Firebase Console](https://console.firebase.google.com) → Realtime Database → Rules:
+```json
+{
+  "rules": {
+    "loandata": {
+      ".read": true,
+      ".write": true
+    }
+  }
+}
+```
+
+### Data Schema
+```
+loandata/
+  payStatus/
+    "2026-2": true               ← month marked fully paid
+  payments/
+    "2026-2"/
+      inr: 11971                 ← running total INR paid
+      eur: 110.93                ← running total EUR paid
+      history: [
+        { inr, eur, rate, ts }   ← individual payment entries with timestamp
+      ]
 ```
 
 ---
 
-## 💾 Data Storage
+## 📅 Monthly Workflow
 
-All payment data is saved to **browser `localStorage`** under two keys:
+Each month, on or after the **10th**:
 
-| Key | Contents |
-|---|---|
-| `ls_pay5` | `{ "2026-2": true, ... }` — months marked fully paid |
-| `ls_pmt5` | `{ "2026-2": { inr, eur, history: [{inr, eur, rate, ts}] } }` — payment entries |
-
-> ⚠️ Data is stored per-browser. Clearing browser data will erase payment history. Back up by exporting to PDF regularly.
-
----
-
-## 🚀 How to Use
-
-### Option A — Open locally
-1. Download `loan-dashboard.html`
-2. Open it in Safari, Chrome, or Firefox
-3. No installation needed
-
-### Option B — GitHub Pages (recommended)
-1. Fork or clone this repo
-2. Go to **Settings → Pages**
-3. Set source to **main branch / root**
-4. Visit `https://<username>.github.io/<repo>/loan-dashboard.html`
-
----
-
-## 📅 Monthly Maintenance
-
-On or after the **10th of each month**:
-1. Look up the EUR→INR mid-market rate on [Xe.com](https://xe.com) or [poundsterlinglive.com](https://poundsterlinglive.com)
-2. Add it to the `RATES` object in the HTML file
-3. Commit and push — the dashboard updates automatically
+1. **Look up the rate** — go to [Xe.com](https://xe.com), note the EUR→INR mid-market rate
+2. **Add it to the file** — update `RATES["YYYY-M"]` in `index.html`
+3. **Commit and push** — GitHub Pages auto-deploys in ~30 seconds
+4. **Friend logs the payment** — they open the URL, tap "log ₹ payment" on the current month, enter amount, tap Save
+5. **You see it instantly** — the sync dot flashes green "Updated ✓"
 
 ---
 
 ## 🛠 Tech Stack
 
-- **Vanilla HTML/CSS/JS** — no frameworks, no build step
-- **Canvas API** — balance chart
-- **localStorage** — payment persistence
-- **Google Fonts** — Plus Jakarta Sans + IBM Plex Sans
-- **Calibri** — numeric display font (system font)
+| Layer | Technology |
+|---|---|
+| **App** | Vanilla HTML + CSS + JavaScript — no framework, no build step |
+| **Fonts** | Sora (numbers) · Plus Jakarta Sans (headings/UI) · IBM Plex Sans (body) via Google Fonts |
+| **Database** | Firebase Realtime Database v9 (compat SDK) |
+| **Hosting** | GitHub Pages |
+| **PDF export** | Browser native print API with dedicated print stylesheet |
 
 ---
 
-## 📁 Files
+## 📁 Repository Structure
 
 ```
 /
-├── loan-dashboard.html    # The entire app — open this
-├── README.md              # This file
-├── .gitignore             # Ignores OS junk files
-└── LICENSE                # MIT
+├── index.html              # The entire app — all HTML, CSS, and JS in one file
+├── firebase-rules.json     # Firebase Realtime Database security rules
+├── README.md               # This file
+├── .gitignore              # Ignores OS junk files
+└── LICENSE                 # MIT
 ```
+
+---
+
+## ⚠️ Security Note
+
+The Firebase database rules currently allow **any browser to read and write** `loandata`. This is fine as long as the GitHub Pages URL remains private. If the URL is ever publicly shared, anyone who has it could overwrite payment data.
+
+The `apiKey` in the Firebase config is **safe to keep public** — it's a project identifier, not a secret key. Security is enforced entirely by the database rules.
 
 ---
 
