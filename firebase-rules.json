@@ -1,0 +1,8 @@
+{
+  "rules": {
+    "loandata": {
+      ".read": true,
+      ".write": true
+    }
+  }
+}
