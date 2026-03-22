@@ -6,7 +6,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LoanSplit — DE × IN Repayment Tracker</title>
+<title>Joint Loan Tracker · Feb 2026 – Dec 2033</title>
 <meta name="description" content="Private loan repayment tracker for a €20,000 joint loan between Germany and India. 95 monthly payments, real-time Firebase sync.">
 <meta name="robots" content="noindex, nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -74,10 +74,13 @@
   --s20: 20px;  --s24: 24px;  --s28: 28px;  --s32: 32px;
   --s40: 40px;  --s48: 48px;  --s56: 56px;
 
-  /* Component sizing */
-  --card-pad:       24px;    /* standard card inner padding */
-  --card-pad-sm:    18px;    /* compact card padding (meta strip) */
-  --card-gap:       14px;    /* gap between cards in a grid */
+  /* Layout columns */
+  --col-num: 44px;   /* month number column width */
+
+  /* Component sizing — reference spacing tokens */
+  --card-pad:       var(--s24);   /* standard card inner padding */
+  --card-pad-sm:    var(--s16);   /* compact card padding (meta strip) */
+  --card-gap:       var(--s14);   /* gap between cards in a grid */
   --section-gap:    clamp(24px, 5vw, 40px);  /* between page sections */
 
   /* Typography scale — strict 6 steps */
@@ -130,7 +133,7 @@ body::after {
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .masthead {
   background: var(--navy);
-  padding: 44px 0 40px;
+  padding: var(--s24) 0 var(--s20);
   position: relative;
   overflow: hidden;
 }
@@ -154,27 +157,18 @@ body::after {
   position: relative;
 }
 .masthead-left { min-width: 0; flex: 1; }
-.mast-eyebrow {
-  font-family: var(--font-display);
-  font-size: var(--text-xs);
-  font-weight: 600;
-  letter-spacing: 2.5px;
-  text-transform: uppercase;
-  color: rgba(13,148,136,.85);
-  margin-bottom: 12px;
-}
 .mast-title {
   font-family: var(--font-display);
-  font-size: clamp(30px,5vw,52px);
-  font-weight: 800;
+  font-size: clamp(18px, 3vw, 26px);
+  font-weight: 700;
   color: #fff;
-  line-height: 1.05;
-  letter-spacing: -.8px;
+  line-height: 1.2;
+  letter-spacing: -.3px;
 }
 .mast-title em {
-  font-style: italic;
+  font-style: normal;
   font-weight: 400;
-  color: rgba(255,255,255,.60);
+  color: rgba(255,255,255,.45);
 }
 .mast-sub {
   margin-top: var(--s14);
@@ -751,7 +745,7 @@ html.dark .prog-milestone.reached { background: var(--paper); }
 /* ── CARD BODY ── */
 .mcard-body {
   display: grid;
-  grid-template-columns: 44px 1fr repeat(4, minmax(92px,auto)) 112px;
+  grid-template-columns: var(--col-num) 1fr repeat(4, minmax(92px,auto)) 112px;
   align-items: center;
   gap: 0;
   padding: 0;
@@ -770,10 +764,10 @@ html.dark .prog-milestone.reached { background: var(--paper); }
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
+  width: var(--col-num);
   padding: var(--s20) 0;
   font-family: 'Sora', sans-serif;
-  font-size: 11px;
+  font-size: var(--text-xs);
   font-weight: 400;
   color: var(--ink4);
   align-self: stretch;
@@ -1214,7 +1208,7 @@ html.dark .prog-milestone.reached { background: var(--paper); }
   }
   .mms-label {
     font-family: 'Sora', sans-serif;
-    font-size: 9px;
+    font-size: var(--text-2xs);
     letter-spacing: 1.3px;
     text-transform: uppercase;
     color: var(--ink3);
@@ -1595,8 +1589,7 @@ html.dark .prog-milestone.reached { background: var(--paper); }
     align-items: center !important;
     flex-wrap: nowrap !important;
   }
-  .mast-eyebrow { font-size: 9px !important; color: #0d9488 !important; margin-bottom: 4px !important; }
-  .mast-title   { font-size: var(--text-xl) !important; color: #fff !important; line-height: 1.1 !important; }
+  .mast-title   { font-size: var(--text-lg) !important; color: #fff !important; line-height: 1.2 !important; letter-spacing: -.2px !important; }
   .mast-sub     { font-size: 10px !important; color: rgba(255,255,255,.6) !important; margin-top: 4px !important; }
   .mast-flags   { gap: 6px !important; }
   .flag-chip    { font-size: 10px !important; padding: 4px 10px !important; color: rgba(255,255,255,.8) !important; border: 1px solid rgba(255,255,255,.2) !important; background: rgba(255,255,255,.08) !important; }
@@ -1858,6 +1851,12 @@ html.dark {
   --purple-bg: #1e1230;
   --purple-b:  #6b21a8;
   --blue:      #60a5fa;
+  --blue-bg:   #1e2d5a;
+
+  /* Semantic tints — adjusted for dark backgrounds */
+  --amber-dot: #f59e0b;
+  --green-eur: #4ade80;
+  --red-eur:   #f87171;
 }
 html.dark body { background: var(--cream); color: var(--ink); }
 html.dark body::after { opacity: .4; }
@@ -2361,32 +2360,29 @@ html.dark .hero-card.hc-outstanding .hero-eur { color: var(--red); }
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <!-- Dark mode init — runs before body renders to avoid flash -->
   <script>
-function applyTheme(dark) {
-  var html = document.documentElement;
-  var btn  = document.getElementById('themeToggle');
-  if (dark) {
-    html.classList.add('dark');
-    if (btn) btn.setAttribute('aria-checked', 'true');
-  } else {
-    html.classList.remove('dark');
-    if (btn) btn.setAttribute('aria-checked', 'false');
-  }
-}
-function toggleTheme() {
-  var isDark = document.documentElement.classList.contains('dark');
+const applyTheme = dark => {
+  const html = document.documentElement;
+  const btn  = document.getElementById('themeToggle');
+  html.classList.toggle('dark', dark);
+  if (btn) btn.setAttribute('aria-checked', String(dark));
+};
+
+const toggleTheme = () => {
+  const isDark = document.documentElement.classList.contains('dark');
   applyTheme(!isDark);
   try { localStorage.setItem('dm_theme', isDark ? 'light' : 'dark'); } catch(e) {}
-}
-(function() {
-  var saved = null;
+};
+
+(() => {
+  let saved = null;
   try { saved = localStorage.getItem('dm_theme'); } catch(e) {}
-  if (saved === 'dark') { applyTheme(true); return; }
+  if (saved === 'dark')  { applyTheme(true);  return; }
   if (saved === 'light') { applyTheme(false); return; }
-  var mq = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
+  const mq = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
   if (mq && mq.matches) applyTheme(true);
   if (mq && mq.addEventListener) {
-    mq.addEventListener('change', function(e) {
-      var hasSaved = false;
+    mq.addEventListener('change', e => {
+      let hasSaved = false;
       try { hasSaved = !!localStorage.getItem('dm_theme'); } catch(ex) {}
       if (!hasSaved) applyTheme(e.matches);
     });
@@ -2410,8 +2406,7 @@ function toggleTheme() {
 <header class="masthead" role="banner">
   <div class="masthead-inner">
     <div class="masthead-left">
-      <div class="mast-eyebrow">Joint Loan Tracker · Feb 2026 – Dec 2033</div>
-      <h1 class="mast-title">DE <em>×</em> IN<br>Repayment</h1>
+      <h1 class="mast-title">Joint Loan Tracker <em>·</em> Feb 2026 – Dec 2033</h1>
       <div class="mast-sub">€20,000 · 96 months · Friend's share 41.25%</div>
     </div>
     <div class="mast-flags">
@@ -2734,11 +2729,11 @@ function toggleTheme() {
 /* ══════════════════════════════════════════════════════
    CONFIG
 ══════════════════════════════════════════════════════ */
-var FRIEND_EUR   = 110.93;
-var TOTAL_EMI    = 268.91;
-var TOTAL_MONTHS = 95;
-var FULL_NAMES   = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-var SHORT_NAMES  = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const FRIEND_EUR   = 110.93;
+const TOTAL_EMI    = 268.91;
+const TOTAL_MONTHS = 95;
+const FULL_NAMES   = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const SHORT_NAMES  = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
 /* ══════════════════════════════════════════════════════
    VERIFIED STATIC RATES
@@ -2746,92 +2741,93 @@ var SHORT_NAMES  = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct",
    Rate = EUR to INR on the 10th of each month.
    null = not yet reached.
 ══════════════════════════════════════════════════════ */
-var RATES = {
-  "2026-2":  { rate: 107.9160, src: "poundsterlinglive.com" },
-  "2026-3":  { rate: 106.8030, src: "Xe.com" },
-  "2026-4":  null, "2026-5":  null, "2026-6":  null,
-  "2026-7":  null, "2026-8":  null, "2026-9":  null,
-  "2026-10": null, "2026-11": null, "2026-12": null,
-  "2027-1":  null, "2027-2":  null, "2027-3":  null,
-  "2027-4":  null, "2027-5":  null, "2027-6":  null,
-  "2027-7":  null, "2027-8":  null, "2027-9":  null,
-  "2027-10": null, "2027-11": null, "2027-12": null,
-  "2028-1":  null, "2028-2":  null, "2028-3":  null,
-  "2028-4":  null, "2028-5":  null, "2028-6":  null,
-  "2028-7":  null, "2028-8":  null, "2028-9":  null,
-  "2028-10": null, "2028-11": null, "2028-12": null,
-  "2029-1":  null, "2029-2":  null, "2029-3":  null,
-  "2029-4":  null, "2029-5":  null, "2029-6":  null,
-  "2029-7":  null, "2029-8":  null, "2029-9":  null,
-  "2029-10": null, "2029-11": null, "2029-12": null,
-  "2030-1":  null, "2030-2":  null, "2030-3":  null,
-  "2030-4":  null, "2030-5":  null, "2030-6":  null,
-  "2030-7":  null, "2030-8":  null, "2030-9":  null,
-  "2030-10": null, "2030-11": null, "2030-12": null,
-  "2031-1":  null, "2031-2":  null, "2031-3":  null,
-  "2031-4":  null, "2031-5":  null, "2031-6":  null,
-  "2031-7":  null, "2031-8":  null, "2031-9":  null,
-  "2031-10": null, "2031-11": null, "2031-12": null,
-  "2032-1":  null, "2032-2":  null, "2032-3":  null,
-  "2032-4":  null, "2032-5":  null, "2032-6":  null,
-  "2032-7":  null, "2032-8":  null, "2032-9":  null,
-  "2032-10": null, "2032-11": null, "2032-12": null,
-  "2033-1":  null, "2033-2":  null, "2033-3":  null,
-  "2033-4":  null, "2033-5":  null, "2033-6":  null,
-  "2033-7":  null, "2033-8":  null, "2033-9":  null,
-  "2033-10": null, "2033-11": null, "2033-12": null
+const RATES = {
+  '2026-2':  { rate: 107.9160, src: 'poundsterlinglive.com' },
+  '2026-3':  { rate: 106.8030, src: 'Xe.com' },
+  '2026-4':  null, '2026-5':  null, '2026-6':  null,
+  '2026-7':  null, '2026-8':  null, '2026-9':  null,
+  '2026-10': null, '2026-11': null, '2026-12': null,
+  '2027-1':  null, '2027-2':  null, '2027-3':  null,
+  '2027-4':  null, '2027-5':  null, '2027-6':  null,
+  '2027-7':  null, '2027-8':  null, '2027-9':  null,
+  '2027-10': null, '2027-11': null, '2027-12': null,
+  '2028-1':  null, '2028-2':  null, '2028-3':  null,
+  '2028-4':  null, '2028-5':  null, '2028-6':  null,
+  '2028-7':  null, '2028-8':  null, '2028-9':  null,
+  '2028-10': null, '2028-11': null, '2028-12': null,
+  '2029-1':  null, '2029-2':  null, '2029-3':  null,
+  '2029-4':  null, '2029-5':  null, '2029-6':  null,
+  '2029-7':  null, '2029-8':  null, '2029-9':  null,
+  '2029-10': null, '2029-11': null, '2029-12': null,
+  '2030-1':  null, '2030-2':  null, '2030-3':  null,
+  '2030-4':  null, '2030-5':  null, '2030-6':  null,
+  '2030-7':  null, '2030-8':  null, '2030-9':  null,
+  '2030-10': null, '2030-11': null, '2030-12': null,
+  '2031-1':  null, '2031-2':  null, '2031-3':  null,
+  '2031-4':  null, '2031-5':  null, '2031-6':  null,
+  '2031-7':  null, '2031-8':  null, '2031-9':  null,
+  '2031-10': null, '2031-11': null, '2031-12': null,
+  '2032-1':  null, '2032-2':  null, '2032-3':  null,
+  '2032-4':  null, '2032-5':  null, '2032-6':  null,
+  '2032-7':  null, '2032-8':  null, '2032-9':  null,
+  '2032-10': null, '2032-11': null, '2032-12': null,
+  '2033-1':  null, '2033-2':  null, '2033-3':  null,
+  '2033-4':  null, '2033-5':  null, '2033-6':  null,
+  '2033-7':  null, '2033-8':  null, '2033-9':  null,
+  '2033-10': null, '2033-11': null, '2033-12': null,
 };
 
 /* ══════════════════════════════════════════════════════
    FIREBASE INIT
 ══════════════════════════════════════════════════════ */
-var firebaseConfig = {
-  apiKey:            "AIzaSyAXwY1UbGQiCBQYBVUBmzjfR0GP1siN0LE",
-  authDomain:        "loan-tracker-de-in.firebaseapp.com",
-  databaseURL:       "https://loan-tracker-de-in-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId:         "loan-tracker-de-in",
-  storageBucket:     "loan-tracker-de-in.firebasestorage.app",
-  messagingSenderId: "41830630772",
-  appId:             "1:41830630772:web:f76285c2779590e13ad821"
+const firebaseConfig = {
+  apiKey:            'AIzaSyAXwY1UbGQiCBQYBVUBmzjfR0GP1siN0LE',
+  authDomain:        'loan-tracker-de-in.firebaseapp.com',
+  databaseURL:       'https://loan-tracker-de-in-default-rtdb.europe-west1.firebasedatabase.app',
+  projectId:         'loan-tracker-de-in',
+  storageBucket:     'loan-tracker-de-in.firebasestorage.app',
+  messagingSenderId: '41830630772',
+  appId:             '1:41830630772:web:f76285c2779590e13ad821',
 };
 firebase.initializeApp(firebaseConfig);
-var db       = firebase.database();
-var dbRef    = db.ref('loandata');
-/* payRef / pmtRef removed — not used, full dbRef.set() is used instead */
+const db    = firebase.database();
+const dbRef = db.ref('loandata');
 
 /* ══════════════════════════════════════════════════════
-   STATE
+   STATE — mutable; updated by Firebase listener
 ══════════════════════════════════════════════════════ */
-var payStatus   = {};
-var payments    = {};
-var openDrawers = {};
-var fbReady     = false;   /* true once first Firebase snapshot received */
+let payStatus   = {};
+let payments    = {};
+let openDrawers = {};
+let fbReady     = false;
 
-/* Sync indicator helpers */
-function setSyncStatus(state, msg) {
-  var dot  = document.getElementById('syncDot');
-  var text = document.getElementById('syncText');
+/* ══════════════════════════════════════════════════════
+   SYNC INDICATOR
+══════════════════════════════════════════════════════ */
+const setSyncStatus = (state, msg) => {
+  const dot  = document.getElementById('syncDot');
+  const text = document.getElementById('syncText');
   if (!dot || !text) return;
-  dot.className  = 'sync-dot ' + state;
-  text.className = 'sync-text ' + state;
+  dot.className    = `sync-dot ${state}`;
+  text.className   = `sync-text ${state}`;
   text.textContent = msg;
-}
+};
 
 /* Write to Firebase — single write for the whole data object */
-function persist() {
+const persist = () => {
   setSyncStatus('connecting', 'Saving…');
-  dbRef.set({ payStatus: payStatus, payments: payments })
-    .then(function()  { setSyncStatus('synced', 'Synced ✓'); })
-    .catch(function() { setSyncStatus('error',  'Save failed — check connection'); });
-}
+  dbRef.set({ payStatus, payments })
+    .then(() => setSyncStatus('synced', 'Synced ✓'))
+    .catch(() => setSyncStatus('error', 'Save failed — check connection'));
+};
 
 /* ══════════════════════════════════════════════════════
    FIREBASE REALTIME LISTENER
    Fires on first load AND whenever the other person
    makes a change — both devices stay in sync live.
 ══════════════════════════════════════════════════════ */
-dbRef.on('value', function(snapshot) {
-  var data = snapshot.val();
+dbRef.on('value', snapshot => {
+  const data = snapshot.val();
   if (data) {
     payStatus = data.payStatus || {};
     payments  = data.payments  || {};
@@ -2840,22 +2836,18 @@ dbRef.on('value', function(snapshot) {
     payments  = {};
   }
   if (!fbReady) {
-    /* First load — boot the UI now that data is ready */
     fbReady = true;
     renderRatePanel();
     renderAll();
-    /* Transition: hide skeletons, reveal real content */
     document.body.classList.remove('is-loading');
     document.body.classList.add('data-ready');
     setSyncStatus('synced', 'Synced ✓');
   } else {
-    /* Subsequent updates — re-render to reflect the other person's changes */
     renderAll();
     setSyncStatus('synced', 'Updated ✓');
   }
-}, function(error) {
-  setSyncStatus('error', 'Firebase error: ' + error.message);
-  /* Fall back to empty state so UI still renders */
+}, error => {
+  setSyncStatus('error', `Firebase error: ${error.message}`);
   if (!fbReady) {
     fbReady = true;
     renderRatePanel();
@@ -2868,82 +2860,74 @@ dbRef.on('value', function(snapshot) {
 /* ══════════════════════════════════════════════════════
    UTILS
 ══════════════════════════════════════════════════════ */
-function mkey(y, m) { return y + '-' + m; }
+const mkey = (y, m) => `${y}-${m}`;
 
-function today() {
-  var d = new Date();
+const today = () => {
+  const d = new Date();
   return { y: d.getFullYear(), m: d.getMonth() + 1, day: d.getDate() };
-}
+};
 
-function isPast(y, m) {
-  var t = today();
+const isPast = (y, m) => {
+  const t = today();
   return y < t.y || (y === t.y && m < t.m);
-}
+};
 
-function isCurr(y, m) {
-  var t = today();
+const isCurr = (y, m) => {
+  const t = today();
   return y === t.y && m === t.m;
-}
+};
 
-function isUpco(y, m) {
-  return !isPast(y, m) && !isCurr(y, m);
-}
+const isUpco = (y, m) => !isPast(y, m) && !isCurr(y, m);
 
-function getMonths() {
-  var list = [], y = 2026, m = 2;
-  for (var i = 0; i < TOTAL_MONTHS; i++) {
-    list.push({ y: y, m: m, idx: i + 1 });
+const getMonths = () => {
+  const list = [];
+  let y = 2026, m = 2;
+  for (let i = 0; i < TOTAL_MONTHS; i++) {
+    list.push({ y, m, idx: i + 1 });
     m++;
     if (m > 12) { m = 1; y++; }
   }
   return list;
-}
+};
 
-function getRate(y, m) {
-  var k = mkey(y, m);
-  if (RATES.hasOwnProperty(k)) return RATES[k];
-  return null;
-}
+const getRate = (y, m) => {
+  const k = mkey(y, m);
+  return Object.prototype.hasOwnProperty.call(RATES, k) ? RATES[k] : null;
+};
 
 /* Indian number formatting without locale API */
-function fmt_inr(n) {
-  /* Indian number grouping: last 3 digits, then groups of 2 from right */
-  var s = String(Math.round(Math.abs(n)));
+const fmt_inr = n => {
+  const s = String(Math.round(Math.abs(n)));
   if (s.length <= 3) return '\u20B9' + s;
-  var last3 = s.slice(-3);
-  var rest   = s.slice(0, s.length - 3);
-  var groups = [];
+  const last3 = s.slice(-3);
+  let rest = s.slice(0, s.length - 3);
+  const groups = [];
   while (rest.length > 0) {
     groups.unshift(rest.slice(-2));
     rest = rest.slice(0, rest.length - 2);
   }
   return '\u20B9' + groups.join(',') + ',' + last3;
-}
+};
 
-function fmt_eur(n) {
-  return '\u20AC' + n.toFixed(2);
-}
+const fmt_eur = n => '\u20AC' + n.toFixed(2);
 
 /* ══════════════════════════════════════════════════════
    PAYMENT HELPERS
 ══════════════════════════════════════════════════════ */
-function getPaidEur(k) {
-  // Always return the actual stored amount so overpayments flow into cumulative
+const getPaidEur = k => {
   if (payments[k] && payments[k].eur != null) return payments[k].eur;
-  // payStatus true but no payment record = manually toggled as fully paid
   if (payStatus[k]) return FRIEND_EUR;
   return 0;
-}
+};
 
-function monthNet(k) {
-  return parseFloat((FRIEND_EUR - getPaidEur(k)).toFixed(2));
-}
+const monthNet = k => parseFloat((FRIEND_EUR - getPaidEur(k)).toFixed(2));
 
-function buildCumulMap() {
-  var map = {}, months = getMonths(), run = 0;
-  for (var i = 0; i < months.length; i++) {
-    var mo = months[i];
-    var k = mkey(mo.y, mo.m);
+const buildCumulMap = () => {
+  const map = {};
+  const months = getMonths();
+  let run = 0;
+  for (const mo of months) {
+    const k = mkey(mo.y, mo.m);
     if (!isUpco(mo.y, mo.m)) {
       run = parseFloat((run + monthNet(k)).toFixed(2));
       map[k] = run;
@@ -2952,680 +2936,638 @@ function buildCumulMap() {
     }
   }
   return map;
-}
+};
 
 /* ══════════════════════════════════════════════════════
    RATE PANEL
 ══════════════════════════════════════════════════════ */
-function renderRatePanel() {
-  var rateSkel = document.getElementById('rateSkel');
+const renderRatePanel = () => {
+  const rateSkel = document.getElementById('rateSkel');
   if (rateSkel) rateSkel.style.display = 'none';
-  var t = today();
-  var ri = getRate(t.y, t.m);
-  var panel = document.getElementById('ratePanelInner');
-  var rateVal  = ri ? ('\u20B9' + ri.rate.toFixed(4)) : 'TBD';
-  var rateSrc  = ri ? ri.src : '\u2014';
-  var rateDate = ri ? ('10 ' + SHORT_NAMES[t.m - 1] + ' ' + t.y) : 'Not yet recorded';
-  var friendInr = ri ? fmt_inr(FRIEND_EUR * ri.rate) : 'TBD';
+  const t = today();
+  const ri = getRate(t.y, t.m);
+  const panel = document.getElementById('ratePanelInner');
+  const rateVal  = ri ? (`\u20B9${ri.rate.toFixed(4)}`) : 'TBD';
+  const rateSrc  = ri ? ri.src : '\u2014';
+  const rateDate = ri ? (`10 ${SHORT_NAMES[t.m - 1]} ${t.y}`) : 'Not yet recorded';
+  const friendInr = ri ? fmt_inr(FRIEND_EUR * ri.rate) : 'TBD';
 
   panel.innerHTML =
-    '<div class="rp-cell">' +
-      '<div class="rp-label">This month\'s rate</div>' +
-      '<div class="rp-value">' + rateVal + '/\u20AC</div>' +
-      '<div class="rp-sub">' + rateDate + '</div>' +
-      '<div class="rp-source">' + rateSrc + '</div>' +
-    '</div>' +
-    '<div class="rp-cell">' +
-      '<div class="rp-label">Friend pays this month</div>' +
-      '<div class="rp-value">' + friendInr + '</div>' +
-      '<div class="rp-sub">= ' + fmt_eur(FRIEND_EUR) + ' \u00D7 rate</div>' +
-    '</div>';
-}
+    `<div class="rp-cell">
+      <div class="rp-label">This month's rate</div>
+      <div class="rp-value">${rateVal}/\u20AC</div>
+      <div class="rp-sub">${rateDate}</div>
+      <div class="rp-source">${rateSrc}</div>
+    </div>
+    <div class="rp-cell">
+      <div class="rp-label">Friend pays this month</div>
+      <div class="rp-value">${friendInr}</div>
+      <div class="rp-sub">= ${fmt_eur(FRIEND_EUR)} \u00D7 rate</div>
+    </div>`;
+};
 
 /* ══════════════════════════════════════════════════════
    STATS
 ══════════════════════════════════════════════════════ */
-function renderStats() {
-  var months = getMonths();
-  var elapsed = 0, totalDue = 0, totalPaid = 0, upcoming = 0;
-  var totalPaidInr = 0; // sum of actual INR stored per month (correct per-month rates)
-  for (var i = 0; i < months.length; i++) {
-    var mo = months[i];
-    var k = mkey(mo.y, mo.m);
+const renderStats = () => {
+  const months = getMonths();
+  let elapsed = 0, totalDue = 0, totalPaid = 0, upcoming = 0, totalPaidInr = 0;
+
+  for (const mo of months) {
+    const k = mkey(mo.y, mo.m);
     if (!isUpco(mo.y, mo.m)) {
       elapsed++;
       totalDue += FRIEND_EUR;
-      var paidEur = getPaidEur(k);
+      const paidEur = getPaidEur(k);
       totalPaid += paidEur;
-      // Use stored INR directly (captured at correct month's rate), else convert via that month's rate
       if (payments[k] && payments[k].inr != null) {
         totalPaidInr += payments[k].inr;
       } else if (paidEur > 0) {
-        var mRi = getRate(mo.y, mo.m);
-        totalPaidInr += mRi ? Math.round(paidEur * mRi.rate) : Math.round(paidEur * (getRate(today().y, today().m) ? getRate(today().y, today().m).rate : 1));
+        const mRi = getRate(mo.y, mo.m);
+        const fallbackRate = getRate(today().y, today().m);
+        totalPaidInr += mRi
+          ? Math.round(paidEur * mRi.rate)
+          : Math.round(paidEur * (fallbackRate ? fallbackRate.rate : 1));
       }
     } else {
       upcoming++;
     }
   }
-  totalDue  = parseFloat(totalDue.toFixed(2));
-  totalPaid = parseFloat(totalPaid.toFixed(2));
+
+  totalDue     = parseFloat(totalDue.toFixed(2));
+  totalPaid    = parseFloat(totalPaid.toFixed(2));
   totalPaidInr = Math.round(totalPaidInr);
-  var out    = Math.max(0, parseFloat((totalDue - totalPaid).toFixed(2)));
-  // Outstanding in INR: sum of per-month net remaining using each month's own rate
-  var outInr = 0;
-  for (var i = 0; i < months.length; i++) {
-    var mo = months[i];
+  const out    = Math.max(0, parseFloat((totalDue - totalPaid).toFixed(2)));
+
+  let outInr = 0;
+  for (const mo of months) {
     if (!isUpco(mo.y, mo.m)) {
-      var netE = monthNet(mkey(mo.y, mo.m));
+      const netE = monthNet(mkey(mo.y, mo.m));
       if (netE > 0) {
-        var mRi2 = getRate(mo.y, mo.m);
+        const mRi2 = getRate(mo.y, mo.m);
         outInr += mRi2 ? Math.round(netE * mRi2.rate) : 0;
       }
     }
   }
-  var collPct = totalDue > 0 ? Math.min(100, (totalPaid / totalDue) * 100).toFixed(1) : '0.0';
-  var elPct   = ((elapsed / TOTAL_MONTHS) * 100).toFixed(1);
 
-  var t = today();
-  var ri = getRate(t.y, t.m);
+  const collPct = totalDue > 0 ? Math.min(100, (totalPaid / totalDue) * 100).toFixed(1) : '0.0';
+  const elPct   = ((elapsed / TOTAL_MONTHS) * 100).toFixed(1);
+
+  const t  = today();
+  const ri = getRate(t.y, t.m);
 
   document.getElementById('kpiReceived').textContent    = fmt_eur(totalPaid);
   document.getElementById('kpiReceivedInr').textContent = totalPaidInr > 0 ? fmt_inr(totalPaidInr) : '\u20B90';
-  document.getElementById('kpiReceivedSub').textContent = elapsed + ' month' + (elapsed !== 1 ? 's' : '') + ' elapsed';
+  document.getElementById('kpiReceivedSub').textContent = `${elapsed} month${elapsed !== 1 ? 's' : ''} elapsed`;
 
-  document.getElementById('kpiOutstanding').textContent = fmt_eur(out);
+  document.getElementById('kpiOutstanding').textContent    = fmt_eur(out);
   document.getElementById('kpiOutstandingInr').textContent = outInr > 0 ? fmt_inr(outInr) : '\u20B90';
   document.getElementById('kpiOutstandingSub').textContent = out > 0 ? 'owed by friend' : '\u2713 all settled';
 
   document.getElementById('kpiRemain').textContent    = upcoming;
   document.getElementById('kpiRemainInr').textContent = ri ? fmt_inr(upcoming * FRIEND_EUR * ri.rate) : '\u20B9 rate TBD';
-  document.getElementById('kpiRemainSub').textContent = fmt_eur(upcoming * FRIEND_EUR) + ' ahead';
+  document.getElementById('kpiRemainSub').textContent = `${fmt_eur(upcoming * FRIEND_EUR)} ahead`;
 
   document.getElementById('kpiEmiInr').textContent    = ri ? fmt_inr(268.91 * ri.rate) : '\u20B9 rate TBD';
   document.getElementById('kpiFriendInr').textContent = ri ? fmt_inr(FRIEND_EUR * ri.rate) : '\u20B9 rate TBD';
 
-  setTimeout(function() {
-    document.getElementById('pf1').style.width = elPct + '%';
-    document.getElementById('pf2').style.width = collPct + '%';
-    /* Hero card mini-bars */
-    var hfe = document.getElementById('heroFillEl');
-    var hfc = document.getElementById('heroFillColl');
-    if (hfe) hfe.style.width = elPct + '%';
-    if (hfc) hfc.style.width = collPct + '%';
-    /* aria-valuenow for screen readers */
-    var pt1 = document.getElementById('pt1');
-    var pt2 = document.getElementById('pt2');
+  setTimeout(() => {
+    document.getElementById('pf1').style.width = `${elPct}%`;
+    document.getElementById('pf2').style.width = `${collPct}%`;
+    const hfe = document.getElementById('heroFillEl');
+    const hfc = document.getElementById('heroFillColl');
+    if (hfe) hfe.style.width = `${elPct}%`;
+    if (hfc) hfc.style.width = `${collPct}%`;
+    const pt1 = document.getElementById('pt1');
+    const pt2 = document.getElementById('pt2');
     if (pt1) pt1.setAttribute('aria-valuenow', elPct);
     if (pt2) pt2.setAttribute('aria-valuenow', collPct);
   }, 150);
 
-  /* Percentage display — integer + decimal split */
-  function setPct(id, val) {
-    var el = document.getElementById(id);
+  const setPct = (id, val) => {
+    const el = document.getElementById(id);
     if (!el) return;
-    var parts = String(val).split('.');
-    el.innerHTML = parts[0] + '<span class="prog-pct-unit">.' + (parts[1] || '0') + '%</span>';
-  }
+    const [whole, dec] = String(val).split('.');
+    el.innerHTML = `${whole}<span class="prog-pct-unit">.${dec || '0'}%</span>`;
+  };
   setPct('pp1', elPct);
   setPct('pp2', collPct);
-  /* Hero card pct text (plain, compact) */
-  var hep = document.getElementById('heroElPct');
-  var hcp = document.getElementById('heroCollPct');
-  if (hep) hep.textContent = elPct + '%';
-  if (hcp) hcp.textContent = collPct + '%';
 
-  /* Caption text */
-  var pc1 = document.getElementById('pc1');
-  var pc2 = document.getElementById('pc2');
-  if (pc1) pc1.innerHTML = '<strong>' + elapsed + '</strong> of ' + TOTAL_MONTHS + ' months complete';
+  const hep = document.getElementById('heroElPct');
+  const hcp = document.getElementById('heroCollPct');
+  if (hep) hep.textContent = `${elPct}%`;
+  if (hcp) hcp.textContent = `${collPct}%`;
+
+  const pc1 = document.getElementById('pc1');
+  const pc2 = document.getElementById('pc2');
+  if (pc1) pc1.innerHTML = `<strong>${elapsed}</strong> of ${TOTAL_MONTHS} months complete`;
   if (pc2) {
-    if (totalDue > 0) {
-      pc2.innerHTML = '<strong>' + fmt_eur(totalPaid) + '</strong> received of <strong>' + fmt_eur(totalDue) + '</strong> due so far';
-    } else {
-      pc2.innerHTML = 'No payments due yet';
-    }
+    pc2.innerHTML = totalDue > 0
+      ? `<strong>${fmt_eur(totalPaid)}</strong> received of <strong>${fmt_eur(totalDue)}</strong> due so far`
+      : 'No payments due yet';
   }
 
-  /* Update sticky summary bar */
-  var sbDue = document.getElementById('sbDue');
-  var sbRec = document.getElementById('sbReceived');
-  var sbOut = document.getElementById('sbOutstanding');
-  var sbMon = document.getElementById('sbMonths');
+  const sbDue = document.getElementById('sbDue');
+  const sbRec = document.getElementById('sbReceived');
+  const sbOut = document.getElementById('sbOutstanding');
+  const sbMon = document.getElementById('sbMonths');
   if (sbDue) sbDue.textContent = ri ? fmt_inr(totalDue * ri.rate) : fmt_eur(totalDue);
-  if (sbRec) sbRec.textContent = totalPaidInr > 0 ? fmt_inr(totalPaidInr) : '₹0';
-  if (sbOut) sbOut.textContent = outInr > 0 ? fmt_inr(outInr) : '₹0';
-  if (sbMon) sbMon.textContent = upcoming + ' months';
-}
+  if (sbRec) sbRec.textContent = totalPaidInr > 0 ? fmt_inr(totalPaidInr) : '\u20B90';
+  if (sbOut) sbOut.textContent = outInr > 0 ? fmt_inr(outInr) : '\u20B90';
+  if (sbMon) sbMon.textContent = `${upcoming} months`;
+};
 
 /* ══════════════════════════════════════════════════════
    CARDS
 ══════════════════════════════════════════════════════ */
-var activeFilter = 'all';
+let activeFilter = 'all';
 
-function setFilter(f, btn) {
+const setFilter = (f, btn) => {
   activeFilter = f;
-  var btns = document.querySelectorAll('.t-btn');
-  for (var i = 0; i < btns.length; i++) {
-    btns[i].classList.remove('active');
-    btns[i].setAttribute('aria-pressed', 'false');
-  }
+  document.querySelectorAll('.t-btn').forEach(b => {
+    b.classList.remove('active');
+    b.setAttribute('aria-pressed', 'false');
+  });
   btn.classList.add('active');
   btn.setAttribute('aria-pressed', 'true');
   renderAll();
-}
+};
 
-function renderAll() { renderStats(); renderCards(); }
+const renderAll = () => { renderStats(); renderCards(); };
 
-function renderCards() {
-  var months  = getMonths();
-  var cmap    = buildCumulMap();
-  var filtered = [];
+const renderCards = () => {
+  const months  = getMonths();
+  const cmap    = buildCumulMap();
+  const filtered = [];
 
-  for (var i = 0; i < months.length; i++) {
-    var mo = months[i];
-    var y = mo.y, m = mo.m, idx = mo.idx;
-    var k = mkey(y, m);
-    var past = isPast(y, m), curr = isCurr(y, m), upco = isUpco(y, m);
-    var paid = !!payStatus[k];
-    var paidEur = getPaidEur(k);
-    var partial = !paid && paidEur > 0 && paidEur < FRIEND_EUR;
-    var st;
+  for (const mo of months) {
+    const { y, m, idx } = mo;
+    const k       = mkey(y, m);
+    const past    = isPast(y, m);
+    const curr    = isCurr(y, m);
+    const upco    = isUpco(y, m);
+    const paid    = !!payStatus[k];
+    const paidEur = getPaidEur(k);
+    const partial = !paid && paidEur > 0 && paidEur < FRIEND_EUR;
+    let st;
     if (upco)         st = 'upcoming';
     else if (paid)    st = 'paid';
     else if (partial) st = 'partial';
     else if (curr)    st = 'current';
     else              st = 'unpaid';
 
-    if (activeFilter === 'paid'     && st !== 'paid')    continue;
-    if (activeFilter === 'partial'  && st !== 'partial') continue;
-    if (activeFilter === 'unpaid'   && st !== 'unpaid' && st !== 'current') continue;
-    if (activeFilter === 'upcoming' && st !== 'upcoming') continue;
+    if (activeFilter === 'paid'     && st !== 'paid')                         continue;
+    if (activeFilter === 'partial'  && st !== 'partial')                      continue;
+    if (activeFilter === 'unpaid'   && st !== 'unpaid' && st !== 'current')   continue;
+    if (activeFilter === 'upcoming' && st !== 'upcoming')                     continue;
 
-    filtered.push({ y:y, m:m, idx:idx, k:k, past:past, curr:curr, upco:upco, paid:paid, paidEur:paidEur, partial:partial, st:st });
+    filtered.push({ y, m, idx, k, past, curr, upco, paid, paidEur, partial, st });
   }
 
-  document.getElementById('tCount').textContent = filtered.length + ' / ' + TOTAL_MONTHS;
+  document.getElementById('tCount').textContent = `${filtered.length} / ${TOTAL_MONTHS}`;
 
-  /* Build cards with year separator dividers — single loop, no duplicate rendering */
-  var yearHtml = '';
-  var lastYear = 0;
-  for (var ci = 0; ci < filtered.length; ci++) {
-    var f = filtered[ci];
+  let yearHtml = '';
+  let lastYear = 0;
+  for (let ci = 0; ci < filtered.length; ci++) {
+    const f = filtered[ci];
     if (f.y !== lastYear) {
-      yearHtml += '<div class="year-sep" role="separator" aria-label="' + f.y + '"><span>' + f.y + '</span></div>';
+      yearHtml += `<div class="year-sep" role="separator" aria-label="${f.y}"><span>${f.y}</span></div>`;
       lastYear = f.y;
     }
     yearHtml += buildCard(f, ci, cmap);
   }
   document.getElementById('monthList').innerHTML = yearHtml;
-}
+};
 
-function buildCard(mo, i, cmap) {
-  var y = mo.y, m = mo.m, idx = mo.idx, k = mo.k;
-  var upco = mo.upco, curr = mo.curr, past = mo.past;
-  var paid = mo.paid, paidEur = mo.paidEur, partial = mo.partial, st = mo.st;
+const buildCard = (mo, i, cmap) => {
+  const { y, m, idx, k, upco, curr, past, paid, paidEur, partial, st } = mo;
 
-  var ri      = getRate(y, m);
-  var netEur  = monthNet(k);
-  var cumulEur = cmap[k];
+  const ri       = getRate(y, m);
+  const netEur   = monthNet(k);
+  const cumulEur = cmap[k];
 
   /* Card CSS class */
-  var mc = 'mc-upcoming';
+  let mc = 'mc-upcoming';
   if (curr)         mc = 'mc-current';
   else if (paid)    mc = 'mc-paid';
   else if (partial) mc = 'mc-partial';
-  else if (past)    mc = 'mc-past' + (netEur > 0 ? ' mc-unpaid' : '');
-  var dimClass = (past && !paid && !partial) ? 'dimmed' : '';
+  else if (past)    mc = `mc-past${netEur > 0 ? ' mc-unpaid' : ''}`;
+  const dimClass = (past && !paid && !partial) ? 'dimmed' : '';
 
-  var delay = 'animation-delay:' + Math.min(i * 0.018, 0.45) + 's';
+  const delay = `animation-delay:${Math.min(i * 0.018, 0.45)}s`;
 
   /* DUE cell */
-  var dueInr = ri ? fmt_inr(FRIEND_EUR * ri.rate) : null;
-  var srcBadge = ri
-    ? '<span class="src-badge src-v">\u2713 ' + ri.src + '</span>'
-    : '<span class="src-badge src-null">Rate TBD</span>';
-  var dueHTML =
-    '<div class="mc-cell col-due">' +
-      '<div class="mc-cell-label">Due (friend)</div>' +
-      '<div class="mc-primary c-blue">' + (dueInr || '\u20B9 TBD') + '</div>' +
-      '<div class="mc-secondary c-muted">' + fmt_eur(FRIEND_EUR) + '</div>' +
-      srcBadge +
-    '</div>';
+  const dueInr  = ri ? fmt_inr(FRIEND_EUR * ri.rate) : null;
+  const srcBadge = ri
+    ? `<span class="src-badge src-v">\u2713 ${ri.src}</span>`
+    : `<span class="src-badge src-null">Rate TBD</span>`;
+  const dueHTML =
+    `<div class="mc-cell col-due">
+      <div class="mc-cell-label">Due (friend)</div>
+      <div class="mc-primary c-blue">${dueInr || '\u20B9 TBD'}</div>
+      <div class="mc-secondary c-muted">${fmt_eur(FRIEND_EUR)}</div>
+      ${srcBadge}
+    </div>`;
 
   /* PAID cell */
-  var paidInr = (ri && paidEur > 0) ? fmt_inr(paidEur * ri.rate) : (paidEur > 0 ? '\u20B9\u2014' : '\u2014');
-  var paidHTML;
-  if (upco) {
-    paidHTML = '<div class="mc-cell col-paid"><div class="mc-cell-label">Paid</div><div class="mc-primary c-muted mc-dash">\u2014</div></div>';
-  } else {
-    paidHTML =
-      '<div class="mc-cell col-paid">' +
-        '<div class="mc-cell-label">Paid</div>' +
-        '<div class="mc-primary ' + (paidEur > 0 ? 'c-green' : 'c-muted') + '">' + (paidEur > 0 ? paidInr : '\u20B90') + '</div>' +
-        '<div class="mc-secondary c-muted">' + (paidEur > 0 ? fmt_eur(paidEur) : '\u20AC0.00') + '</div>' +
-      '</div>';
-  }
+  const paidInr = (ri && paidEur > 0) ? fmt_inr(paidEur * ri.rate) : (paidEur > 0 ? '\u20B9\u2014' : '\u2014');
+  const paidHTML = upco
+    ? `<div class="mc-cell col-paid"><div class="mc-cell-label">Paid</div><div class="mc-primary c-muted mc-dash">\u2014</div></div>`
+    : `<div class="mc-cell col-paid">
+        <div class="mc-cell-label">Paid</div>
+        <div class="mc-primary ${paidEur > 0 ? 'c-green' : 'c-muted'}">${paidEur > 0 ? paidInr : '\u20B90'}</div>
+        <div class="mc-secondary c-muted">${paidEur > 0 ? fmt_eur(paidEur) : '\u20AC0.00'}</div>
+      </div>`;
 
-  /* NET REMAINING cell — INR only
-     > 0 = owed (red, no sign) | = 0 = settled (green) | < 0 = overpaid credit (green, − sign) */
-  var netClass, netPrim, netNote;
+  /* NET REMAINING cell */
+  let netClass, netPrim, netNote;
   if (upco) {
     netClass = 'c-muted'; netPrim = '\u2014'; netNote = 'not due yet';
   } else if (netEur === 0) {
     netClass = 'c-green'; netPrim = '\u20B90'; netNote = 'settled \u2713';
   } else if (netEur < 0) {
-    netClass = 'c-green'; netPrim = ri ? ('\u2212' + fmt_inr(-netEur * ri.rate)) : '\u20B9 TBD';
-    netNote = 'credit (overpaid)';
+    netClass = 'c-green';
+    netPrim  = ri ? `\u2212${fmt_inr(-netEur * ri.rate)}` : '\u20B9 TBD';
+    netNote  = 'credit (overpaid)';
   } else {
-    netClass = 'c-red'; netPrim = ri ? fmt_inr(netEur * ri.rate) : '\u20B9 TBD';
-    netNote = paidEur > 0 ? 'partial' : 'unpaid';
+    netClass = 'c-red';
+    netPrim  = ri ? fmt_inr(netEur * ri.rate) : '\u20B9 TBD';
+    netNote  = paidEur > 0 ? 'partial' : 'unpaid';
   }
-  var netHTML =
-    '<div class="mc-cell col-net">' +
-      '<div class="mc-cell-label">Net Remaining</div>' +
-      '<div class="mc-primary ' + netClass + '">' + netPrim + '</div>' +
-      '<div class="mc-note">' + netNote + '</div>' +
-    '</div>';
+  const netHTML =
+    `<div class="mc-cell col-net">
+      <div class="mc-cell-label">Net Remaining</div>
+      <div class="mc-primary ${netClass}">${netPrim}</div>
+      <div class="mc-note">${netNote}</div>
+    </div>`;
 
-  /* CUMULATIVE cell — INR only
-     > 0 = total owed (red) | = 0 = all clear (green) | < 0 = net credit (green, − sign) */
-  var cumClass, cumPrim, cumNote;
+  /* CUMULATIVE cell */
+  let cumClass, cumPrim, cumNote;
   if (cumulEur === null) {
     cumClass = 'c-muted'; cumPrim = '\u2014'; cumNote = 'upcoming';
   } else if (cumulEur === 0) {
     cumClass = 'c-green'; cumPrim = '\u20B90'; cumNote = 'all clear \u2713';
   } else if (cumulEur < 0) {
     cumClass = 'c-green';
-    cumPrim = ri ? ('\u2212' + fmt_inr(-cumulEur * ri.rate)) : '\u20B9 TBD';
-    cumNote = 'net credit';
+    cumPrim  = ri ? `\u2212${fmt_inr(-cumulEur * ri.rate)}` : '\u20B9 TBD';
+    cumNote  = 'net credit';
   } else {
     cumClass = 'c-red';
-    cumPrim = ri ? fmt_inr(cumulEur * ri.rate) : '\u20B9 TBD';
-    cumNote = 'total owed';
+    cumPrim  = ri ? fmt_inr(cumulEur * ri.rate) : '\u20B9 TBD';
+    cumNote  = 'total owed';
   }
-  var cumHTML =
-    '<div class="mc-cell col-cumul">' +
-      '<div class="mc-cell-label">Total Remaining</div>' +
-      '<div class="mc-primary ' + cumClass + '">' + cumPrim + '</div>' +
-      '<div class="mc-note">' + cumNote + '</div>' +
-    '</div>';
+  const cumHTML =
+    `<div class="mc-cell col-cumul">
+      <div class="mc-cell-label">Total Remaining</div>
+      <div class="mc-primary ${cumClass}">${cumPrim}</div>
+      <div class="mc-note">${cumNote}</div>
+    </div>`;
 
   /* STATUS PILL */
-  var monthLabel = FULL_NAMES[m - 1] + ' ' + y;
-  var pill;
-  if      (st === 'paid')     pill = '<button class="status-pill sp-paid"    onclick="togglePaid(\'' + k + '\')" aria-label="' + monthLabel + ': Paid — click to change" aria-pressed="true"><span aria-hidden="true">✓</span> Paid</button>';
-  else if (st === 'partial')  pill = '<button class="status-pill sp-partial" onclick="togglePaid(\'' + k + '\')" aria-label="' + monthLabel + ': Partially paid — click to change" aria-pressed="mixed"><span aria-hidden="true">◑</span> Partial</button>';
-  else if (st === 'current')  pill = '<button class="status-pill sp-current" onclick="togglePaid(\'' + k + '\')" aria-label="' + monthLabel + ': Payment pending — click to mark paid" aria-pressed="false"><span aria-hidden="true">●</span> Pending</button>';
-  else if (st === 'unpaid')   pill = '<button class="status-pill sp-unpaid"  onclick="togglePaid(\'' + k + '\')" aria-label="' + monthLabel + ': Missed payment — click to mark paid" aria-pressed="false"><span aria-hidden="true">✗</span> Missed</button>';
-  else                        pill = '<span class="status-pill sp-upcoming" role="status" aria-label="' + monthLabel + ': Upcoming — not yet due">Upcoming</span>';
+  const monthLabel = `${FULL_NAMES[m - 1]} ${y}`;
+  let pill;
+  if      (st === 'paid')    pill = `<button class="status-pill sp-paid"    onclick="togglePaid('${k}')" aria-label="${monthLabel}: Paid — click to change" aria-pressed="true"><span aria-hidden="true">✓</span> Paid</button>`;
+  else if (st === 'partial') pill = `<button class="status-pill sp-partial" onclick="togglePaid('${k}')" aria-label="${monthLabel}: Partially paid — click to change" aria-pressed="mixed"><span aria-hidden="true">◑</span> Partial</button>`;
+  else if (st === 'current') pill = `<button class="status-pill sp-current" onclick="togglePaid('${k}')" aria-label="${monthLabel}: Payment pending — click to mark paid" aria-pressed="false"><span aria-hidden="true">●</span> Pending</button>`;
+  else if (st === 'unpaid')  pill = `<button class="status-pill sp-unpaid"  onclick="togglePaid('${k}')" aria-label="${monthLabel}: Missed payment — click to mark paid" aria-pressed="false"><span aria-hidden="true">✗</span> Missed</button>`;
+  else                       pill = `<span class="status-pill sp-upcoming" role="status" aria-label="${monthLabel}: Upcoming — not yet due">Upcoming</span>`;
 
   /* DRAWER */
-  var isOpen    = !!openDrawers[k];
-  var toggleTxt = isOpen ? '\u25B2 close' : '\u25BC log \u20B9 payment';
-  var pmtObj    = payments[k];
-  var savedInr  = (pmtObj && pmtObj.inr != null) ? pmtObj.inr : '';
-  var equivTxt;
+  const isOpen    = !!openDrawers[k];
+  const toggleTxt = isOpen ? '\u25B2 close' : '\u25BC log \u20B9 payment';
+  const pmtObj    = payments[k];
+  const savedInr  = (pmtObj && pmtObj.inr != null) ? pmtObj.inr : '';
+  let equivTxt;
   if (!ri) {
     equivTxt = 'Rate not yet available for this month';
   } else if (savedInr) {
-    equivTxt = '\u2248 <strong>' + fmt_inr(savedInr) + '</strong> logged';
+    equivTxt = `\u2248 <strong>${fmt_inr(savedInr)}</strong> logged`;
   } else {
     equivTxt = 'Enter \u20B9 amount above';
   }
 
   /* BREAKDOWN inside drawer */
-  var bkdHTML = '';
+  let bkdHTML = '';
   if (paidEur > 0) {
-    var pInr   = ri ? fmt_inr(paidEur * ri.rate) : '\u20B9\u2014';
-    var remEur = netEur;
-    var remInr = (ri && remEur > 0) ? fmt_inr(remEur * ri.rate) : '\u20B90';
-    var cval   = (cumulEur !== null) ? cumulEur : 0;
-    var cInr   = (ri && cval > 0) ? fmt_inr(cval * ri.rate) : '\u20B90';
-    var remColor    = remEur > 0 ? 'c-red' : 'c-green';
-    var remInrDisp  = remEur > 0 ? remInr : (remEur < 0 ? ('\u2212' + fmt_inr(-remEur * (ri ? ri.rate : 1))) : '\u20B90');
-    var cumColor    = cval > 0 ? 'c-red' : 'c-green';
-    var cumInrDisp  = cval > 0 ? cInr : (cval < 0 && ri ? ('\u2212' + fmt_inr(-cval * ri.rate)) : '\u20B90');
+    const pInr     = ri ? fmt_inr(paidEur * ri.rate) : '\u20B9\u2014';
+    const remEur   = netEur;
+    const remInr   = (ri && remEur > 0) ? fmt_inr(remEur * ri.rate) : '\u20B90';
+    const cval     = cumulEur !== null ? cumulEur : 0;
+    const cInr     = (ri && cval > 0) ? fmt_inr(cval * ri.rate) : '\u20B90';
+    const remColor    = remEur > 0 ? 'c-red' : 'c-green';
+    const remInrDisp  = remEur > 0 ? remInr : (remEur < 0 ? `\u2212${fmt_inr(-remEur * (ri ? ri.rate : 1))}` : '\u20B90');
+    const cumColor    = cval > 0 ? 'c-red' : 'c-green';
+    const cumInrDisp  = cval > 0 ? cInr : (cval < 0 && ri ? `\u2212${fmt_inr(-cval * ri.rate)}` : '\u20B90');
     bkdHTML =
-      '<div class="pay-breakdown">' +
-        '<div class="pb-cell"><div class="pb-lbl">Due</div><div class="pb-val c-blue">' + (ri ? fmt_inr(FRIEND_EUR * ri.rate) : '\u20B9 TBD') + '</div></div>' +
-        '<div class="pb-cell"><div class="pb-lbl">Paid</div><div class="pb-val c-green">' + pInr + '</div></div>' +
-        '<div class="pb-cell"><div class="pb-lbl">Net Remaining</div><div class="pb-val ' + remColor + '">' + remInrDisp + '</div></div>' +
-        '<div class="pb-cell"><div class="pb-lbl">Total Remaining</div><div class="pb-val ' + cumColor + '">' + cumInrDisp + '</div></div>' +
-      '</div>';
+      `<div class="pay-breakdown">
+        <div class="pb-cell"><div class="pb-lbl">Due</div><div class="pb-val c-blue">${ri ? fmt_inr(FRIEND_EUR * ri.rate) : '\u20B9 TBD'}</div></div>
+        <div class="pb-cell"><div class="pb-lbl">Paid</div><div class="pb-val c-green">${pInr}</div></div>
+        <div class="pb-cell"><div class="pb-lbl">Net Remaining</div><div class="pb-val ${remColor}">${remInrDisp}</div></div>
+        <div class="pb-cell"><div class="pb-lbl">Total Remaining</div><div class="pb-val ${cumColor}">${cumInrDisp}</div></div>
+      </div>`;
   }
 
   /* PAYMENT HISTORY TIMELINE */
-  var histHTML = '';
-  var hist = (payments[k] && payments[k].history) ? payments[k].history : [];
+  let histHTML = '';
+  const hist = (payments[k] && payments[k].history) ? payments[k].history : [];
   if (hist.length > 0) {
-    histHTML = '<div class="pay-history">';
-    histHTML += '<div class="ph-title">Payment History</div>';
-    histHTML += '<div class="ph-list">';
-    for (var hi = hist.length - 1; hi >= 0; hi--) {
-      var he = hist[hi];
-      var hDate = new Date(he.ts);
-      var hDay = hDate.getDate();
-      var hMon = SHORT_NAMES[hDate.getMonth()];
-      var hYr  = hDate.getFullYear();
-      var hHH = String(hDate.getHours()).padStart(2,'0');
-      var hMM = String(hDate.getMinutes()).padStart(2,'0');
-      var hTime = hHH + ':' + hMM;
-      var hColor = hi === hist.length - 1 ? 'ph-entry-latest' : '';
-      histHTML += '<div class="ph-entry ' + hColor + '">';
-      histHTML += '<div class="ph-dot"></div>';
-      histHTML += '<div class="ph-body">';
-      histHTML += '<div class="ph-amount">' + fmt_inr(he.inr) + '</div>';
-      histHTML += '<div class="ph-meta">' + hDay + ' ' + hMon + ' ' + hYr + ' · ' + hTime;
-      histHTML += ' · ₹' + he.rate.toFixed(2) + '/€</div>';
-      histHTML += '</div>';
-      histHTML += '<button class="ph-delete" onclick="deleteHistoryEntry(\'' + k + '\',' + hi + ')" title="Remove entry" aria-label="Delete payment entry">\u00D7</button>';
-      histHTML += '</div>';
-    }
-    histHTML += '</div></div>';
+    const entries = hist.map((he, hi) => {
+      const hDate  = new Date(he.ts);
+      const hDay   = hDate.getDate();
+      const hMon   = SHORT_NAMES[hDate.getMonth()];
+      const hYr    = hDate.getFullYear();
+      const hHH    = String(hDate.getHours()).padStart(2, '0');
+      const hMM    = String(hDate.getMinutes()).padStart(2, '0');
+      const hTime  = `${hHH}:${hMM}`;
+      const hColor = hi === hist.length - 1 ? 'ph-entry-latest' : '';
+      return `<div class="ph-entry ${hColor}">
+        <div class="ph-dot"></div>
+        <div class="ph-body">
+          <div class="ph-amount">${fmt_inr(he.inr)}</div>
+          <div class="ph-meta">${hDay} ${hMon} ${hYr} · ${hTime} · \u20B9${he.rate.toFixed(2)}/\u20AC</div>
+        </div>
+        <button class="ph-delete" onclick="deleteHistoryEntry('${k}',${hi})" title="Remove entry" aria-label="Delete payment entry">\u00D7</button>
+      </div>`;
+    }).reverse().join('');
+    histHTML = `<div class="pay-history"><div class="ph-title">Payment History</div><div class="ph-list">${entries}</div></div>`;
   }
 
   /* MOBILE STRIP */
-  var mobDue  = dueInr || '\u20B9 TBD';
-  var mobNetC = upco ? 'c-muted' : (netEur < 0 ? 'c-green' : netEur > 0 ? 'c-red' : 'c-green');
-  var mobNet;
-  if (upco)          mobNet = '\u2014';
+  const mobDue  = dueInr || '\u20B9 TBD';
+  const mobNetC = upco ? 'c-muted' : (netEur < 0 ? 'c-green' : netEur > 0 ? 'c-red' : 'c-green');
+  let mobNet;
+  if (upco)              mobNet = '\u2014';
   else if (netEur === 0) mobNet = '\u20B90';
-  else if (netEur < 0)   mobNet = ri ? ('\u2212' + fmt_inr(-netEur * ri.rate)) : '\u20B9 TBD';
+  else if (netEur < 0)   mobNet = ri ? `\u2212${fmt_inr(-netEur * ri.rate)}` : '\u20B9 TBD';
   else                   mobNet = ri ? fmt_inr(netEur * ri.rate) : '\u20B9 TBD';
-  /* Paid amount for mobile strip */
-  var mobPaidC = upco ? 'c-muted' : (paidEur > 0 ? 'c-green' : 'c-muted');
-  var mobPaid;
-  if (upco)          mobPaid = '—';
-  else if (paidEur <= 0) mobPaid = '₹0';
-  else               mobPaid = ri ? fmt_inr(paidEur * ri.rate) : (payments[k] && payments[k].inr ? fmt_inr(payments[k].inr) : '₹—');
 
-  var mobCumul = '';
+  const mobPaidC = upco ? 'c-muted' : (paidEur > 0 ? 'c-green' : 'c-muted');
+  let mobPaid;
+  if (upco)            mobPaid = '\u2014';
+  else if (paidEur <= 0) mobPaid = '\u20B90';
+  else                 mobPaid = ri ? fmt_inr(paidEur * ri.rate) : (payments[k] && payments[k].inr ? fmt_inr(payments[k].inr) : '\u20B9\u2014');
+
+  let mobCumul = '';
   if (cumulEur !== null) {
-    var mobCumC = cumulEur > 0 ? 'c-red' : 'c-green';
-    var mobCumV;
-    if (cumulEur === 0)      mobCumV = '\u20B90';
-    else if (cumulEur < 0)   mobCumV = ri ? ('\u2212' + fmt_inr(-cumulEur * ri.rate)) : '\u20B9 TBD';
-    else                     mobCumV = ri ? fmt_inr(cumulEur * ri.rate) : '\u20B9 TBD';
-    mobCumul = '<div class="mms-item"><span class="mms-label">Total Remaining</span><span class="mms-val ' + mobCumC + '">' + mobCumV + '</span></div>';
+    const mobCumC = cumulEur > 0 ? 'c-red' : 'c-green';
+    let mobCumV;
+    if (cumulEur === 0)    mobCumV = '\u20B90';
+    else if (cumulEur < 0) mobCumV = ri ? `\u2212${fmt_inr(-cumulEur * ri.rate)}` : '\u20B9 TBD';
+    else                   mobCumV = ri ? fmt_inr(cumulEur * ri.rate) : '\u20B9 TBD';
+    mobCumul = `<div class="mms-item"><span class="mms-label">Total Remaining</span><span class="mms-val ${mobCumC}">${mobCumV}</span></div>`;
   }
 
-  var logBtn = !upco
-    ? '<button class="mc-log-btn" onclick="toggleDrawer(\'' + k + '\')" aria-expanded="' + (isOpen ? 'true' : 'false') + '" aria-controls="drawer-' + k + '" aria-label="' + (isOpen ? 'Close payment drawer for ' : 'Log payment for ') + monthLabel + '">' + toggleTxt + '</button>'
+  const logBtn = !upco
+    ? `<button class="mc-log-btn" onclick="toggleDrawer('${k}')" aria-expanded="${isOpen}" aria-controls="drawer-${k}" aria-label="${isOpen ? 'Close payment drawer for ' : 'Log payment for '}${monthLabel}">${toggleTxt}</button>`
     : '';
 
-  var nowBadge = curr ? '<span class="mc-badge" aria-label="current month">now</span>' : '';
-
-  var drawerRateNote = ri
-    ? ('Rate: \u20B9' + ri.rate.toFixed(4) + '/\u20AC (' + ri.src + ', 10 ' + SHORT_NAMES[m - 1] + ' ' + y + ')')
+  const nowBadge    = curr ? `<span class="mc-badge" aria-label="current month">now</span>` : '';
+  const drawerRateNote = ri
+    ? `Rate: \u20B9${ri.rate.toFixed(4)}/\u20AC (${ri.src}, 10 ${SHORT_NAMES[m - 1]} ${y})`
     : 'No rate recorded yet';
+  const inputDisabled = ri ? '' : 'disabled';
+  const drawerClass   = `mc-drawer${isOpen ? ' open' : ''}`;
 
-  var inputDisabled = ri ? '' : 'disabled';
+  const pctPaid   = FRIEND_EUR > 0 ? Math.min(100, Math.round((paidEur / FRIEND_EUR) * 100)) : 0;
+  const progColor = paidEur >= FRIEND_EUR ? 'var(--green)' : (paidEur > 0 ? '#f59e0b' : 'var(--red)');
+  const progressBar = upco ? '' : `<div class="card-progress"><div class="card-progress-fill" style="width:${pctPaid}%;background:${progColor};"></div></div>`;
 
-  var drawerClass = 'mc-drawer' + (isOpen ? ' open' : '');
-
-  var pctPaid = (FRIEND_EUR > 0) ? Math.min(100, Math.round((paidEur / FRIEND_EUR) * 100)) : 0;
-  var progColor = paidEur >= FRIEND_EUR ? 'var(--green)' : (paidEur > 0 ? '#f59e0b' : 'var(--red)');
-  var progressBar = upco ? '' : ('<div class="card-progress"><div class="card-progress-fill" style="width:' + pctPaid + '%;background:' + progColor + ';"></div></div>');
-
-  return (
-    '<div class="mcard ' + mc + ' ' + dimClass + '" id="card-' + k + '" role="listitem" aria-label="' + monthLabel + '" style="' + delay + '">' +
-      '<div class="mcard-body">' +
-        '<div class="mc-num">' + idx + '</div>' +
-        '<div class="mc-info">' +
-          '<div class="mc-month-name">' + FULL_NAMES[m - 1] + ' ' + y + nowBadge + '</div>' +
-          '<div class="mc-sub">mo ' + idx + ' of ' + TOTAL_MONTHS + '</div>' +
-          logBtn +
-          '<div class="mc-mobile-strip">' +
-            '<div class="mms-item"><span class="mms-label">Due</span><span class="mms-val c-blue">' + mobDue + ' <span class="mms-eur">\u20AC110.93</span></span></div>' +
-            '<div class="mms-item"><span class="mms-label">Paid</span><span class="mms-val ' + mobPaidC + '">' + mobPaid + '</span></div>' +
-            '<div class="mms-item"><span class="mms-label">Net Remaining</span><span class="mms-val ' + mobNetC + '">' + mobNet + '</span></div>' +
-            mobCumul +
-          '</div>' +
-        '</div>' +
-        dueHTML + paidHTML + netHTML + cumHTML +
-        '<div class="mc-status">' + pill + '</div>' +
-      '</div>' +
-      progressBar +
-      '<div class="' + drawerClass + '" id="drawer-' + k + '" role="region" aria-label="Payment details for ' + monthLabel + '">' +
-        '<div class="drawer-pad">' +
-          '<div class="drawer-head">Log payment \u2014 ' + FULL_NAMES[m - 1] + ' ' + y + '<span class="drawer-rate-note">' + drawerRateNote + '</span></div>' +
-          '<div class="pay-row">' +
-            '<div class="pay-field">' +
-              '<label class="pay-field-lbl" for="inp-' + k + '">Add payment entry</label>' +
-              '<div class="pay-wrap">' +
-                '<span class="pay-sym">\u20B9</span>' +
-                '<input type="number" class="pay-input" id="inp-' + k + '" placeholder="e.g. 9500" step="1" min="0" value="' + savedInr + '" oninput="onInrInput(\'' + k + '\',' + (ri ? ri.rate : 0) + ')" ' + inputDisabled + ' />' +
-              '</div>' +
-            '</div>' +
-            '<div class="pay-equiv" id="eq-' + k + '">' + equivTxt + '</div>' +
-            '<div class="pay-btns">' +
-              '<button class="pay-save"  onclick="savePayment(\'' + k + '\',' + (ri ? ri.rate : 0) + ')" aria-label="Save payment for ' + monthLabel + '">Save</button>' +
-              '<button class="pay-clear" onclick="clearPayment(\'' + k + '\')">Clear all entries</button>' +
-            '</div>' +
-          '</div>' +
-          bkdHTML +
-          histHTML +
-        '</div>' +
-      '</div>' +
-    '</div>'
-  );
-}
+  return `<div class="mcard ${mc} ${dimClass}" id="card-${k}" role="listitem" aria-label="${monthLabel}" style="${delay}">
+    <div class="mcard-body">
+      <div class="mc-num">${idx}</div>
+      <div class="mc-info">
+        <div class="mc-month-name">${FULL_NAMES[m - 1]} ${y}${nowBadge}</div>
+        <div class="mc-sub">mo ${idx} of ${TOTAL_MONTHS}</div>
+        ${logBtn}
+        <div class="mc-mobile-strip">
+          <div class="mms-item"><span class="mms-label">Due</span><span class="mms-val c-blue">${mobDue} <span class="mms-eur">\u20AC110.93</span></span></div>
+          <div class="mms-item"><span class="mms-label">Paid</span><span class="mms-val ${mobPaidC}">${mobPaid}</span></div>
+          <div class="mms-item"><span class="mms-label">Net Remaining</span><span class="mms-val ${mobNetC}">${mobNet}</span></div>
+          ${mobCumul}
+        </div>
+      </div>
+      ${dueHTML}${paidHTML}${netHTML}${cumHTML}
+      <div class="mc-status">${pill}</div>
+    </div>
+    ${progressBar}
+    <div class="${drawerClass}" id="drawer-${k}" role="region" aria-label="Payment details for ${monthLabel}">
+      <div class="drawer-pad">
+        <div class="drawer-head">Log payment \u2014 ${FULL_NAMES[m - 1]} ${y}<span class="drawer-rate-note">${drawerRateNote}</span></div>
+        <div class="pay-row">
+          <div class="pay-field">
+            <label class="pay-field-lbl" for="inp-${k}">Add payment entry</label>
+            <div class="pay-wrap">
+              <span class="pay-sym">\u20B9</span>
+              <input type="number" class="pay-input" id="inp-${k}" placeholder="e.g. 9500" step="1" min="0" value="${savedInr}" oninput="onInrInput('${k}',${ri ? ri.rate : 0})" ${inputDisabled} />
+            </div>
+          </div>
+          <div class="pay-equiv" id="eq-${k}">${equivTxt}</div>
+          <div class="pay-btns">
+            <button class="pay-save"  onclick="savePayment('${k}',${ri ? ri.rate : 0})" aria-label="Save payment for ${monthLabel}">Save</button>
+            <button class="pay-clear" onclick="clearPayment('${k}')">Clear all entries</button>
+          </div>
+        </div>
+        ${bkdHTML}
+        ${histHTML}
+      </div>
+    </div>
+  </div>`;
+};
 
 /* ══════════════════════════════════════════════════════
    INTERACTIONS
 ══════════════════════════════════════════════════════ */
-function toggleDrawer(k) {
+const toggleDrawer = k => {
   openDrawers[k] = !openDrawers[k];
   renderAll();
-}
+};
 
-function onInrInput(k, rate) {
-  var el = document.getElementById('inp-' + k);
-  var eq = document.getElementById('eq-' + k);
+const onInrInput = (k, rate) => {
+  const el = document.getElementById(`inp-${k}`);
+  const eq = document.getElementById(`eq-${k}`);
   if (!el || !eq) return;
-  var inr = parseFloat(el.value) || 0;
-  var r   = parseFloat(rate) || 0;
-  if (inr > 0) {
-    eq.innerHTML = '\u2248 <strong>' + fmt_inr(inr) + '</strong> logged';
-  } else {
-    eq.innerHTML = r > 0 ? 'Enter \u20B9 amount above' : 'Rate not available';
-  }
-}
+  const inr = parseFloat(el.value) || 0;
+  const r   = parseFloat(rate) || 0;
+  eq.innerHTML = inr > 0
+    ? `\u2248 <strong>${fmt_inr(inr)}</strong> logged`
+    : (r > 0 ? 'Enter \u20B9 amount above' : 'Rate not available');
+};
 
-function savePayment(k, rate) {
-  var el  = document.getElementById('inp-' + k);
+const savePayment = (k, rate) => {
+  const el = document.getElementById(`inp-${k}`);
   if (!el) return;
-  var inr = parseFloat(el.value);
+  const inr = parseFloat(el.value);
   if (isNaN(inr) || inr < 0) { alert('Enter a valid \u20B9 amount.'); return; }
-  var r = parseFloat(rate);
+  const r = parseFloat(rate);
   if (!r) { alert('Rate not yet available for this month.'); return; }
-  var eur = parseFloat((inr / r).toFixed(2));
-  var entry = { inr: Math.round(inr), eur: eur, rate: r, ts: Date.now() };
+  const eur   = parseFloat((inr / r).toFixed(2));
+  const entry = { inr: Math.round(inr), eur, rate: r, ts: Date.now() };
   if (!payments[k]) payments[k] = { inr: 0, eur: 0, history: [] };
   if (!payments[k].history) payments[k].history = [];
   payments[k].history.push(entry);
-  var totalInr = 0, totalEur = 0;
-  for (var hi = 0; hi < payments[k].history.length; hi++) {
-    totalInr += payments[k].history[hi].inr;
-    totalEur += payments[k].history[hi].eur;
+  let totalInr = 0, totalEur = 0;
+  for (const he of payments[k].history) {
+    totalInr += he.inr;
+    totalEur += he.eur;
   }
   payments[k].inr = Math.round(totalInr);
   payments[k].eur = parseFloat(totalEur.toFixed(2));
-  payStatus[k] = payments[k].eur >= FRIEND_EUR;
-  openDrawers[k] = true;
+  payStatus[k]    = payments[k].eur >= FRIEND_EUR;
+  openDrawers[k]  = true;
   persist();
   renderAll();
-  /* Save confirmation: query NEW DOM nodes (post-renderAll) then animate */
-  setTimeout(function() {
-    var cardEl2 = document.getElementById('card-' + k);
-    var saveBtn2 = document.querySelector('#drawer-' + k + ' .pay-save');
+  setTimeout(() => {
+    const cardEl2  = document.getElementById(`card-${k}`);
+    const saveBtn2 = document.querySelector(`#drawer-${k} .pay-save`);
     if (cardEl2) {
       cardEl2.classList.add('save-confirmed');
-      setTimeout(function() { cardEl2.classList.remove('save-confirmed'); }, 700);
+      setTimeout(() => cardEl2.classList.remove('save-confirmed'), 700);
     }
     if (saveBtn2) {
       saveBtn2.textContent = '\u2713 Saved';
       saveBtn2.classList.add('save-ok');
-      setTimeout(function() {
+      setTimeout(() => {
         saveBtn2.textContent = 'Save';
         saveBtn2.classList.remove('save-ok');
       }, 1400);
     }
   }, 20);
-}
+};
 
-function deleteHistoryEntry(k, idx) {
+const deleteHistoryEntry = (k, idx) => {
   if (!payments[k] || !payments[k].history) return;
   payments[k].history.splice(idx, 1);
   if (payments[k].history.length === 0) {
     delete payments[k];
     payStatus[k] = false;
   } else {
-    var totalInr = 0, totalEur = 0;
-    for (var hi = 0; hi < payments[k].history.length; hi++) {
-      totalInr += payments[k].history[hi].inr;
-      totalEur += payments[k].history[hi].eur;
+    let totalInr = 0, totalEur = 0;
+    for (const he of payments[k].history) {
+      totalInr += he.inr;
+      totalEur += he.eur;
     }
     payments[k].inr = Math.round(totalInr);
     payments[k].eur = parseFloat(totalEur.toFixed(2));
-    payStatus[k] = payments[k].eur >= FRIEND_EUR;
+    payStatus[k]    = payments[k].eur >= FRIEND_EUR;
   }
   openDrawers[k] = true;
   persist();
   renderAll();
-}
+};
 
-function clearPayment(k) {
+const clearPayment = k => {
   delete payments[k];
   payStatus[k]   = false;
   openDrawers[k] = true;
   persist();
   renderAll();
-}
+};
 
-function togglePaid(k) {
-  var parts = k.split('-');
-  var ys = parseInt(parts[0], 10);
-  var ms = parseInt(parts[1], 10);
+const togglePaid = k => {
+  const [ys, ms] = k.split('-').map(Number);
   if (isUpco(ys, ms)) return;
   if (payStatus[k]) {
     payStatus[k] = false;
     delete payments[k];
   } else {
     payStatus[k] = true;
-    var ri = getRate(ys, ms);
-    payments[k] = { eur: FRIEND_EUR, inr: ri ? Math.round(FRIEND_EUR * ri.rate) : null, history: [{ inr: ri ? Math.round(FRIEND_EUR * ri.rate) : 0, eur: FRIEND_EUR, rate: ri ? ri.rate : 0, ts: Date.now() }] };
+    const ri = getRate(ys, ms);
+    payments[k] = {
+      eur: FRIEND_EUR,
+      inr: ri ? Math.round(FRIEND_EUR * ri.rate) : null,
+      history: [{ inr: ri ? Math.round(FRIEND_EUR * ri.rate) : 0, eur: FRIEND_EUR, rate: ri ? ri.rate : 0, ts: Date.now() }],
+    };
   }
   persist();
   renderAll();
-}
+};
 
 /* ══════════════════════════════════════════════════════
    BOOT
 ══════════════════════════════════════════════════════ */
 
 /* Animated KPI counter — runs once on first render */
-(function() {
-  var ran = false;
-  var origRenderStats = renderStats;
+(() => {
+  let ran = false;
+  const origRenderStats = renderStats;
   renderStats = function() {
     origRenderStats.apply(this, arguments);
     if (ran) return;
     ran = true;
-    setTimeout(function() {
-      var els = document.querySelectorAll('.kpi-value');
-      els.forEach(function(el) {
-        var text = el.textContent.trim();
-        /* Only animate pure numeric strings starting with ₹ or digit */
-        var inrMatch = text.match(/^[₹]([0-9,]+)$/);
-        var numMatch = text.match(/^([0-9]+)$/);
-        if (inrMatch || numMatch) {
-          var raw = text.replace(/[^0-9]/g, '');
-          var target = parseInt(raw, 10);
-          if (isNaN(target) || target === 0) return;
-          var start = 0;
-          var duration = 900;
-          var startTime = null;
-          var prefix = inrMatch ? true : false;
-          function step(ts) {
-            if (!startTime) startTime = ts;
-            var progress = Math.min((ts - startTime) / duration, 1);
-            var ease = 1 - Math.pow(1 - progress, 3);
-            var current = Math.floor(ease * target);
-            el.textContent = prefix ? fmt_inr(current) : current.toString();
-            if (progress < 1) requestAnimationFrame(step);
-            else el.textContent = text; /* restore exact original */
-          }
-          requestAnimationFrame(step);
-        }
+    setTimeout(() => {
+      document.querySelectorAll('.kpi-value').forEach(el => {
+        const text = el.textContent.trim();
+        const inrMatch = text.match(/^[\u20B9]([0-9,]+)$/);
+        const numMatch = text.match(/^([0-9]+)$/);
+        if (!inrMatch && !numMatch) return;
+        const target = parseInt(text.replace(/[^0-9]/g, ''), 10);
+        if (isNaN(target) || target === 0) return;
+        const prefix   = !!inrMatch;
+        const duration = 900;
+        let startTime  = null;
+        const step = ts => {
+          if (!startTime) startTime = ts;
+          const progress = Math.min((ts - startTime) / duration, 1);
+          const ease     = 1 - Math.pow(1 - progress, 3);
+          el.textContent = prefix ? fmt_inr(Math.floor(ease * target)) : String(Math.floor(ease * target));
+          if (progress < 1) requestAnimationFrame(step);
+          else el.textContent = text;
+        };
+        requestAnimationFrame(step);
       });
     }, 200);
   };
 })();
 
-/* Boot is handled by the Firebase 'value' listener above.
-   It fires immediately on page load with the current database state,
-   then again live whenever either user saves a payment. */
 setSyncStatus('connecting', 'Connecting to Firebase…');
 
-/* Show sticky bar once user scrolls past KPI section */
-(function() {
-  var bar = document.getElementById('stickyBar');
+/* Show sticky bar on scroll */
+(() => {
+  const bar = document.getElementById('stickyBar');
   if (!bar) return;
-  var ticking = false;
-  function onScroll() {
-    if (!ticking) {
-      requestAnimationFrame(function() {
-        var scrolled = window.scrollY || document.documentElement.scrollTop;
-        if (scrolled > 280) {
-          bar.classList.add('visible');
-        } else {
-          bar.classList.remove('visible');
-        }
-        ticking = false;
-      });
-      ticking = true;
-    }
-  }
+  let ticking = false;
+  const onScroll = () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      const scrolled = window.scrollY || document.documentElement.scrollTop;
+      bar.classList.toggle('visible', scrolled > 280);
+      ticking = false;
+    });
+  };
   window.addEventListener('scroll', onScroll, { passive: true });
 })();
 
 /* ══════════════════════════════════════════════════════
    FEATURE: EXPORT TO PDF
 ══════════════════════════════════════════════════════ */
-function exportPDF() {
-  /* Safe date format — avoids en-IN locale which crashes on some iOS versions */
-  var now   = new Date();
-  var months_long = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-  var dd  = now.getDate();
-  var mon = months_long[now.getMonth()];
-  var yr  = now.getFullYear();
-  var hh  = String(now.getHours()).padStart(2, '0');
-  var mm  = String(now.getMinutes()).padStart(2, '0');
-  var dateStr = dd + ' ' + mon + ' ' + yr + ' at ' + hh + ':' + mm;
+const exportPDF = () => {
+  const now   = new Date();
+  const months_long = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const dd  = now.getDate();
+  const mon = months_long[now.getMonth()];
+  const yr  = now.getFullYear();
+  const hh  = String(now.getHours()).padStart(2, '0');
+  const mm  = String(now.getMinutes()).padStart(2, '0');
+  const dateStr = `${dd} ${mon} ${yr} at ${hh}:${mm}`;
 
-  /* Update print date stamp */
-  var pd = document.querySelector('.print-date');
+  let pd = document.querySelector('.print-date');
   if (!pd) {
     pd = document.createElement('div');
     pd.className = 'print-date';
-    var wrap = document.querySelector('.wrap');
+    const wrap = document.querySelector('.wrap');
     if (wrap) wrap.insertBefore(pd, wrap.firstChild);
   }
-  pd.textContent = 'Exported: ' + dateStr;
+  pd.textContent = `Exported: ${dateStr}`;
 
-  /* Redraw chart so it renders at current size before print */
-  
-  /* Small delay to let DOM settle before print dialog */
-  setTimeout(function() {
+  setTimeout(() => {
     try {
       window.print();
     } catch(e) {
       alert('To save as PDF: use your browser menu → Share → Print, or File → Print.');
     }
   }, 80);
-}
+};
 </script>
 
 <!-- ══ STICKY SUMMARY BAR ══════════════════════════════ -->
@@ -3656,17 +3598,14 @@ function exportPDF() {
    <details> toggles natively but doesn't set aria-expanded
    on the <summary>. We patch this for screen readers.
 ══════════════════════════════════════════════════════ */
-(function() {
-  var disc = document.getElementById('methodDisclosure');
+(() => {
+  const disc = document.getElementById('methodDisclosure');
   if (!disc) return;
-  var summ = disc.querySelector('.method-summary');
+  const summ = disc.querySelector('.method-summary');
   if (!summ) return;
-
-  function syncAria() {
-    summ.setAttribute('aria-expanded', disc.open ? 'true' : 'false');
-  }
+  const syncAria = () => summ.setAttribute('aria-expanded', String(disc.open));
   disc.addEventListener('toggle', syncAria);
-  syncAria(); /* initial state */
+  syncAria();
 })();
 </script>
 
