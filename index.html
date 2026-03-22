@@ -254,8 +254,7 @@ body::after {
   grid-template-columns: repeat(5, 1fr);
   gap: 14px;
 }
-@media(max-width:900px){ .kpi-grid { grid-template-columns: repeat(3,1fr); } }
-@media(max-width:540px){ .kpi-grid { grid-template-columns: repeat(2,1fr); } }
+/* KPI responsive handled by bento grid block below */
 
 .kpi {
   background: var(--paper);
@@ -1451,19 +1450,28 @@ html.dark .card-progress { background: var(--rule2); }
 
 @media(max-width:900px) {
   .kpi-grid { grid-template-columns: repeat(4, 1fr); }
-  .kpi.k-blue, .kpi.k-orange, .kpi.k-navy { grid-column: span 2; }
-  .kpi.k-green, .kpi.k-red { grid-column: span 2; }
+  .kpi.k-blue   { grid-column: span 2; }
+  .kpi.k-orange { grid-column: span 2; }
+  .kpi.k-navy   { grid-column: span 2; grid-row: auto; }
+  .kpi.k-green  { grid-column: span 2; grid-row: auto; }
+  .kpi.k-red    { grid-column: span 2; grid-row: auto; }
   .kpi.k-green .kpi-value,
   .kpi.k-red   .kpi-value { font-size: 32px; }
 }
 @media(max-width:540px) {
-  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
-  .kpi.k-blue, .kpi.k-orange, .kpi.k-navy,
-  .kpi.k-green, .kpi.k-red { grid-column: span 2; }
+  .kpi-grid { grid-template-columns: 1fr 1fr; }
+  .kpi.k-blue   { grid-column: span 1; }
+  .kpi.k-orange { grid-column: span 1; }
+  .kpi.k-navy   { grid-column: span 2; }
+  .kpi.k-green  { grid-column: span 2; }
+  .kpi.k-red    { grid-column: span 2; }
+  .kpi.k-green .kpi-value,
+  .kpi.k-red   .kpi-value { font-size: 28px; }
+  .kpi-value { font-size: 24px; }
 }
 </style>
   <!-- Firebase SDK (compat v9 — works in plain HTML, no bundler needed) -->
-  <script async src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 /* ══════════════════════════════════════════════════════
    DARK MODE TOGGLE
 ══════════════════════════════════════════════════════ */
@@ -1507,7 +1515,7 @@ function toggleTheme() {
   }
 })();
 </script>
-  <script async src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 </head>
 <body>
 <a href="#month-list-anchor" class="skip-link">Skip to month list</a>
