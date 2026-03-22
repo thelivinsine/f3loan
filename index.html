@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LoanSplit — DE × IN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 <style>
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -143,7 +145,7 @@ body::after {
 .mast-sub {
   margin-top: 12px;
   font-size: 14px;
-  color: rgba(255,255,255,.50);
+  color: rgba(255,255,255,.62);
   font-weight: 400;
 }
 .mast-flags {
@@ -210,7 +212,7 @@ body::after {
   font-size: 10px;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  color: rgba(255,255,255,.4);
+  color: rgba(255,255,255,.58);
 }
 .rp-value {
   font-family: 'Sora', sans-serif;
@@ -221,7 +223,7 @@ body::after {
 }
 .rp-sub {
   font-size: 11px;
-  color: rgba(255,255,255,.35);
+  color: rgba(255,255,255,.55);
   font-family: 'Sora', sans-serif;
 }
 .rp-source {
@@ -1327,10 +1329,185 @@ body::after {
 @keyframes syncpulse {
   0%,100% { opacity: 1; } 50% { opacity: .35; }
 }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   THEME TOGGLE BUTTON
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.2);
+  background: rgba(255,255,255,.08);
+  color: rgba(255,255,255,.8);
+  cursor: pointer;
+  transition: background .2s, border-color .2s, transform .2s;
+  flex-shrink: 0;
+}
+.theme-toggle:hover {
+  background: rgba(255,255,255,.16);
+  border-color: rgba(13,148,136,.6);
+  transform: rotate(20deg);
+}
+.theme-toggle:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   DARK MODE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+html.dark {
+  --cream:  #0f1318;
+  --paper:  #161b24;
+  --rule:   #2a3040;
+  --rule2:  #222836;
+  --ink:    #e8e2d9;
+  --ink2:   #c8c0b4;
+  --ink3:   #8a8278;
+  --ink4:   #5a5650;
+}
+html.dark body { background: var(--cream); color: var(--ink); }
+html.dark body::after { opacity: .4; }
+html.dark .kpi { background: var(--paper); border-color: var(--rule); }
+html.dark .kpi:hover { border-color: var(--teal); }
+html.dark .progress-card,
+html.dark .footnote { background: var(--paper); border-color: var(--rule); }
+html.dark .month-list { background: var(--paper); border-color: var(--rule); }
+html.dark .mcard { background: var(--paper); border-bottom-color: var(--rule2); }
+html.dark .mcard:hover { background: #1c2230; }
+html.dark .mcard.mc-current  { background: linear-gradient(135deg, #1e1a10 0%, #2a2010 100%); }
+html.dark .mcard.mc-paid     { background: linear-gradient(135deg, #111a16 0%, #162212 100%); }
+html.dark .mcard.mc-partial  { background: linear-gradient(135deg, #16101e 0%, #1e1630 100%); }
+html.dark .mcard.mc-upcoming { background: var(--paper); }
+html.dark .mc-drawer { background: #111720; border-top-color: var(--rule2); }
+html.dark .pay-wrap { background: #1e2535; border-color: var(--rule); }
+html.dark .pay-input { color: var(--ink); }
+html.dark .pay-breakdown { border-color: var(--rule); }
+html.dark .pb-cell { background: var(--paper); border-right-color: var(--rule); }
+html.dark .pb-cell:hover { background: #1c2230; }
+html.dark .t-btn { background: var(--paper); border-color: var(--rule); color: var(--ink3); }
+html.dark .t-btn:hover { border-color: var(--teal); color: var(--ink); background: #1c2230; }
+html.dark .t-btn.active { background: var(--teal); border-color: var(--teal); }
+html.dark .pay-history { border-top-color: var(--rule); }
+html.dark .ph-entry { border-bottom-color: var(--rule2); }
+html.dark .ph-delete { border-color: var(--rule); background: transparent; }
+html.dark .year-sep { background: #0c1018; }
+html.dark .year-sep span { background: var(--paper); border-color: var(--rule); }
+html.dark .mini-card { background: #1c2230; border-color: var(--rule); }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   PER-CARD PAYMENT PROGRESS BAR
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.card-progress {
+  height: 3px;
+  background: var(--rule2);
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  overflow: hidden;
+}
+html.dark .card-progress { background: var(--rule2); }
+.card-progress-fill {
+  height: 100%;
+  border-radius: 99px;
+  transition: width .6s cubic-bezier(.16,1,.3,1);
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   SAVE CONFIRMATION ANIMATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+@keyframes saveFlash {
+  0%   { background: rgba(21,104,62,.0); }
+  25%  { background: rgba(21,104,62,.18); }
+  100% { background: rgba(21,104,62,.0); }
+}
+.mcard.save-confirmed { animation: saveFlash .7s ease-out forwards !important; }
+
+.pay-save.save-ok {
+  background: var(--green) !important;
+  transform: scale(.97);
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   BENTO KPI GRID
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: auto auto;
+  gap: 14px;
+}
+/* Monthly EMI — standard */
+.kpi.k-blue   { grid-column: span 2; }
+/* Friend's Share — standard */
+.kpi.k-orange { grid-column: span 2; }
+/* Months Left — standard */
+.kpi.k-navy   { grid-column: span 2; }
+/* Total Received — larger, prominent */
+.kpi.k-green  { grid-column: span 3; grid-row: span 1; }
+/* Outstanding — larger, prominent */
+.kpi.k-red    { grid-column: span 3; grid-row: span 1; }
+.kpi.k-green .kpi-value,
+.kpi.k-red   .kpi-value { font-size: 38px; }
+
+@media(max-width:900px) {
+  .kpi-grid { grid-template-columns: repeat(4, 1fr); }
+  .kpi.k-blue, .kpi.k-orange, .kpi.k-navy { grid-column: span 2; }
+  .kpi.k-green, .kpi.k-red { grid-column: span 2; }
+  .kpi.k-green .kpi-value,
+  .kpi.k-red   .kpi-value { font-size: 32px; }
+}
+@media(max-width:540px) {
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .kpi.k-blue, .kpi.k-orange, .kpi.k-navy,
+  .kpi.k-green, .kpi.k-red { grid-column: span 2; }
+}
 </style>
   <!-- Firebase SDK (compat v9 — works in plain HTML, no bundler needed) -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script async src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
+/* ══════════════════════════════════════════════════════
+   DARK MODE TOGGLE
+══════════════════════════════════════════════════════ */
+function applyTheme(dark) {
+  var html = document.documentElement;
+  var moon = document.querySelector('.icon-moon');
+  var sun  = document.querySelector('.icon-sun');
+  if (dark) {
+    html.classList.add('dark');
+    if (moon) moon.style.display = 'none';
+    if (sun)  sun.style.display  = '';
+  } else {
+    html.classList.remove('dark');
+    if (moon) moon.style.display = '';
+    if (sun)  sun.style.display  = 'none';
+  }
+}
+
+function toggleTheme() {
+  var isDark = document.documentElement.classList.contains('dark');
+  applyTheme(!isDark);
+  try { localStorage.setItem('dm_theme', isDark ? 'light' : 'dark'); } catch(e) {}
+}
+
+/* Init theme: saved preference → OS preference → light fallback */
+(function() {
+  var saved = null;
+  try { saved = localStorage.getItem('dm_theme'); } catch(e) {}
+  if (saved === 'dark') { applyTheme(true); return; }
+  if (saved === 'light') { applyTheme(false); return; }
+  /* No saved preference — follow OS */
+  var mq = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
+  if (mq && mq.matches) applyTheme(true);
+  /* Listen for live OS changes */
+  if (mq && mq.addEventListener) {
+    mq.addEventListener('change', function(e) {
+      var hasSaved = false;
+      try { hasSaved = !!localStorage.getItem('dm_theme'); } catch(ex) {}
+      if (!hasSaved) applyTheme(e.matches);
+    });
+  }
+})();
+</script>
+  <script async src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 </head>
 <body>
 <a href="#month-list-anchor" class="skip-link">Skip to month list</a>
@@ -1346,6 +1523,10 @@ body::after {
     <div class="mast-flags">
       <div class="flag-chip">🇩🇪 You — Germany</div>
       <div class="flag-chip">🇮🇳 Friend — India</div>
+      <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle dark mode" title="Toggle dark mode">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="icon-moon"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="icon-sun" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      </button>
       <button class="export-btn" onclick="exportPDF()" aria-label="Export to PDF">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         Export PDF
@@ -2046,7 +2227,8 @@ function buildCard(mo, i, cmap) {
   var drawerClass = 'mc-drawer' + (isOpen ? ' open' : '');
 
   return (
-    '<div class="mcard ' + mc + ' ' + dimClass + '" id="card-' + k + '" style="' + delay + '">' +
+    '<div class="mcard ' + mc + ' ' + dimClass + '" id="card-' + k + '" role="listitem" style="' + delay + '">' +
+      (upco ? '' : '<div class="card-progress"><div class="card-progress-fill" style="width:' + Math.min(100, Math.round((paidEur/FRIEND_EUR)*100)) + '%;background:' + (paidEur >= FRIEND_EUR ? 'var(--green)' : paidEur > 0 ? '#f59e0b' : 'var(--red)') + ';"></div></div>') + +
       '<div class="mcard-body">' +
         '<div class="mc-num">' + idx + '</div>' +
         '<div class="mc-info">' +
@@ -2068,7 +2250,7 @@ function buildCard(mo, i, cmap) {
           '<div class="drawer-head">Log payment \u2014 ' + FULL_NAMES[m - 1] + ' ' + y + '<span class="drawer-rate-note">' + drawerRateNote + '</span></div>' +
           '<div class="pay-row">' +
             '<div class="pay-field">' +
-              '<div class="pay-field-lbl">Add payment entry</div>' +
+              '<label class="pay-field-lbl" for="inp-' + k + '">Add payment entry</label>' +
               '<div class="pay-wrap">' +
                 '<span class="pay-sym">\u20B9</span>' +
                 '<input type="number" class="pay-input" id="inp-' + k + '" placeholder="e.g. 9500" step="1" min="0" value="' + savedInr + '" oninput="onInrInput(\'' + k + '\',' + (ri ? ri.rate : 0) + ')" ' + inputDisabled + ' />' +
@@ -2132,6 +2314,24 @@ function savePayment(k, rate) {
   openDrawers[k] = true;
   persist();
   renderAll();
+  /* Save confirmation: flash card green + button tick */
+  var cardEl = document.getElementById('card-' + k);
+  var saveBtn = document.querySelector('#drawer-' + k + ' .pay-save');
+  if (cardEl) {
+    cardEl.classList.remove('save-confirmed');
+    void cardEl.offsetWidth; /* force reflow to restart animation */
+    cardEl.classList.add('save-confirmed');
+    setTimeout(function() { cardEl.classList.remove('save-confirmed'); }, 700);
+  }
+  if (saveBtn) {
+    var origTxt = saveBtn.textContent;
+    saveBtn.textContent = '✓ Saved';
+    saveBtn.classList.add('save-ok');
+    setTimeout(function() {
+      saveBtn.textContent = origTxt;
+      saveBtn.classList.remove('save-ok');
+    }, 1400);
+  }
 }
 
 function deleteHistoryEntry(k, idx) {
@@ -2206,14 +2406,14 @@ function togglePaid(k) {
           var start = 0;
           var duration = 900;
           var startTime = null;
-          var prefix = inrMatch ? '₹' : '';
+          var prefix = inrMatch ? true : false;
           function step(ts) {
             if (!startTime) startTime = ts;
             var progress = Math.min((ts - startTime) / duration, 1);
             var ease = 1 - Math.pow(1 - progress, 3);
             var current = Math.floor(ease * target);
-            if (prefix === '₹') {
-              el.textContent = prefix + current.toLocaleString('en-IN');
+            if (prefix) {
+              el.textContent = prefix ? fmt_inr(current) : current.toString();
             } else {
               el.textContent = current.toString();
             }
