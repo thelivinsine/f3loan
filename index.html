@@ -11,7 +11,7 @@
 <meta name="robots" content="noindex, nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 /* v2.1 — premium borderless cards */
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -58,15 +58,33 @@
   --r-xl: 24px;
 
   /* Shadows — premium floating depth */
-  --shadow-sm: 0 1px 2px rgba(12,28,53,.04), 0 2px 8px rgba(12,28,53,.06), inset 0 1px 0 rgba(255,255,255,.8);
-  --shadow-md: 0 4px 12px rgba(12,28,53,.08), 0 8px 24px rgba(12,28,53,.06), inset 0 1px 0 rgba(255,255,255,.9);
-  --shadow-lg: 0 8px 24px rgba(12,28,53,.10), 0 24px 48px rgba(12,28,53,.08), inset 0 1px 0 rgba(255,255,255,.9);
+  /* ── Shadow scale ──────────────────────────────────────────────────
+     sm    : surface-level — buttons, tags, compact elements
+     md    : raised — modals, dropdowns (unused but kept for future)
+     float : primary card level — hero, meta, progress, list cards
+     lg    : elevated on hover — hero card hover state
+     ── Dark-mode equivalents (light bg inset removed, opacity lifted) */
+  --shadow-sm:    0 1px 2px rgba(12,28,53,.04), 0 2px 8px rgba(12,28,53,.06), inset 0 1px 0 rgba(255,255,255,.8);
+  --shadow-md:    0 4px 12px rgba(12,28,53,.08), 0 8px 24px rgba(12,28,53,.06), inset 0 1px 0 rgba(255,255,255,.9);
   --shadow-float: 0 1px 3px rgba(12,28,53,.05), 0 6px 16px rgba(12,28,53,.10), 0 16px 40px rgba(12,28,53,.08), inset 0 1.5px 0 rgba(255,255,255,.9);
+  --shadow-lg:    0 8px 20px rgba(12,28,53,.10), 0 28px 52px rgba(12,28,53,.10), inset 0 1.5px 0 rgba(255,255,255,1);
+
+  /* Dark mode shadows — stronger, no white inset highlight */
+  --shadow-sm-dark:    0 1px 2px rgba(0,0,0,.2), 0 4px 12px rgba(0,0,0,.18);
+  --shadow-float-dark: 0 2px 4px rgba(0,0,0,.3), 0 8px 20px rgba(0,0,0,.25), 0 20px 40px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.08);
+  --shadow-lg-dark:    0 2px 4px rgba(0,0,0,.3), 0 8px 20px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.06);
+
+  /* Coloured card accent shadows (mobile floating cards only) */
+  --shadow-card-current: 0 4px 8px rgba(12,28,53,.04), 0 12px 28px rgba(160,84,0,.14),  0 24px 40px rgba(12,28,53,.06), inset 0 1px 0 rgba(255,255,255,.9);
+  --shadow-card-paid:    0 4px 8px rgba(12,28,53,.04), 0 12px 28px rgba(21,104,62,.12),  0 24px 40px rgba(12,28,53,.06), inset 0 1px 0 rgba(255,255,255,.9);
+  --shadow-card-unpaid:  0 4px 8px rgba(12,28,53,.04), 0 12px 28px rgba(184,36,36,.10), 0 24px 40px rgba(12,28,53,.06), inset 0 1px 0 rgba(255,255,255,.9);
 
   /* Font stacks */
-  --font-display: 'Plus Jakarta Sans', 'IBM Plex Sans', sans-serif;
-  --font-body:    'IBM Plex Sans', sans-serif;
-  --font-num:     'Sora', 'Plus Jakarta Sans', sans-serif;
+  --font-ui:  'Plus Jakarta Sans', sans-serif;  /* headings, labels, buttons */
+  --font-num: 'Sora', sans-serif;               /* all numbers and data values */
+  /* Aliases so existing var(--font-display) and var(--font-body) refs keep working */
+  --font-display: var(--font-ui);
+  --font-body:    var(--font-ui);
 
   /* Spacing scale */
   --s2:   2px;  --s4:  4px;   --s6:  6px;   --s8:  8px;
@@ -170,6 +188,13 @@ body::after {
   font-weight: 400;
   color: rgba(255,255,255,.45);
 }
+.mast-timeline {
+  margin-top: var(--s6);
+  font-size: var(--text-md);
+  font-weight: 500;
+  color: rgba(255,255,255,.45);
+  letter-spacing: .5px;
+}
 .mast-sub {
   margin-top: var(--s14);
   font-size: var(--text-md);
@@ -249,14 +274,14 @@ body::after {
 }
 .rp-cell:last-child { border-right:none; margin-right:0; }
 .rp-label {
-  font-family: 'Sora', sans-serif;
+  font-family: var(--font-num);
   font-size: var(--text-2xs);
   letter-spacing: 1.2px;
   text-transform: uppercase;
   color: rgba(255,255,255,.5);
 }
 .rp-value {
-  font-family: 'Sora', sans-serif;
+  font-family: var(--font-num);
   font-size: var(--num-sm);
   color: #fff;
   font-weight: 700;
@@ -265,14 +290,14 @@ body::after {
 .rp-sub {
   font-size: var(--text-xs);
   color: rgba(255,255,255,.48);
-  font-family: 'Sora', sans-serif;
+  font-family: var(--font-num);
 }
 .rp-source {
   display: inline-flex;
   align-items: center;
   gap: var(--s4);
   font-size: var(--text-2xs);
-  font-family: 'Sora', sans-serif;
+  font-family: var(--font-num);
   color: var(--teal);
   margin-top: 2px;
   letter-spacing: .3px;
@@ -314,7 +339,7 @@ body::after {
 }
 .hero-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(12,28,53,.10), 0 28px 52px rgba(12,28,53,.10), inset 0 1.5px 0 rgba(255,255,255,1);
+  box-shadow: var(--shadow-lg);
 }
 
 /* Coloured top accent bar */
@@ -343,7 +368,7 @@ body::after {
 }
 
 .hero-value {
-  font-family: 'Sora', sans-serif;
+  font-family: var(--font-num);
   font-size: var(--num-lg);
   font-weight: 700;
   line-height: 1;
@@ -353,7 +378,7 @@ body::after {
 .hero-card.hc-outstanding .hero-value { color: var(--red); }
 
 .hero-eur {
-  font-family: 'Sora', sans-serif;
+  font-family: var(--font-num);
   font-size: var(--text-lg);
   font-weight: 500;
   margin-top: 8px;
@@ -379,7 +404,7 @@ body::after {
   color: var(--ink4);
 }
 .hero-progress-pct {
-  font-family: 'Sora', sans-serif;
+  font-family: var(--font-num);
   font-size: var(--text-md);
   font-weight: 700;
   color: var(--ink3);
@@ -450,7 +475,7 @@ body::after {
 }
 
 .meta-value {
-  font-family: 'Sora', sans-serif;
+  font-family: var(--font-num);
   font-size: var(--num-sm);
   font-weight: 700;
   color: var(--ink);
@@ -459,7 +484,7 @@ body::after {
 }
 
 .meta-sub {
-  font-family: 'Sora', sans-serif;
+  font-family: var(--font-num);
   font-size: var(--text-sm);
   color: var(--ink4);
   margin-top: 5px;
@@ -511,7 +536,7 @@ body::after {
   color: var(--ink4);
 }
 .prog-pct {
-  font-family: 'Sora', sans-serif;
+  font-family: var(--font-num);
   font-size: var(--num-md);
   font-weight: 700;
   color: var(--ink);
@@ -560,7 +585,7 @@ body::after {
 .prog-tick-label {
   position: absolute;
   top: 7px;
-  font-family: 'Sora', sans-serif;
+  font-family: var(--font-num);
   font-size: var(--text-2xs);
   color: var(--ink4);
   transform: translateX(-50%);
@@ -688,11 +713,11 @@ html.dark .prog-milestone.reached { background: var(--paper); }
   background: var(--navy);
   border-color: var(--navy);
   color: #fff;
-  box-shadow: 0 3px 12px rgba(12,28,53,.22);
+  box-shadow: var(--shadow-sm);
 }
 .t-count {
   margin-left: auto;
-  font-family: 'Sora', sans-serif;
+  font-family: var(--font-num);
   font-size: var(--text-xs);
   color: var(--ink3);
 }
@@ -766,7 +791,7 @@ html.dark .prog-milestone.reached { background: var(--paper); }
   justify-content: center;
   width: var(--col-num);
   padding: var(--s20) 0;
-  font-family: 'Sora', sans-serif;
+  font-family: var(--font-num);
   font-size: var(--text-xs);
   font-weight: 400;
   color: var(--ink4);
@@ -854,7 +879,7 @@ html.dark .prog-milestone.reached { background: var(--paper); }
 .mc-cell:last-of-type { border-right: none; }
 .col-cumul { border-right: none; }
 .mc-cell-label {
-  font-family: 'Sora', sans-serif;
+  font-family: var(--font-num);
   font-size: var(--text-2xs);
   letter-spacing: 1.4px;
   text-transform: uppercase;
@@ -864,7 +889,7 @@ html.dark .prog-milestone.reached { background: var(--paper); }
   text-align: right;
 }
 .mc-primary {
-  font-family: 'Sora', sans-serif;
+  font-family: var(--font-num);
   font-size: var(--text-xl);
   font-weight: 700;
   line-height: 1.1;
@@ -873,7 +898,7 @@ html.dark .prog-milestone.reached { background: var(--paper); }
 .mc-secondary {
   font-size: var(--text-xs);
   font-weight: 400;
-  font-family: 'Sora', sans-serif;
+  font-family: var(--font-num);
   margin-top: 3px;
   color: var(--ink4);
 }
@@ -881,7 +906,7 @@ html.dark .prog-milestone.reached { background: var(--paper); }
   font-size: var(--text-2xs);
   color: var(--ink4);
   opacity: 0.65;
-  font-family: 'Sora', sans-serif;
+  font-family: var(--font-num);
   margin-top: 3px;
   letter-spacing: .3px;
 }
@@ -898,7 +923,7 @@ html.dark .prog-milestone.reached { background: var(--paper); }
 /* Source badge */
 .src-badge {
   display: inline-block;
-  font-family: 'Sora', sans-serif;
+  font-family: var(--font-num);
   font-size: var(--text-2xs);
   font-weight: 400;
   letter-spacing: .5px;
@@ -953,15 +978,27 @@ html.dark .prog-milestone.reached { background: var(--paper); }
 }
 
 /* ── PAYMENT DRAWER ── */
+/*
+  Animation technique: grid-template-rows 0fr → 1fr
+  This animates to the actual content height rather than a fixed
+  max-height cap. The inner .drawer-pad has min-height:0 so it
+  can collapse fully. No JS measurement needed; no content clipping.
+*/
 .mc-drawer {
   border-top: 2px solid var(--rule2);
   border-left: 3px solid var(--teal);
   background: var(--cream);
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height .45s cubic-bezier(.16,1,.3,1);
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows .38s cubic-bezier(.16,1,.3,1);
 }
-.mc-drawer.open { max-height: 620px; }
+.mc-drawer > .drawer-pad {
+  min-height: 0;
+  overflow: hidden;
+}
+.mc-drawer.open {
+  grid-template-rows: 1fr;
+}
 
 .drawer-pad { padding: var(--card-pad-sm) var(--s20) var(--s20); }
 .drawer-head {
@@ -976,7 +1013,7 @@ html.dark .prog-milestone.reached { background: var(--paper); }
   flex-wrap: wrap;
 }
 .drawer-rate-note {
-  font-family: 'Sora', sans-serif;
+  font-family: var(--font-num);
   font-size: var(--text-xs);
   color: var(--ink4);
   font-weight: 400;
@@ -999,7 +1036,7 @@ html.dark .prog-milestone.reached { background: var(--paper); }
   font-size: var(--text-xs);
   font-weight: 600;
   color: var(--ink3);
-  font-family: 'Sora', sans-serif;
+  font-family: var(--font-num);
   letter-spacing: .5px;
   text-transform: uppercase;
 }
@@ -1020,13 +1057,13 @@ html.dark .prog-milestone.reached { background: var(--paper); }
   color: var(--amber-dot);
   background: var(--amber-bg);
   border-right: 1px solid var(--rule);
-  font-family: 'Sora', sans-serif;
+  font-family: var(--font-num);
 }
 .pay-input {
   border: none;
   background: transparent;
   padding: var(--s10) var(--s12);
-  font-family: 'Sora', sans-serif;
+  font-family: var(--font-num);
   font-size: var(--text-lg);
   font-weight: 500;
   color: var(--ink);
@@ -1039,7 +1076,7 @@ html.dark .prog-milestone.reached { background: var(--paper); }
   padding: var(--s10) 0;
   font-size: var(--text-sm);
   color: var(--ink3);
-  font-family: 'Sora', sans-serif;
+  font-family: var(--font-num);
   min-width: 130px;
 }
 .pay-equiv strong { color: var(--blue); font-weight: 700; }
@@ -1084,7 +1121,7 @@ html.dark .prog-milestone.reached { background: var(--paper); }
   border: none;
   border-radius: var(--r-md);
   overflow: hidden;
-  box-shadow: 0 1px 2px rgba(12,28,53,.04), 0 4px 12px rgba(12,28,53,.07), inset 0 1px 0 rgba(255,255,255,.8);
+  box-shadow: var(--shadow-sm);
 }
 .pb-cell {
   padding: var(--s12) var(--s14);
@@ -1104,14 +1141,14 @@ html.dark .prog-milestone.reached { background: var(--paper); }
   margin-bottom: 6px;
 }
 .pb-val {
-  font-family: 'Sora', sans-serif;
+  font-family: var(--font-num);
   font-size: var(--text-xl);
   font-weight: 600;
   line-height: 1.2;
   letter-spacing: -.2px;
 }
 .pb-inr {
-  font-family: 'Sora', sans-serif;
+  font-family: var(--font-num);
   font-size: 11px;
   margin-top: 2px;
 }
@@ -1119,7 +1156,7 @@ html.dark .prog-milestone.reached { background: var(--paper); }
 /* fn-source pill — used inside the methodology disclosure */
 .fn-source {
   display: inline-block;
-  font-family: 'Sora', sans-serif;
+  font-family: var(--font-num);
   font-size: var(--text-2xs);
   padding: 2px 6px;
   border-radius: 3px;
@@ -1184,9 +1221,9 @@ html.dark .prog-milestone.reached { background: var(--paper); }
     box-shadow: var(--shadow-float);
   }
   .mcard:last-child { margin-bottom: 0; }
-  .mcard.mc-current { box-shadow: 0 4px 8px rgba(12,28,53,.04), 0 12px 28px rgba(160,84,0,.14), 0 24px 40px rgba(12,28,53,.06), inset 0 1px 0 rgba(255,255,255,.9); }
-  .mcard.mc-paid    { box-shadow: 0 4px 8px rgba(12,28,53,.04), 0 12px 28px rgba(21,104,62,.12), 0 24px 40px rgba(12,28,53,.06), inset 0 1px 0 rgba(255,255,255,.9); }
-  .mcard.mc-unpaid  { box-shadow: 0 4px 8px rgba(12,28,53,.04), 0 12px 28px rgba(184,36,36,.10), 0 24px 40px rgba(12,28,53,.06), inset 0 1px 0 rgba(255,255,255,.9); }
+  .mcard.mc-current { box-shadow: var(--shadow-card-current); }
+  .mcard.mc-paid    { box-shadow: var(--shadow-card-paid); }
+  .mcard.mc-unpaid  { box-shadow: var(--shadow-card-unpaid); }
 
   /* Mobile data strip — 2-column grid instead of vertical stack */
   .mc-mobile-strip {
@@ -1207,27 +1244,27 @@ html.dark .prog-milestone.reached { background: var(--paper); }
     grid-column: span 2;
   }
   .mms-label {
-    font-family: 'Sora', sans-serif;
+    font-family: var(--font-num);
     font-size: var(--text-2xs);
     letter-spacing: 1.3px;
     text-transform: uppercase;
     color: var(--ink3);
   }
   .mms-val {
-    font-family: 'Sora', sans-serif;
+    font-family: var(--font-num);
     font-size: var(--text-xl);
     font-weight: 600;
     line-height: 1.2;
     font-variant-numeric: tabular-nums;
   }
   .mms-inr {
-    font-family: 'Sora', sans-serif;
+    font-family: var(--font-num);
     font-size: 12px;
     color: var(--ink3);
     margin-top: 1px;
   }
   .mms-eur {
-    font-family: 'Sora', sans-serif;
+    font-family: var(--font-num);
     font-size: 11px;
     font-weight: 400;
     color: var(--ink4);
@@ -1382,7 +1419,7 @@ html.dark .prog-milestone.reached { background: var(--paper); }
   color: rgba(255,255,255,.4);
 }
 .sb-value {
-  font-family: 'Sora', sans-serif;
+  font-family: var(--font-num);
   font-size: clamp(14px, 2.5vw, 18px);
   font-weight: 600;
   color: #fff;
@@ -1475,7 +1512,7 @@ html.dark .prog-milestone.reached { background: var(--paper); }
 }
 .ph-body { flex: 1; min-width: 0; }
 .ph-amount {
-  font-family: 'Sora', sans-serif;
+  font-family: var(--font-num);
   font-size: var(--text-lg);
   font-weight: 600;
   color: var(--green);
@@ -1862,13 +1899,13 @@ html.dark body { background: var(--cream); color: var(--ink); }
 html.dark body::after { opacity: .4; }
 html.dark .kpi {
   background: var(--paper);
-  box-shadow: 0 2px 4px rgba(0,0,0,.3), 0 8px 20px rgba(0,0,0,.25), 0 20px 40px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.08);
+  box-shadow: var(--shadow-float-dark);
 }
 html.dark .kpi:hover { border-color: var(--teal); }
 html.dark .fn-source { background: var(--rule2); color: var(--ink3); }
 html.dark .month-list {
   background: var(--paper);
-  box-shadow: 0 2px 4px rgba(0,0,0,.2), 0 8px 20px rgba(0,0,0,.18), 0 20px 40px rgba(0,0,0,.14), inset 0 1px 0 rgba(255,255,255,.05);
+  box-shadow: var(--shadow-float-dark);
 }
 html.dark .mcard { background: var(--paper); border-bottom-color: rgba(255,255,255,.06); }
 
@@ -1903,7 +1940,7 @@ html.dark .section-head-line { background: var(--rule); }
 
 /* Dark mode — new summary cards */
 html.dark .hero-card {
-  box-shadow: 0 2px 4px rgba(0,0,0,.3), 0 8px 20px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.06);
+  box-shadow: var(--shadow-lg-dark);
 }
 html.dark .hero-card.hc-received    { background: linear-gradient(160deg, var(--paper) 60%, #0f2a1a 100%); }
 html.dark .hero-card.hc-outstanding { background: linear-gradient(160deg, var(--paper) 60%, #2a0f0f 100%); }
@@ -1913,7 +1950,7 @@ html.dark .hero-track { background: var(--rule2); }
 html.dark .hero-progress-label { color: var(--ink3); }
 html.dark .meta-card {
   background: var(--paper);
-  box-shadow: 0 1px 2px rgba(0,0,0,.2), 0 4px 12px rgba(0,0,0,.18);
+  box-shadow: var(--shadow-sm-dark);
 }
 html.dark .meta-value { color: var(--ink); }
 html.dark .meta-sub   { color: var(--ink4); }
@@ -2262,7 +2299,7 @@ html.dark .month-skel-row  { border-bottom-color: rgba(255,255,255,.06); }
 .method-section strong { color: var(--ink2); font-weight: 600; }
 .method-section em { color: var(--ink3); font-style: italic; }
 .method-section code {
-  font-family: 'IBM Plex Mono', 'Menlo', monospace;
+  font-family: 'Menlo', 'Consolas', monospace;
   font-size: var(--text-xs);
   background: var(--rule2);
   color: var(--ink2);
@@ -2354,6 +2391,51 @@ html.dark .method-section + .method-section { border-color: var(--rule); }
 /* Dark mode tints for new tokens */
 html.dark .hero-card.hc-received    .hero-eur { color: var(--green); }
 html.dark .hero-card.hc-outstanding .hero-eur { color: var(--red); }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   SKELETON WIDTH UTILITIES
+   Replaces inline style="width:Xpx" on skeleton spans.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.skel-w-20  { width:  20px; }
+.skel-w-32  { width:  32px; }
+.skel-w-44  { width:  44px; }
+.skel-w-48  { width:  48px; }
+.skel-w-52  { width:  52px; }
+.skel-w-56  { width:  56px; }
+.skel-w-60  { width:  60px; }
+.skel-w-64  { width:  64px; }
+.skel-w-68  { width:  68px; }
+.skel-w-72  { width:  72px; }
+.skel-w-76  { width:  76px; }
+.skel-w-80  { width:  80px; }
+.skel-w-84  { width:  84px; }
+.skel-w-88  { width:  88px; }
+.skel-w-90  { width:  90px; }
+.skel-w-96  { width:  96px; }
+
+/* Skeleton cell body — value bar shape inside month-skel rows */
+.skel-cell-bar {
+  height: 18px;
+  border-radius: 5px;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   PROGRESS TICK POSITIONS
+   Replaces inline style="left:X%" on prog-tick divs.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.prog-tick--25 { left: 25%; }
+.prog-tick--50 { left: 50%; }
+.prog-tick--75 { left: 75%; }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   PROGRESS FILL GRADIENTS
+   Replaces inline style="background:…" on prog-fill
+   and hero-fill elements. width:0% stays inline —
+   it is the JS reset value, set dynamically at runtime.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.prog-fill--elapsed   { background: linear-gradient(90deg, var(--navy3), var(--navy)); }
+.prog-fill--collected { background: linear-gradient(90deg, #16a34a, var(--green)); }
+.hero-fill--elapsed   { background: linear-gradient(90deg, var(--navy3), var(--navy)); }
 </style>
   <!-- Firebase SDK (compat v9 — works in plain HTML, no bundler needed) -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -2366,12 +2448,14 @@ const applyTheme = dark => {
   html.classList.toggle('dark', dark);
   if (btn) btn.setAttribute('aria-checked', String(dark));
 };
+window.applyTheme = applyTheme;
 
 const toggleTheme = () => {
   const isDark = document.documentElement.classList.contains('dark');
   applyTheme(!isDark);
   try { localStorage.setItem('dm_theme', isDark ? 'light' : 'dark'); } catch(e) {}
 };
+window.toggleTheme = toggleTheme;
 
 (() => {
   let saved = null;
@@ -2406,8 +2490,9 @@ const toggleTheme = () => {
 <header class="masthead" role="banner">
   <div class="masthead-inner">
     <div class="masthead-left">
-      <h1 class="mast-title">Joint Loan Tracker <em>·</em> Feb 2026 – Dec 2033</h1>
-      <div class="mast-sub">€20,000 · 96 months · Friend's share 41.25%</div>
+      <h1 class="mast-title">Joint Loan Tracker</h1>
+      <div class="mast-timeline">Feb 2026 – Dec 2033</div>
+      <div class="mast-sub">€20,000 · 96 months · Your share 41.25%</div>
     </div>
     <div class="mast-flags">
       <div class="flag-chip">🇩🇪 You — Germany</div>
@@ -2434,17 +2519,17 @@ const toggleTheme = () => {
       <div class="rp-skel-cell">
         <span class="skel skel-rate-sm"></span>
         <span class="skel skel-rate"></span>
-        <span class="skel skel-rate-sm" style="width:96px"></span>
+        <span class="skel skel-rate-sm skel-w-96"></span>
       </div>
       <div class="rp-skel-cell">
-        <span class="skel skel-rate-sm" style="width:48px"></span>
-        <span class="skel skel-rate" style="width:64px"></span>
-        <span class="skel skel-rate-sm" style="width:80px"></span>
+        <span class="skel skel-rate-sm skel-w-48"></span>
+        <span class="skel skel-rate skel-w-64"></span>
+        <span class="skel skel-rate-sm skel-w-80"></span>
       </div>
       <div class="rp-skel-cell">
-        <span class="skel skel-rate-sm" style="width:56px"></span>
-        <span class="skel skel-rate" style="width:72px"></span>
-        <span class="skel skel-rate-sm" style="width:88px"></span>
+        <span class="skel skel-rate-sm skel-w-56"></span>
+        <span class="skel skel-rate skel-w-72"></span>
+        <span class="skel skel-rate-sm skel-w-88"></span>
       </div>
     </div>
     <!-- Real content injected by renderRatePanel() -->
@@ -2463,7 +2548,7 @@ const toggleTheme = () => {
 
       <!-- Total Received -->
       <div class="hero-card hc-received">
-        <div class="hero-label">Total Received</div>
+        <div class="hero-label">Total Sent</div>
         <div class="hero-value-wrap">
           <span class="skel skel-twin skel-num-lg"></span>
           <span class="skel skel-twin skel-sub"></span>
@@ -2474,9 +2559,9 @@ const toggleTheme = () => {
         </div>
         <div class="hero-progress">
           <div class="hero-progress-meta">
-            <span class="hero-progress-label" id="kpiReceivedSub">from friend</span>
+            <span class="hero-progress-label" id="kpiReceivedSub">sent by you</span>
             <span class="val-real hero-progress-pct" id="heroCollPct">0%</span>
-            <span class="skel skel-twin skel-label" style="width:32px"></span>
+            <span class="skel skel-twin skel-label skel-w-32"></span>
           </div>
           <div class="hero-track">
             <div class="hero-fill" id="heroFillColl" style="width:0%"></div>
@@ -2497,12 +2582,12 @@ const toggleTheme = () => {
         </div>
         <div class="hero-progress">
           <div class="hero-progress-meta">
-            <span class="hero-progress-label" id="kpiOutstandingSub">owed by friend</span>
+            <span class="hero-progress-label" id="kpiOutstandingSub">still to send</span>
             <span class="val-real hero-progress-pct" id="heroElPct">0%</span>
-            <span class="skel skel-twin skel-label" style="width:32px"></span>
+            <span class="skel skel-twin skel-label skel-w-32"></span>
           </div>
           <div class="hero-track">
-            <div class="hero-fill" id="heroFillEl" style="width:0%;background:linear-gradient(90deg,var(--navy3),var(--navy))"></div>
+            <div class="hero-fill hero-fill--elapsed" id="heroFillEl" style="width:0%;"></div>
           </div>
         </div>
       </div>
@@ -2525,7 +2610,7 @@ const toggleTheme = () => {
       <div class="meta-card mc-share">
         <div class="meta-dot"></div>
         <div class="meta-body">
-          <div class="meta-label">Friend's Share</div>
+          <div class="meta-label">Your Share</div>
           <span class="skel skel-twin skel-num-md"></span>
           <div class="val-real meta-value" id="kpiFriendInr">₹—</div>
           <div class="meta-sub">€110.93 · 41.25% per month</div>
@@ -2536,7 +2621,7 @@ const toggleTheme = () => {
         <div class="meta-dot"></div>
         <div class="meta-body">
           <div class="meta-label">Months Left</div>
-          <span class="skel skel-twin skel-num-md" style="width:60px"></span>
+          <span class="skel skel-twin skel-num-md skel-w-60"></span>
           <div class="val-real meta-value" id="kpiRemain">—</div>
           <div class="meta-sub" id="kpiRemainSub">in loan period · <span id="kpiRemainInr">₹—</span> remaining</div>
         </div>
@@ -2558,16 +2643,16 @@ const toggleTheme = () => {
         </div>
         <div class="prog-track-wrap">
           <div class="prog-track" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Loan time elapsed" id="pt1">
-            <div class="prog-fill" id="pf1" style="width:0%; background: linear-gradient(90deg, var(--navy3), var(--navy));"></div>
+            <div class="prog-fill prog-fill--elapsed" id="pf1" style="width:0%;"></div>
           </div>
           <div class="prog-ticks" aria-hidden="true">
-            <div class="prog-tick" style="left:25%">
+            <div class="prog-tick prog-tick--25">
               <span class="prog-tick-label">25%</span>
             </div>
-            <div class="prog-tick" style="left:50%">
+            <div class="prog-tick prog-tick--50">
               <span class="prog-tick-label">50%</span>
             </div>
-            <div class="prog-tick" style="left:75%">
+            <div class="prog-tick prog-tick--75">
               <span class="prog-tick-label">75%</span>
             </div>
           </div>
@@ -2583,21 +2668,21 @@ const toggleTheme = () => {
       <!-- Block 2: Amount collected -->
       <div class="prog-block">
         <div class="prog-header">
-          <span class="prog-label">Amount collected</span>
+          <span class="prog-label">Amount sent</span>
           <span class="prog-pct" id="pp2" aria-live="polite">0<span class="prog-pct-unit">%</span></span>
         </div>
         <div class="prog-track-wrap">
-          <div class="prog-track" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Amount collected vs due" id="pt2">
-            <div class="prog-fill" id="pf2" style="width:0%; background: linear-gradient(90deg, #16a34a, var(--green));"></div>
+          <div class="prog-track" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Amount sent vs due" id="pt2">
+            <div class="prog-fill prog-fill--collected" id="pf2" style="width:0%;"></div>
           </div>
           <div class="prog-ticks" aria-hidden="true">
-            <div class="prog-tick" style="left:25%">
+            <div class="prog-tick prog-tick--25">
               <span class="prog-tick-label">25%</span>
             </div>
-            <div class="prog-tick" style="left:50%">
+            <div class="prog-tick prog-tick--50">
               <span class="prog-tick-label">50%</span>
             </div>
-            <div class="prog-tick" style="left:75%">
+            <div class="prog-tick prog-tick--75">
               <span class="prog-tick-label">75%</span>
             </div>
           </div>
@@ -2605,7 +2690,7 @@ const toggleTheme = () => {
         <div class="prog-caption">
           <div class="prog-caption-icon pci-green">₹</div>
           <div class="prog-caption-text" id="pc2">
-            <strong>—</strong> received of amount due so far
+            <strong>—</strong> sent of amount due so far
           </div>
         </div>
       </div>
@@ -2630,51 +2715,51 @@ const toggleTheme = () => {
       <!-- Month list skeleton — 6 placeholder rows shown while Firebase loads -->
       <div class="month-skel-list skel-section" id="monthSkel" aria-hidden="true">
         <div class="month-skel-row">
-          <div class="month-skel-num"><span class="skel skel-label" style="width:20px"></span></div>
-          <div class="month-skel-info"><span class="skel" style="height:18px;width:90px;border-radius:5px"></span><span class="skel skel-label" style="width:60px"></span></div>
-          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel" style="height:18px;width:88px;border-radius:5px"></span><span class="skel skel-label" style="width:52px"></span></div>
-          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel" style="height:18px;width:72px;border-radius:5px"></span></div>
-          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel" style="height:18px;width:88px;border-radius:5px"></span></div>
+          <div class="month-skel-num"><span class="skel skel-label skel-w-20"></span></div>
+          <div class="month-skel-info"><span class="skel skel-cell-bar skel-w-90"></span><span class="skel skel-label skel-w-60"></span></div>
+          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel skel-cell-bar skel-w-88"></span><span class="skel skel-label skel-w-52"></span></div>
+          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel skel-cell-bar skel-w-72"></span></div>
+          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel skel-cell-bar skel-w-88"></span></div>
           <div class="month-skel-pill"><span class="skel skel-pill"></span></div>
         </div>
         <div class="month-skel-row">
-          <div class="month-skel-num"><span class="skel skel-label" style="width:20px"></span></div>
-          <div class="month-skel-info"><span class="skel" style="height:18px;width:76px;border-radius:5px"></span><span class="skel skel-label" style="width:52px"></span></div>
-          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel" style="height:18px;width:88px;border-radius:5px"></span><span class="skel skel-label" style="width:48px"></span></div>
-          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel" style="height:18px;width:80px;border-radius:5px"></span></div>
-          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel" style="height:18px;width:96px;border-radius:5px"></span></div>
+          <div class="month-skel-num"><span class="skel skel-label skel-w-20"></span></div>
+          <div class="month-skel-info"><span class="skel skel-cell-bar skel-w-76"></span><span class="skel skel-label skel-w-52"></span></div>
+          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel skel-cell-bar skel-w-88"></span><span class="skel skel-label skel-w-48"></span></div>
+          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel skel-cell-bar skel-w-80"></span></div>
+          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel skel-cell-bar skel-w-96"></span></div>
           <div class="month-skel-pill"><span class="skel skel-pill"></span></div>
         </div>
         <div class="month-skel-row">
-          <div class="month-skel-num"><span class="skel skel-label" style="width:20px"></span></div>
-          <div class="month-skel-info"><span class="skel" style="height:18px;width:84px;border-radius:5px"></span><span class="skel skel-label" style="width:64px"></span></div>
-          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel" style="height:18px;width:88px;border-radius:5px"></span><span class="skel skel-label" style="width:56px"></span></div>
-          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel" style="height:18px;width:72px;border-radius:5px"></span></div>
-          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel" style="height:18px;width:88px;border-radius:5px"></span></div>
-          <div class="month-skel-pill"><span class="skel skel-pill" style="width:80px"></span></div>
+          <div class="month-skel-num"><span class="skel skel-label skel-w-20"></span></div>
+          <div class="month-skel-info"><span class="skel skel-cell-bar skel-w-84"></span><span class="skel skel-label skel-w-64"></span></div>
+          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel skel-cell-bar skel-w-88"></span><span class="skel skel-label skel-w-56"></span></div>
+          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel skel-cell-bar skel-w-72"></span></div>
+          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel skel-cell-bar skel-w-88"></span></div>
+          <div class="month-skel-pill"><span class="skel skel-pill skel-w-80"></span></div>
         </div>
         <div class="month-skel-row">
-          <div class="month-skel-num"><span class="skel skel-label" style="width:20px"></span></div>
-          <div class="month-skel-info"><span class="skel" style="height:18px;width:68px;border-radius:5px"></span><span class="skel skel-label" style="width:48px"></span></div>
-          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel" style="height:18px;width:88px;border-radius:5px"></span><span class="skel skel-label" style="width:60px"></span></div>
-          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel" style="height:18px;width:88px;border-radius:5px"></span></div>
-          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel" style="height:18px;width:72px;border-radius:5px"></span></div>
+          <div class="month-skel-num"><span class="skel skel-label skel-w-20"></span></div>
+          <div class="month-skel-info"><span class="skel skel-cell-bar skel-w-68"></span><span class="skel skel-label skel-w-48"></span></div>
+          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel skel-cell-bar skel-w-88"></span><span class="skel skel-label skel-w-60"></span></div>
+          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel skel-cell-bar skel-w-88"></span></div>
+          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel skel-cell-bar skel-w-72"></span></div>
           <div class="month-skel-pill"><span class="skel skel-pill"></span></div>
         </div>
         <div class="month-skel-row">
-          <div class="month-skel-num"><span class="skel skel-label" style="width:20px"></span></div>
-          <div class="month-skel-info"><span class="skel" style="height:18px;width:80px;border-radius:5px"></span><span class="skel skel-label" style="width:56px"></span></div>
-          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel" style="height:18px;width:88px;border-radius:5px"></span><span class="skel skel-label" style="width:44px"></span></div>
-          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel" style="height:18px;width:64px;border-radius:5px"></span></div>
-          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel" style="height:18px;width:96px;border-radius:5px"></span></div>
-          <div class="month-skel-pill"><span class="skel skel-pill" style="width:96px"></span></div>
+          <div class="month-skel-num"><span class="skel skel-label skel-w-20"></span></div>
+          <div class="month-skel-info"><span class="skel skel-cell-bar skel-w-80"></span><span class="skel skel-label skel-w-56"></span></div>
+          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel skel-cell-bar skel-w-88"></span><span class="skel skel-label skel-w-44"></span></div>
+          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel skel-cell-bar skel-w-64"></span></div>
+          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel skel-cell-bar skel-w-96"></span></div>
+          <div class="month-skel-pill"><span class="skel skel-pill skel-w-96"></span></div>
         </div>
         <div class="month-skel-row">
-          <div class="month-skel-num"><span class="skel skel-label" style="width:20px"></span></div>
-          <div class="month-skel-info"><span class="skel" style="height:18px;width:72px;border-radius:5px"></span><span class="skel skel-label" style="width:52px"></span></div>
-          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel" style="height:18px;width:88px;border-radius:5px"></span><span class="skel skel-label" style="width:52px"></span></div>
-          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel" style="height:18px;width:80px;border-radius:5px"></span></div>
-          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel" style="height:18px;width:88px;border-radius:5px"></span></div>
+          <div class="month-skel-num"><span class="skel skel-label skel-w-20"></span></div>
+          <div class="month-skel-info"><span class="skel skel-cell-bar skel-w-72"></span><span class="skel skel-label skel-w-52"></span></div>
+          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel skel-cell-bar skel-w-88"></span><span class="skel skel-label skel-w-52"></span></div>
+          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel skel-cell-bar skel-w-80"></span></div>
+          <div class="month-skel-cell"><span class="skel skel-label"></span><span class="skel skel-cell-bar skel-w-88"></span></div>
           <div class="month-skel-pill"><span class="skel skel-pill"></span></div>
         </div>
       </div>
@@ -2710,8 +2795,8 @@ const toggleTheme = () => {
             <dd>Amount due minus amount paid for that specific month</dd>
             <dt>Total Remaining</dt>
             <dd>Running total of all outstanding amounts from Feb 2026 through that row</dd>
-            <dt>Friend's Share</dt>
-            <dd>41.25% of the €268.91 total monthly EMI = €110.93 per month</dd>
+            <dt>Your Share</dt>
+            <dd>41.25% of the €268.91 total monthly EMI = €110.93 per month — your portion</dd>
           </dl>
         </div>
         <div class="method-section">
@@ -2823,8 +2908,9 @@ const persist = () => {
 
 /* ══════════════════════════════════════════════════════
    FIREBASE REALTIME LISTENER
-   Fires on first load AND whenever the other person
-   makes a change — both devices stay in sync live.
+   The main <script> is placed after </main> in the body,
+   so the full DOM is already parsed when this runs.
+   DOMContentLoaded wrapping is not needed here.
 ══════════════════════════════════════════════════════ */
 dbRef.on('value', snapshot => {
   const data = snapshot.val();
@@ -2960,7 +3046,7 @@ const renderRatePanel = () => {
       <div class="rp-source">${rateSrc}</div>
     </div>
     <div class="rp-cell">
-      <div class="rp-label">Friend pays this month</div>
+      <div class="rp-label">You send this month</div>
       <div class="rp-value">${friendInr}</div>
       <div class="rp-sub">= ${fmt_eur(FRIEND_EUR)} \u00D7 rate</div>
     </div>`;
@@ -2969,7 +3055,7 @@ const renderRatePanel = () => {
 /* ══════════════════════════════════════════════════════
    STATS
 ══════════════════════════════════════════════════════ */
-const renderStats = () => {
+let renderStats = () => {
   const months = getMonths();
   let elapsed = 0, totalDue = 0, totalPaid = 0, upcoming = 0, totalPaidInr = 0;
 
@@ -3022,7 +3108,7 @@ const renderStats = () => {
 
   document.getElementById('kpiOutstanding').textContent    = fmt_eur(out);
   document.getElementById('kpiOutstandingInr').textContent = outInr > 0 ? fmt_inr(outInr) : '\u20B90';
-  document.getElementById('kpiOutstandingSub').textContent = out > 0 ? 'owed by friend' : '\u2713 all settled';
+  document.getElementById('kpiOutstandingSub').textContent = out > 0 ? 'still to send' : '\u2713 all sent';
 
   document.getElementById('kpiRemain').textContent    = upcoming;
   document.getElementById('kpiRemainInr').textContent = ri ? fmt_inr(upcoming * FRIEND_EUR * ri.rate) : '\u20B9 rate TBD';
@@ -3063,7 +3149,7 @@ const renderStats = () => {
   if (pc1) pc1.innerHTML = `<strong>${elapsed}</strong> of ${TOTAL_MONTHS} months complete`;
   if (pc2) {
     pc2.innerHTML = totalDue > 0
-      ? `<strong>${fmt_eur(totalPaid)}</strong> received of <strong>${fmt_eur(totalDue)}</strong> due so far`
+      ? `<strong>${fmt_eur(totalPaid)}</strong> sent of <strong>${fmt_eur(totalDue)}</strong> due so far`
       : 'No payments due yet';
   }
 
@@ -3378,8 +3464,46 @@ const buildCard = (mo, i, cmap) => {
    INTERACTIONS
 ══════════════════════════════════════════════════════ */
 const toggleDrawer = k => {
-  openDrawers[k] = !openDrawers[k];
-  renderAll();
+  const drawer  = document.getElementById(`drawer-${k}`);
+  const card    = document.getElementById(`card-${k}`);
+  if (!drawer) { renderAll(); return; } /* fallback if card not yet rendered */
+
+  const isNowOpen = !openDrawers[k];
+
+  /* Close all other open drawers first (one-at-a-time) */
+  Object.keys(openDrawers).forEach(otherK => {
+    if (otherK !== k && openDrawers[otherK]) {
+      openDrawers[otherK] = false;
+      const otherDrawer = document.getElementById(`drawer-${otherK}`);
+      const otherCard   = document.getElementById(`card-${otherK}`);
+      if (otherDrawer) otherDrawer.classList.remove('open');
+      if (otherCard) _updateLogBtn(otherCard, otherK, false);
+    }
+  });
+
+  /* Toggle this drawer */
+  openDrawers[k] = isNowOpen;
+  drawer.classList.toggle('open', isNowOpen);
+  if (card) _updateLogBtn(card, k, isNowOpen);
+};
+
+/* Update the log button text, aria-expanded, and aria-label in-place */
+const _updateLogBtn = (card, k, isOpen) => {
+  const btn = card.querySelector('.mc-log-btn');
+  if (!btn) return;
+  btn.setAttribute('aria-expanded', String(isOpen));
+  btn.textContent = isOpen ? '\u25B2 close' : '\u25BC log \u20B9 payment';
+  /* Derive month label: use mc-month-name but exclude the mc-badge child text */
+  const nameEl = card.querySelector('.mc-month-name');
+  let monthLabel = k;
+  if (nameEl) {
+    /* Clone and strip badge so textContent is just "Month Year" */
+    const clone = nameEl.cloneNode(true);
+    clone.querySelectorAll('.mc-badge').forEach(b => b.remove());
+    monthLabel = clone.textContent.trim();
+  }
+  btn.setAttribute('aria-label',
+    (isOpen ? 'Close payment drawer for ' : 'Log payment for ') + monthLabel);
 };
 
 const onInrInput = (k, rate) => {
@@ -3484,90 +3608,122 @@ const togglePaid = k => {
 
 /* ══════════════════════════════════════════════════════
    BOOT
+   All DOM-touching code runs inside DOMContentLoaded to
+   guarantee every element exists before we reference it.
+   Pure function/constant definitions above are safe to
+   parse immediately — they don't access the DOM.
 ══════════════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
 
-/* Animated KPI counter — runs once on first render */
-(() => {
-  let ran = false;
-  const origRenderStats = renderStats;
-  renderStats = function() {
-    origRenderStats.apply(this, arguments);
-    if (ran) return;
-    ran = true;
-    setTimeout(() => {
-      document.querySelectorAll('.kpi-value').forEach(el => {
-        const text = el.textContent.trim();
-        const inrMatch = text.match(/^[\u20B9]([0-9,]+)$/);
-        const numMatch = text.match(/^([0-9]+)$/);
-        if (!inrMatch && !numMatch) return;
-        const target = parseInt(text.replace(/[^0-9]/g, ''), 10);
-        if (isNaN(target) || target === 0) return;
-        const prefix   = !!inrMatch;
-        const duration = 900;
-        let startTime  = null;
-        const step = ts => {
-          if (!startTime) startTime = ts;
-          const progress = Math.min((ts - startTime) / duration, 1);
-          const ease     = 1 - Math.pow(1 - progress, 3);
-          el.textContent = prefix ? fmt_inr(Math.floor(ease * target)) : String(Math.floor(ease * target));
-          if (progress < 1) requestAnimationFrame(step);
-          else el.textContent = text;
-        };
-        requestAnimationFrame(step);
-      });
-    }, 200);
-  };
-})();
+  /* ── Expose handlers to window so inline onclick= attrs resolve ── */
+  window.setFilter           = setFilter;
+  window.toggleDrawer        = toggleDrawer;
+  window.togglePaid          = togglePaid;
+  window.savePayment         = savePayment;
+  window.clearPayment        = clearPayment;
+  window.deleteHistoryEntry  = deleteHistoryEntry;
+  window.onInrInput          = onInrInput;
+  window.exportPDF           = exportPDF;
 
-setSyncStatus('connecting', 'Connecting to Firebase…');
+  /* ── Animated KPI counter — wraps renderStats once on first render ── */
+  (() => {
+    let ran = false;
+    const origRenderStats = renderStats;
+    renderStats = function() {
+      origRenderStats.apply(this, arguments);
+      if (ran) return;
+      ran = true;
+      setTimeout(() => {
+        document.querySelectorAll('.hero-value, .meta-value').forEach(el => {
+          const text = el.textContent.trim();
+          const inrMatch = text.match(/^[\u20B9]([0-9,]+)$/);
+          const numMatch = text.match(/^([0-9]+)$/);
+          if (!inrMatch && !numMatch) return;
+          const target = parseInt(text.replace(/[^0-9]/g, ''), 10);
+          if (isNaN(target) || target === 0) return;
+          const prefix   = !!inrMatch;
+          const duration = 900;
+          let startTime  = null;
+          const step = ts => {
+            if (!startTime) startTime = ts;
+            const progress = Math.min((ts - startTime) / duration, 1);
+            const ease     = 1 - Math.pow(1 - progress, 3);
+            el.textContent = prefix ? fmt_inr(Math.floor(ease * target)) : String(Math.floor(ease * target));
+            if (progress < 1) requestAnimationFrame(step);
+            else el.textContent = text;
+          };
+          requestAnimationFrame(step);
+        });
+      }, 200);
+    };
+  })();
 
-/* Show sticky bar on scroll */
-(() => {
-  const bar = document.getElementById('stickyBar');
-  if (!bar) return;
-  let ticking = false;
-  const onScroll = () => {
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(() => {
-      const scrolled = window.scrollY || document.documentElement.scrollTop;
-      bar.classList.toggle('visible', scrolled > 280);
-      ticking = false;
-    });
-  };
-  window.addEventListener('scroll', onScroll, { passive: true });
-})();
-
-/* ══════════════════════════════════════════════════════
-   FEATURE: EXPORT TO PDF
-══════════════════════════════════════════════════════ */
-const exportPDF = () => {
-  const now   = new Date();
-  const months_long = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-  const dd  = now.getDate();
-  const mon = months_long[now.getMonth()];
-  const yr  = now.getFullYear();
-  const hh  = String(now.getHours()).padStart(2, '0');
-  const mm  = String(now.getMinutes()).padStart(2, '0');
-  const dateStr = `${dd} ${mon} ${yr} at ${hh}:${mm}`;
-
-  let pd = document.querySelector('.print-date');
-  if (!pd) {
-    pd = document.createElement('div');
-    pd.className = 'print-date';
-    const wrap = document.querySelector('.wrap');
-    if (wrap) wrap.insertBefore(pd, wrap.firstChild);
-  }
-  pd.textContent = `Exported: ${dateStr}`;
-
-  setTimeout(() => {
-    try {
-      window.print();
-    } catch(e) {
-      alert('To save as PDF: use your browser menu → Share → Print, or File → Print.');
+  /* ── Methodology disclosure — sync aria-expanded on toggle ── */
+  const disc = document.getElementById('methodDisclosure');
+  if (disc) {
+    const summ = disc.querySelector('.method-summary');
+    if (summ) {
+      const syncAria = () => summ.setAttribute('aria-expanded', String(disc.open));
+      disc.addEventListener('toggle', syncAria);
+      syncAria(); /* set initial state */
     }
-  }, 80);
-};
+  }
+
+  /* ── Click outside any open drawer to close it ── */
+  document.addEventListener('click', e => {
+    /* If the click is inside a card (drawer or its trigger), do nothing */
+    if (e.target.closest('.mcard')) return;
+    /* Close all open drawers */
+    let anyOpen = false;
+    Object.keys(openDrawers).forEach(k => { if (openDrawers[k]) anyOpen = true; });
+    if (!anyOpen) return;
+    Object.keys(openDrawers).forEach(k => {
+      if (openDrawers[k]) {
+        openDrawers[k] = false;
+        const drawer = document.getElementById(`drawer-${k}`);
+        const card   = document.getElementById(`card-${k}`);
+        if (drawer) drawer.classList.remove('open');
+        if (card) _updateLogBtn(card, k, false);
+      }
+    });
+  });
+
+  /* ── Escape key closes open drawers ── */
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    Object.keys(openDrawers).forEach(k => {
+      if (openDrawers[k]) {
+        openDrawers[k] = false;
+        const drawer = document.getElementById(`drawer-${k}`);
+        const card   = document.getElementById(`card-${k}`);
+        if (drawer) drawer.classList.remove('open');
+        if (card) _updateLogBtn(card, k, false);
+        /* Return focus to the log button */
+        if (card) {
+          const btn = card.querySelector('.mc-log-btn');
+          if (btn) btn.focus();
+        }
+      }
+    });
+  });
+
+  /* ── Sticky bar scroll reveal ── */
+  const bar = document.getElementById('stickyBar');
+  if (bar) {
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const scrolled = window.scrollY || document.documentElement.scrollTop;
+        bar.classList.toggle('visible', scrolled > 280);
+        ticking = false;
+      });
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
+
+}); /* end DOMContentLoaded */
 </script>
 
 <!-- ══ STICKY SUMMARY BAR ══════════════════════════════ -->
@@ -3577,8 +3733,8 @@ const exportPDF = () => {
       <span class="sb-label" aria-hidden="true">Total Due</span>
       <span class="sb-value" id="sbDue" aria-live="polite">—</span>
     </div>
-    <div class="sb-item" aria-label="Total received from friend">
-      <span class="sb-label" aria-hidden="true">Received</span>
+    <div class="sb-item" aria-label="Total sent by you">
+      <span class="sb-label" aria-hidden="true">Sent</span>
       <span class="sb-value sb-green" id="sbReceived" aria-live="polite">—</span>
     </div>
     <div class="sb-item" aria-label="Outstanding balance">
