@@ -3096,6 +3096,10 @@ let activeFilter = 'all';
 
 const setFilter = (f, btn) => {
   activeFilter = f;
+
+  /* Close all open drawers so stale drawer state doesn't bleed across filters */
+  Object.keys(openDrawers).forEach(k => { openDrawers[k] = false; });
+
   document.querySelectorAll('.t-btn').forEach(b => {
     b.classList.remove('active');
     b.setAttribute('aria-pressed', 'false');
@@ -3570,23 +3574,6 @@ const togglePaid = k => {
 })();
 
 setSyncStatus('connecting', 'Connecting to Firebase…');
-
-/* Show sticky bar on scroll */
-(() => {
-  const bar = document.getElementById('stickyBar');
-  if (!bar) return;
-  let ticking = false;
-  const onScroll = () => {
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(() => {
-      const scrolled = window.scrollY || document.documentElement.scrollTop;
-      bar.classList.toggle('visible', scrolled > 280);
-      ticking = false;
-    });
-  };
-  window.addEventListener('scroll', onScroll, { passive: true });
-})();
 
 /* ══════════════════════════════════════════════════════
    FEATURE: EXPORT TO PDF
