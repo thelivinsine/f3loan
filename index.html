@@ -11,7 +11,7 @@
 <meta name="robots" content="noindex, nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 /* v2.1 — premium borderless cards */
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -64,9 +64,9 @@
   --shadow-float: 0 1px 3px rgba(12,28,53,.05), 0 6px 16px rgba(12,28,53,.10), 0 16px 40px rgba(12,28,53,.08), inset 0 1.5px 0 rgba(255,255,255,.9);
 
   /* Font stacks */
-  --font-display: 'Plus Jakarta Sans', 'IBM Plex Sans', sans-serif;
-  --font-body:    'IBM Plex Sans', sans-serif;
-  --font-num:     'Sora', 'Plus Jakarta Sans', sans-serif;
+  --font-display: 'Plus Jakarta Sans', sans-serif;
+  --font-body:    'Plus Jakarta Sans', sans-serif;
+  --font-num:     'Sora', sans-serif;
 
   /* Spacing scale */
   --s2:   2px;  --s4:  4px;   --s6:  6px;   --s8:  8px;
@@ -169,6 +169,13 @@ body::after {
   font-style: normal;
   font-weight: 400;
   color: rgba(255,255,255,.45);
+}
+.mast-timeline {
+  margin-top: var(--s6);
+  font-size: var(--text-md);
+  font-weight: 500;
+  color: rgba(255,255,255,.45);
+  letter-spacing: .5px;
 }
 .mast-sub {
   margin-top: var(--s14);
@@ -289,7 +296,7 @@ body::after {
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    SUMMARY — TWO-TIER LAYOUT
-   Tier 1: Hero pair (Outstanding + Total Received) — large, dominant
+   Tier 1: Hero pair (Outstanding + Total Sent) — large, dominant
    Tier 2: Meta strip (EMI, Share, Months Left) — compact, secondary
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 
@@ -957,11 +964,15 @@ html.dark .prog-milestone.reached { background: var(--paper); }
   border-top: 2px solid var(--rule2);
   border-left: 3px solid var(--teal);
   background: var(--cream);
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height .45s cubic-bezier(.16,1,.3,1);
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows .38s cubic-bezier(.16,1,.3,1);
 }
-.mc-drawer.open { max-height: 620px; }
+.mc-drawer > .drawer-pad {
+  min-height: 0;
+  overflow: hidden;
+}
+.mc-drawer.open { grid-template-rows: 1fr; }
 
 .drawer-pad { padding: var(--card-pad-sm) var(--s20) var(--s20); }
 .drawer-head {
@@ -2406,8 +2417,9 @@ const toggleTheme = () => {
 <header class="masthead" role="banner">
   <div class="masthead-inner">
     <div class="masthead-left">
-      <h1 class="mast-title">Joint Loan Tracker <em>·</em> Feb 2026 – Dec 2033</h1>
-      <div class="mast-sub">€20,000 · 96 months · Friend's share 41.25%</div>
+      <h1 class="mast-title">Joint Loan Tracker</h1>
+      <div class="mast-timeline">Feb 2026 – Dec 2033</div>
+      <div class="mast-sub">€20,000 · 96 months · Your share 41.25%</div>
     </div>
     <div class="mast-flags">
       <div class="flag-chip">🇩🇪 You — Germany</div>
@@ -2461,9 +2473,9 @@ const toggleTheme = () => {
     <!-- Tier 1: Two hero cards — the numbers that matter most -->
     <div class="summary-hero">
 
-      <!-- Total Received -->
+      <!-- Total Sent -->
       <div class="hero-card hc-received">
-        <div class="hero-label">Total Received</div>
+        <div class="hero-label">Total Sent</div>
         <div class="hero-value-wrap">
           <span class="skel skel-twin skel-num-lg"></span>
           <span class="skel skel-twin skel-sub"></span>
@@ -2474,7 +2486,7 @@ const toggleTheme = () => {
         </div>
         <div class="hero-progress">
           <div class="hero-progress-meta">
-            <span class="hero-progress-label" id="kpiReceivedSub">from friend</span>
+            <span class="hero-progress-label" id="kpiReceivedSub">sent by you</span>
             <span class="val-real hero-progress-pct" id="heroCollPct">0%</span>
             <span class="skel skel-twin skel-label" style="width:32px"></span>
           </div>
@@ -2497,7 +2509,7 @@ const toggleTheme = () => {
         </div>
         <div class="hero-progress">
           <div class="hero-progress-meta">
-            <span class="hero-progress-label" id="kpiOutstandingSub">owed by friend</span>
+            <span class="hero-progress-label" id="kpiOutstandingSub">still to send</span>
             <span class="val-real hero-progress-pct" id="heroElPct">0%</span>
             <span class="skel skel-twin skel-label" style="width:32px"></span>
           </div>
@@ -2525,7 +2537,7 @@ const toggleTheme = () => {
       <div class="meta-card mc-share">
         <div class="meta-dot"></div>
         <div class="meta-body">
-          <div class="meta-label">Friend's Share</div>
+          <div class="meta-label">Your Share</div>
           <span class="skel skel-twin skel-num-md"></span>
           <div class="val-real meta-value" id="kpiFriendInr">₹—</div>
           <div class="meta-sub">€110.93 · 41.25% per month</div>
@@ -2580,14 +2592,14 @@ const toggleTheme = () => {
         </div>
       </div>
 
-      <!-- Block 2: Amount collected -->
+      <!-- Block 2: Amount sent -->
       <div class="prog-block">
         <div class="prog-header">
-          <span class="prog-label">Amount collected</span>
+          <span class="prog-label">Amount sent</span>
           <span class="prog-pct" id="pp2" aria-live="polite">0<span class="prog-pct-unit">%</span></span>
         </div>
         <div class="prog-track-wrap">
-          <div class="prog-track" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Amount collected vs due" id="pt2">
+          <div class="prog-track" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Amount sent vs due" id="pt2">
             <div class="prog-fill" id="pf2" style="width:0%; background: linear-gradient(90deg, #16a34a, var(--green));"></div>
           </div>
           <div class="prog-ticks" aria-hidden="true">
@@ -2605,7 +2617,7 @@ const toggleTheme = () => {
         <div class="prog-caption">
           <div class="prog-caption-icon pci-green">₹</div>
           <div class="prog-caption-text" id="pc2">
-            <strong>—</strong> received of amount due so far
+            <strong>—</strong> sent of amount due so far
           </div>
         </div>
       </div>
@@ -2710,7 +2722,7 @@ const toggleTheme = () => {
             <dd>Amount due minus amount paid for that specific month</dd>
             <dt>Total Remaining</dt>
             <dd>Running total of all outstanding amounts from Feb 2026 through that row</dd>
-            <dt>Friend's Share</dt>
+            <dt>Your Share</dt>
             <dd>41.25% of the €268.91 total monthly EMI = €110.93 per month</dd>
           </dl>
         </div>
@@ -2960,7 +2972,7 @@ const renderRatePanel = () => {
       <div class="rp-source">${rateSrc}</div>
     </div>
     <div class="rp-cell">
-      <div class="rp-label">Friend pays this month</div>
+      <div class="rp-label">You send this month</div>
       <div class="rp-value">${friendInr}</div>
       <div class="rp-sub">= ${fmt_eur(FRIEND_EUR)} \u00D7 rate</div>
     </div>`;
@@ -3022,7 +3034,7 @@ const renderStats = () => {
 
   document.getElementById('kpiOutstanding').textContent    = fmt_eur(out);
   document.getElementById('kpiOutstandingInr').textContent = outInr > 0 ? fmt_inr(outInr) : '\u20B90';
-  document.getElementById('kpiOutstandingSub').textContent = out > 0 ? 'owed by friend' : '\u2713 all settled';
+  document.getElementById('kpiOutstandingSub').textContent = out > 0 ? 'still to send' : '\u2713 all sent';
 
   document.getElementById('kpiRemain').textContent    = upcoming;
   document.getElementById('kpiRemainInr').textContent = ri ? fmt_inr(upcoming * FRIEND_EUR * ri.rate) : '\u20B9 rate TBD';
@@ -3063,7 +3075,7 @@ const renderStats = () => {
   if (pc1) pc1.innerHTML = `<strong>${elapsed}</strong> of ${TOTAL_MONTHS} months complete`;
   if (pc2) {
     pc2.innerHTML = totalDue > 0
-      ? `<strong>${fmt_eur(totalPaid)}</strong> received of <strong>${fmt_eur(totalDue)}</strong> due so far`
+      ? `<strong>${fmt_eur(totalPaid)}</strong> sent of <strong>${fmt_eur(totalDue)}</strong> due so far`
       : 'No payments due yet';
   }
 
@@ -3682,8 +3694,8 @@ document.addEventListener('DOMContentLoaded', () => {
       <span class="sb-label" aria-hidden="true">Total Due</span>
       <span class="sb-value" id="sbDue" aria-live="polite">—</span>
     </div>
-    <div class="sb-item" aria-label="Total received from friend">
-      <span class="sb-label" aria-hidden="true">Received</span>
+    <div class="sb-item" aria-label="Total sent by you">
+      <span class="sb-label" aria-hidden="true">Sent</span>
       <span class="sb-value sb-green" id="sbReceived" aria-live="polite">—</span>
     </div>
     <div class="sb-item" aria-label="Outstanding balance">
