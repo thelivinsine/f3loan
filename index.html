@@ -133,21 +133,33 @@ body::after {
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .masthead {
   background: var(--navy);
-  padding: 24px 0 20px;
+  padding: 24px 0 4px;
   position: relative;
   overflow: hidden;
   border-bottom: 1px solid rgba(13,148,136,.4);
   box-shadow: 0 1px 12px rgba(13,148,136,.2);
 }
-/* Existing radial gradients + diagonal noise overlay for depth */
+/* Radial gradients + diagonal noise + title glow */
 .masthead::before {
   content:'';
   position:absolute; inset:0;
   background:
+    radial-gradient(ellipse 60% 40% at 0% 20%, rgba(13,148,136,.12) 0%, transparent 55%),
     radial-gradient(ellipse 80% 60% at 10% 110%, rgba(13,148,136,.18) 0%, transparent 60%),
     radial-gradient(ellipse 50% 80% at 90% -10%, rgba(26,70,204,.25) 0%, transparent 55%),
-    repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,.03) 39px, rgba(255,255,255,.03) 40px),
+    repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,.055) 39px, rgba(255,255,255,.055) 40px),
     repeating-linear-gradient(135deg, transparent, transparent 11px, rgba(255,255,255,.015) 11px, rgba(255,255,255,.015) 12px);
+}
+
+/* #3 — SVG noise texture layer for depth */
+.mast-bg-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  opacity: 0.04;
+  mix-blend-mode: overlay;
 }
 
 .masthead-inner {
@@ -158,6 +170,19 @@ body::after {
   flex-direction: column;
   gap: 0;
   position: relative;
+  z-index: 1;
+}
+
+/* #1 — Eyebrow label */
+.mast-eyebrow {
+  font-family: var(--font-display);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 6px;
+  opacity: 0.85;
 }
 
 /* Row 1: Title */
@@ -191,7 +216,7 @@ body::after {
   margin-top: 16px;
 }
 .flag-chip {
-  display: flex; align-items: center; gap: 6px;
+  display: inline-flex; align-items: center; gap: 6px;
   background: rgba(255,255,255,.07);
   border: 1px solid rgba(255,255,255,.13);
   border-radius: 99px;
@@ -204,14 +229,23 @@ body::after {
   -webkit-backdrop-filter: blur(8px);
   transition: background .2s, border-color .2s;
   letter-spacing: .2px;
+  min-height: 44px;
 }
 .flag-chip:hover {
   background: rgba(255,255,255,.12);
   border-color: rgba(13,148,136,.5);
 }
-/* Teal left-accent on the primary user chip */
-.flag-chip-you {
-  border-left: 2px solid var(--teal);
+/* #2 — Differentiated chip accents */
+.flag-chip.fc-india   { border-left: 2px solid var(--teal); }
+.flag-chip.fc-germany { border-left: 2px solid #d97706; }
+.chip-badge {
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  opacity: 0.55;
+  margin-left: 6px;
+  vertical-align: middle;
 }
 
 /* Row 4: Bottom utility bar */
@@ -225,15 +259,28 @@ body::after {
   border-top: 1px solid rgba(255,255,255,.07);
 }
 
-/* Sync indicator */
-.mast-sync {
-  display: flex;
+/* #4 — Sync indicator as a designed pill */
+.sync-pill {
+  display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
+  padding: 6px 12px;
+  border-radius: 99px;
+  background: rgba(74,222,128,0.08);
+  border: 1px solid rgba(74,222,128,0.18);
   font-family: var(--font-display);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: .3px;
+  transition: background .3s, border-color .3s;
+}
+.sync-pill:has(.sync-dot.error) {
+  background: rgba(248,113,113,0.08);
+  border-color: rgba(248,113,113,0.18);
+}
+.sync-pill:has(.sync-dot.connecting) {
+  background: rgba(251,191,36,0.08);
+  border-color: rgba(251,191,36,0.18);
 }
 
 /* Export button — ghost/outline, clearly secondary */
@@ -242,8 +289,8 @@ body::after {
   align-items: center;
   gap: 6px;
   padding: 6px 14px;
-  background: transparent;
-  border: 1px solid rgba(255,255,255,.18);
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.15);
   border-radius: 99px;
   color: rgba(255,255,255,.5);
   font-family: var(--font-display);
@@ -251,23 +298,54 @@ body::after {
   font-weight: 600;
   cursor: pointer;
   transition: all .2s;
-  min-height: 34px;
+  min-height: 44px;
   letter-spacing: .2px;
 }
 .export-btn:hover {
-  background: rgba(255,255,255,.08);
+  background: rgba(255,255,255,.11);
   border-color: rgba(255,255,255,.28);
   color: rgba(255,255,255,.8);
+  box-shadow: 0 0 0 1px rgba(13,148,136,.3);
 }
 .export-btn:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
 .export-btn svg { opacity: .55; }
 
+/* #5 — Staggered entrance animation */
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .mast-eyebrow  { animation: fadeSlideUp .4s cubic-bezier(.16,1,.3,1) .05s both; }
+  .mast-title    { animation: fadeSlideUp .4s cubic-bezier(.16,1,.3,1) .12s both; }
+  .mast-subtitle { animation: fadeSlideUp .4s cubic-bezier(.16,1,.3,1) .20s both; }
+  .mast-flags    { animation: fadeSlideUp .4s cubic-bezier(.16,1,.3,1) .28s both; }
+  .sync-pill,
+  .export-btn    { animation: fadeSlideUp .4s cubic-bezier(.16,1,.3,1) .36s both; }
+}
+
+/* Light mode masthead — lighter steel blue instead of deep navy */
+html:not(.dark) .masthead {
+  background: #1e3a5f;
+}
+html:not(.dark) .masthead::before {
+  background:
+    radial-gradient(ellipse 80% 60% at 10% 110%, rgba(13,148,136,.14) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 80% at 90% -10%, rgba(56,120,220,.20) 0%, transparent 55%),
+    repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,.055) 39px, rgba(255,255,255,.055) 40px);
+}
+html:not(.dark) .rate-panel {
+  background: linear-gradient(180deg, rgba(22,52,90,.97) 0%, rgba(15,38,70,1) 100%);
+}
+
 /* ── LEGACY — keep selectors alive for JS/print hooks ── */
 .masthead-left { display: contents; }
 .mast-timeline { display: none; }
-.mast-sub { display: none; }
+.mast-sub { display: none; margin-top: 4px; }
 .mast-meta { display: none; }
+.mast-sync { display: contents; } /* dissolve legacy wrapper */
 .mast-title em { font-style: normal; font-weight: 400; color: rgba(255,255,255,.45); }
+.mast-sub-strong { font-weight: 700; color: rgba(255,255,255,.75); font-style: normal; }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    RATE PANEL (static, no shimmer)
@@ -275,6 +353,8 @@ body::after {
 .rate-panel {
   background: linear-gradient(180deg, rgba(18,34,64,.96) 0%, rgba(10,24,48,1) 100%);
   padding: 0;
+  border-top: 1px solid rgba(13,148,136,.35);
+  box-shadow: 0 -1px 18px rgba(13,148,136,.15);
   border-bottom: 2px solid rgba(13,148,136,.35);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -1218,6 +1298,8 @@ html.dark .prog-milestone.reached { background: var(--paper); }
   .mast-flags { gap: 6px; }
   .mast-bottom { gap: 8px; }
   .export-btn { font-size: 11px; padding: 5px 12px; min-height: 32px; }
+  .sync-pill { padding: 5px 10px; font-size: 10px; }
+  .chip-badge { font-size: 7px; margin-left: 4px; }
 
   /* Month card: 2-col grid — hide number column on mobile */
   .mcard-body {
@@ -1629,7 +1711,9 @@ html.dark .prog-milestone.reached { background: var(--paper); }
   .toolbar, .t-btn, .t-count,
   .mc-log-btn, .mc-drawer,
   .pay-history, .chart-legend,
-  .mast-sync, .mast-bottom, .rate-panel::after,
+  .mast-sync, .mast-bottom, .sync-pill,
+  .mast-bg-layer, .mast-eyebrow, .chip-badge,
+  .rate-panel::after,
   .masthead::after { display: none !important; }
 
   /* ── Masthead: compact, dark, no overflow tricks ── */
@@ -2482,13 +2566,16 @@ const toggleTheme = () => {
 
 <!-- ══ MASTHEAD ══════════════════════════════════════════ -->
 <header class="masthead" role="banner">
+  <div class="mast-bg-layer" aria-hidden="true"></div>
   <div class="masthead-inner">
     <div class="masthead-left">
+      <!-- #1 — Eyebrow -->
+      <div class="mast-eyebrow">Private · Live</div>
       <!-- Row 1: Title -->
       <h1 class="mast-title">Joint Loan Tracker</h1>
       <!-- Legacy elements kept for JS/print compatibility -->
-      <div class="mast-timeline">Feb 2026 – Dec 2033</div>
-      <div class="mast-sub">€20,000 · 95 months · Your share 41.25%</div>
+      <div class="mast-timeline">Feb 2026 – Dec 2033 · €20,000 · 95 months</div>
+      <div class="mast-sub">Your share: <strong class="mast-sub-strong">41.25%</strong> · <strong class="mast-sub-strong">€110.93</strong>/month</div>
       <div class="mast-meta">Feb 2026 – Dec 2033</div>
     </div>
 
@@ -2498,15 +2585,15 @@ const toggleTheme = () => {
       Your share: 41.25% · €110.93/month
     </div>
 
-    <!-- Row 3: Flag chips (POV: friend in India is the primary user) -->
+    <!-- Row 3: Flag chips with role badges (#2) -->
     <div class="mast-flags">
-      <div class="flag-chip flag-chip-you">🇮🇳 You — India</div>
-      <div class="flag-chip">🇩🇪 Friend — Germany</div>
+      <div class="flag-chip fc-india">🇮🇳 You — India <span class="chip-badge">Primary</span></div>
+      <div class="flag-chip fc-germany">🇩🇪 Friend — Germany <span class="chip-badge">Lender</span></div>
     </div>
 
-    <!-- Row 4: Sync indicator + Export -->
+    <!-- Row 4: Sync pill (#4) + Export -->
     <div class="mast-bottom">
-      <div class="mast-sync">
+      <div class="sync-pill">
         <div class="sync-dot connecting" id="syncDot"></div>
         <span class="sync-text" id="syncText" aria-live="polite" aria-atomic="true">Connecting to Firebase…</span>
       </div>
