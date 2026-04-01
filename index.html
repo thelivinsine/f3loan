@@ -375,16 +375,10 @@ body::after {
   box-shadow: 0 8px 20px rgba(12,28,53,.10), 0 28px 52px rgba(12,28,53,.10), inset 0 1.5px 0 rgba(255,255,255,1);
 }
 
-/* Coloured top accent bar */
+/* Coloured top accent bar — removed */
 .hero-card::after {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 4px;
-  border-radius: var(--r-xl) var(--r-xl) 0 0;
+  display: none;
 }
-.hero-card.hc-received::after { background: linear-gradient(90deg, var(--green), #22c55e); }
-.hero-card.hc-outstanding::after { background: linear-gradient(90deg, var(--red), #f87171); }
 
 /* Subtle tinted background wash */
 .hero-card.hc-received    { background: linear-gradient(160deg, #ffffff 60%, #f0fbf5 100%); }
@@ -784,21 +778,11 @@ html.dark .prog-milestone.reached { background: var(--paper); }
 .mcard.mc-past     { }
 .mcard.mc-upcoming { background: var(--paper); }
 
-/* Left accent stripe — distinct per status, width 3px */
+/* Left accent stripe — removed */
 .mcard::before {
-  content:'';
-  position: absolute;
-  left: 0; top: 12px; bottom: 12px;
-  width: 3px;
-  border-radius: 99px;
-  opacity: .8;
+  display: none;
 }
 /* position: relative merged into .mcard above */
-.mcard.mc-current::before  { background: var(--amber); opacity: 1; }
-.mcard.mc-paid::before     { background: var(--green); }
-.mcard.mc-partial::before  { background: var(--purple); }
-.mcard.mc-upcoming::before { background: var(--rule); opacity: .5; }
-.mcard.mc-past.mc-unpaid::before { background: var(--red); opacity: 1; }
 
 /* ── CARD BODY ── */
 .mcard-body {
@@ -807,7 +791,6 @@ html.dark .prog-milestone.reached { background: var(--paper); }
   align-items: center;
   gap: 0;
   padding: 0;
-  padding-left: 3px; /* accent stripe offset */
 }
 
 /* Tabular figures — ensures numbers align in columns */
@@ -1259,15 +1242,7 @@ html.dark .prog-milestone.reached { background: var(--paper); }
   .mcard.mc-paid    { box-shadow: 0 4px 8px rgba(12,28,53,.04), 0 12px 28px rgba(21,104,62,.12), 0 24px 40px rgba(12,28,53,.06), inset 0 1px 0 rgba(255,255,255,.9); }
   .mcard.mc-unpaid  { box-shadow: 0 4px 8px rgba(12,28,53,.04), 0 12px 28px rgba(184,36,36,.10), 0 24px 40px rgba(12,28,53,.06), inset 0 1px 0 rgba(255,255,255,.9); }
 
-  /* Left accent stripe — full height on mobile */
-  .mcard::before {
-    top: 0; bottom: 0;
-    border-radius: var(--r-xl) 0 0 var(--r-xl);
-    width: 4px;
-    opacity: 1;
-  }
-
-  /* Drawer: remove left teal border on mobile (accent stripe handles it) */
+  /* Drawer: remove left teal border on mobile */
   .mc-drawer {
     border-left: none;
   }
@@ -1776,11 +1751,9 @@ html.dark .prog-milestone.reached { background: var(--paper); }
   .sp-partial { background: #f2f0ff !important; color: #5318b0 !important; border-color: #b9a5f5 !important; }
   .sp-upcoming { background: #f5f5f5 !important; color: #888 !important; border-color: #ddd !important; }
 
-  /* Accent stripes on cards */
+  /* Accent stripes on cards — removed */
   .mcard::before {
-    display: block !important;
-    position: absolute !important;
-    width: 3px !important;
+    display: none !important;
   }
 
   /* Year separators */
@@ -2015,7 +1988,7 @@ html.dark .meta-sub   { color: var(--ink4); }
 /* Hide progress bar when drawer is open — prevents thick coloured line above drawer */
 .card-progress:has(+ .mc-drawer.open) { display: none; }
 html.dark .card-progress { background: transparent; }
-html.dark .mcard.mc-upcoming::before { opacity: .2; }
+
 .card-progress-fill {
   height: 100%;
   border-radius: 99px;
