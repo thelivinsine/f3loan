@@ -5,7 +5,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Joint Loan Tracker · Feb 2026 – Dec 2033</title>
 <meta name="description" content="Private loan repayment tracker for a €20,000 joint loan between Germany and India. 95 monthly payments, real-time Firebase sync.">
 <meta name="robots" content="noindex, nofollow">
@@ -1390,7 +1390,7 @@ html.dark .prog-milestone.reached { background: var(--paper); }
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-top: 1px solid rgba(13,148,136,.3);
-  padding: var(--s10) var(--s20);
+  padding: var(--s10) var(--s20) calc(var(--s10) + env(safe-area-inset-bottom, 0px));
   display: flex;
   align-items: center;
   gap: 0;
@@ -1449,7 +1449,7 @@ html.dark .prog-milestone.reached { background: var(--paper); }
   .sb-item:nth-child(4) { display: none; }
   .sb-value  { font-size: var(--text-md); }
   .sb-label  { font-size: var(--text-2xs); letter-spacing: 1px; }
-  .sticky-bar { padding: var(--s8) var(--s14); }
+  .sticky-bar { padding: var(--s8) var(--s14) calc(var(--s8) + env(safe-area-inset-bottom, 0px)); }
 }
 @media (max-width: 360px) {
   /* On the narrowest phones hide the 3rd item too */
@@ -1984,6 +1984,8 @@ html.dark .meta-sub   { color: var(--ink4); }
   background: transparent;
   overflow: hidden;
 }
+/* Hide progress bar when drawer is open — prevents thick coloured line above drawer */
+.card-progress:has(+ .mc-drawer.open) { display: none; }
 html.dark .card-progress { background: transparent; }
 html.dark .mcard.mc-upcoming::before { opacity: .2; }
 .card-progress-fill {
