@@ -961,18 +961,23 @@ html.dark .prog-milestone.reached { background: var(--paper); }
 
 /* ── PAYMENT DRAWER ── */
 .mc-drawer {
-  border-top: 2px solid var(--rule2);
+  border-top: 2px solid transparent;
   border-left: 3px solid transparent;
-  background: var(--cream);
+  background: transparent;
   display: grid;
   grid-template-rows: 0fr;
-  transition: grid-template-rows .38s cubic-bezier(.16,1,.3,1), border-color .2s;
+  transition: grid-template-rows .38s cubic-bezier(.16,1,.3,1), border-color .2s, background .2s;
 }
 .mc-drawer > .drawer-pad {
   min-height: 0;
   overflow: hidden;
 }
-.mc-drawer.open { grid-template-rows: 1fr; border-left-color: var(--teal); }
+.mc-drawer.open {
+  grid-template-rows: 1fr;
+  border-top-color: var(--rule2);
+  border-left-color: var(--teal);
+  background: var(--cream);
+}
 
 .drawer-pad { padding: var(--card-pad-sm) var(--s20) var(--s20); }
 .drawer-head {
@@ -1929,7 +1934,7 @@ html.dark .mcard.mc-current  { background: linear-gradient(135deg, #211d12 0%, #
 html.dark .mcard.mc-paid     { background: linear-gradient(135deg, #131e18 0%, #182716 100%); }
 html.dark .mcard.mc-partial  { background: linear-gradient(135deg, #18122a 0%, #22183a 100%); }
 html.dark .mcard.mc-upcoming { background: var(--paper); }
-html.dark .mc-drawer { background: #161c26; border-top-color: var(--rule2); }
+html.dark .mc-drawer.open { background: #161c26; border-top-color: var(--rule2); }
 html.dark .pay-wrap { background: #20283a; border-color: var(--rule); }
 html.dark .pay-input { color: var(--ink); }
 html.dark .pay-breakdown { border-color: var(--rule); }
