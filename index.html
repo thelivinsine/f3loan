@@ -2901,11 +2901,16 @@ const isPast = (y, m) => {
   return y < t.y || (y === t.y && m < t.m);
 };
 
+/* A month is "current" only from the 10th onwards — that's when
+   the rate is recorded and the payment becomes due. Before the 10th,
+   the current calendar month is still treated as upcoming. */
 const isCurr = (y, m) => {
   const t = today();
-  return y === t.y && m === t.m;
+  return y === t.y && m === t.m && t.day >= 10;
 };
 
+/* Upcoming = not past AND not current (which requires day >= 10).
+   So the current calendar month before the 10th is "upcoming". */
 const isUpco = (y, m) => !isPast(y, m) && !isCurr(y, m);
 
 const getMonths = () => {
@@ -3000,13 +3005,15 @@ const renderRatePanel = () => {
 ══════════════════════════════════════════════════════ */
 let renderStats = () => {
   const months = getMonths();
-  let elapsed = 0, totalDue = 0, totalPaid = 0, upcoming = 0, totalPaidInr = 0;
+  let elapsed = 0, totalDue = 0, totalPaid = 0, upcoming = 0, totalPaidInr = 0, totalDueInr = 0;
 
   for (const mo of months) {
     const k = mkey(mo.y, mo.m);
     if (!isUpco(mo.y, mo.m)) {
       elapsed++;
       totalDue += FRIEND_EUR;
+      const moRi = getRate(mo.y, mo.m);
+      if (moRi) totalDueInr += Math.round(FRIEND_EUR * moRi.rate);
       const paidEur = getPaidEur(k);
       totalPaid += paidEur;
       if (payments[k] && payments[k].inr != null) {
@@ -3045,6 +3052,16 @@ let renderStats = () => {
   const t  = today();
   const ri = getRate(t.y, t.m);
 
+  /* Find the most recent month with a known rate for fallback display */
+  let latestRi = ri;
+  if (!latestRi) {
+    const allMonths = getMonths();
+    for (let mi = allMonths.length - 1; mi >= 0; mi--) {
+      const mr = getRate(allMonths[mi].y, allMonths[mi].m);
+      if (mr) { latestRi = mr; break; }
+    }
+  }
+
   document.getElementById('kpiReceived').textContent    = fmt_eur(totalPaid);
   document.getElementById('kpiReceivedInr').textContent = totalPaidInr > 0 ? fmt_inr(totalPaidInr) : '\u20B90';
   document.getElementById('kpiReceivedSub').textContent = `${elapsed} month${elapsed !== 1 ? 's' : ''} elapsed`;
@@ -3054,10 +3071,10 @@ let renderStats = () => {
   document.getElementById('kpiOutstandingSub').textContent = out > 0 ? 'still to send' : '\u2713 all sent';
 
   document.getElementById('kpiRemain').textContent    = upcoming;
-  document.getElementById('kpiRemainSub').innerHTML = `${fmt_eur(upcoming * FRIEND_EUR)} ahead · <span id="kpiRemainInr">${ri ? fmt_inr(upcoming * FRIEND_EUR * ri.rate) : '\u20B9 rate TBD'}</span> remaining`;
+  document.getElementById('kpiRemainSub').innerHTML = `${fmt_eur(upcoming * FRIEND_EUR)} ahead · <span id="kpiRemainInr">${latestRi ? fmt_inr(upcoming * FRIEND_EUR * latestRi.rate) : '\u20B9 rate TBD'}</span> remaining`;
 
-  document.getElementById('kpiEmiInr').textContent    = ri ? fmt_inr(268.91 * ri.rate) : '\u20B9 rate TBD';
-  document.getElementById('kpiFriendInr').textContent = ri ? fmt_inr(FRIEND_EUR * ri.rate) : '\u20B9 rate TBD';
+  document.getElementById('kpiEmiInr').textContent    = latestRi ? fmt_inr(268.91 * latestRi.rate) : '\u20B9 rate TBD';
+  document.getElementById('kpiFriendInr').textContent = latestRi ? fmt_inr(FRIEND_EUR * latestRi.rate) : '\u20B9 rate TBD';
 
   setTimeout(() => {
     document.getElementById('pf1').style.width = `${elPct}%`;
@@ -3099,7 +3116,7 @@ let renderStats = () => {
   const sbRec = document.getElementById('sbReceived');
   const sbOut = document.getElementById('sbOutstanding');
   const sbMon = document.getElementById('sbMonths');
-  if (sbDue) sbDue.textContent = ri ? fmt_inr(totalDue * ri.rate) : fmt_eur(totalDue);
+  if (sbDue) sbDue.textContent = totalDueInr > 0 ? fmt_inr(totalDueInr) : '\u20B90';
   if (sbRec) sbRec.textContent = totalPaidInr > 0 ? fmt_inr(totalPaidInr) : '\u20B90';
   if (sbOut) sbOut.textContent = outInr > 0 ? fmt_inr(outInr) : '\u20B90';
   if (sbMon) sbMon.textContent = `${upcoming} months`;
