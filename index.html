@@ -133,7 +133,7 @@ body::after {
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .masthead {
   background: var(--navy);
-  padding: var(--s24) 0 var(--s20);
+  padding: var(--s32) 0 0;
   position: relative;
   overflow: hidden;
 }
@@ -148,75 +148,139 @@ body::after {
 .masthead-inner {
   max-width: 1120px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 clamp(16px, 4vw, 28px);
   display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 20px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 0;
   position: relative;
 }
-.masthead-left { min-width: 0; flex: 1; }
+
+/* Row 1: Title */
 .mast-title {
   font-family: var(--font-display);
-  font-size: clamp(18px, 3vw, 26px);
-  font-weight: 700;
+  font-size: clamp(22px, 5vw, 30px);
+  font-weight: 800;
   color: #fff;
-  line-height: 1.2;
-  letter-spacing: -.3px;
+  line-height: 1.15;
+  letter-spacing: -.5px;
+  padding-right: 72px; /* space for fixed theme toggle */
 }
 .mast-title em {
   font-style: normal;
   font-weight: 400;
   color: rgba(255,255,255,.45);
 }
-.mast-timeline {
-  margin-top: var(--s6);
-  font-size: var(--text-md);
-  font-weight: 500;
-  color: rgba(255,255,255,.45);
-  letter-spacing: .5px;
-}
-.mast-sub {
-  margin-top: var(--s14);
-  font-size: var(--text-md);
-  color: rgba(255,255,255,.55);
-  font-weight: 400;
-  letter-spacing: .3px;
+
+/* Row 2: Timeline + loan meta */
+.mast-meta {
+  margin-top: var(--s10);
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 0;
   flex-wrap: wrap;
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  color: rgba(255,255,255,.5);
+  font-weight: 500;
+  letter-spacing: .2px;
+  line-height: 1.6;
 }
-.mast-sub-sep {
+.mast-meta-sep {
+  display: inline-block;
   width: 3px; height: 3px;
   border-radius: 50%;
-  background: rgba(255,255,255,.3);
-  display: inline-block;
+  background: rgba(255,255,255,.25);
+  margin: 0 10px;
   vertical-align: middle;
 }
+
+/* Row 3: Flag chips */
 .mast-flags {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
   align-items: center;
+  margin-top: var(--s16);
 }
 .flag-chip {
-  display: flex; align-items: center; gap: var(--s8);
-  background: rgba(255,255,255,.08);
-  border: 1px solid rgba(255,255,255,.14);
+  display: flex; align-items: center; gap: var(--s6);
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.10);
   border-radius: 99px;
-  padding: var(--s8) 18px;
-  font-size: var(--text-md);
+  padding: var(--s6) var(--s14);
+  font-size: var(--text-xs);
   font-weight: 600;
-  color: rgba(255,255,255,.80);
+  color: rgba(255,255,255,.70);
   backdrop-filter: blur(6px);
   transition: background .2s, border-color .2s;
+  letter-spacing: .2px;
 }
 .flag-chip:hover {
-  background: rgba(255,255,255,.14);
-  border-color: rgba(13,148,136,.6);
+  background: rgba(255,255,255,.12);
+  border-color: rgba(13,148,136,.5);
 }
+
+/* Row 4: Bottom bar — sync left, export right */
+.mast-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s12);
+  margin-top: var(--s20);
+  padding: var(--s10) 0;
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+
+/* Sync indicator — inline in masthead bottom bar */
+.mast-sync {
+  display: flex;
+  align-items: center;
+  gap: var(--s6);
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: .3px;
+}
+
+/* Export button — ghost/outline secondary style */
+.export-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--s6);
+  padding: var(--s6) var(--s14);
+  background: transparent;
+  border: 1px solid rgba(255,255,255,.15);
+  border-radius: 99px;
+  color: rgba(255,255,255,.55);
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .2s;
+  min-height: 36px;
+  letter-spacing: .2px;
+}
+.export-btn:hover {
+  background: rgba(255,255,255,.08);
+  border-color: rgba(255,255,255,.25);
+  color: rgba(255,255,255,.8);
+}
+.export-btn:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+.export-btn svg { opacity: .6; }
+
+/* Masthead → rate panel transition */
+.masthead::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 5%, rgba(13,148,136,.3) 30%, rgba(13,148,136,.3) 70%, transparent 95%);
+}
+
+/* ── LEGACY — keep selectors alive for JS id hooks ── */
+.masthead-left { display: contents; }
+.mast-timeline { display: none; }
+.mast-sub { display: none; }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    RATE PANEL (static, no shimmer)
@@ -1178,17 +1242,11 @@ html.dark .prog-milestone.reached { background: var(--paper); }
    All desktop data cells hidden; mobile-strip replaces them
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 @media (max-width: 680px) {
-  /* Masthead: stack controls below title */
-  .masthead-inner {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--s16);
-  }
-  .mast-flags {
-    width: 100%;
-    justify-content: space-between;
-  }
-  .mast-title { font-size: clamp(26px, 7vw, 40px); }
+  /* Masthead: already column layout — just tighten spacing */
+  .mast-title { font-size: clamp(22px, 6.5vw, 32px); }
+  .mast-flags { gap: 6px; }
+  .mast-bottom { gap: var(--s8); }
+  .export-btn { font-size: var(--text-2xs); padding: var(--s6) var(--s12); }
 
   /* Month card: 2-col grid — hide number column on mobile */
   .mcard-body {
@@ -1572,30 +1630,8 @@ html.dark .prog-milestone.reached { background: var(--paper); }
 
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   EXPORT BUTTON
+   EXPORT BUTTON — styles defined in masthead section
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-.export-btn {
-  display: flex;
-  align-items: center;
-  gap: var(--s6);
-  padding: var(--s10) 18px;
-  background: rgba(13,148,136,.15);
-  border: 1px solid rgba(13,148,136,.4);
-  border-radius: 99px;
-  color: #5eead4;
-  font-family: var(--font-display);
-  font-size: var(--text-md);
-  font-weight: 700;
-  cursor: pointer;
-  transition: all .2s;
-  min-height: 44px;
-}
-.export-btn:hover {
-  background: rgba(13,148,136,.28);
-  border-color: rgba(13,148,136,.7);
-  box-shadow: 0 2px 12px rgba(13,148,136,.3);
-}
-.export-btn:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    PRINT / PDF EXPORT
@@ -1630,7 +1666,8 @@ html.dark .prog-milestone.reached { background: var(--paper); }
   .toolbar, .t-btn, .t-count,
   .mc-log-btn, .mc-drawer,
   .pay-history, .chart-legend,
-  .sync-bar-wrap, .rate-panel::after { display: none !important; }
+  .mast-sync, .mast-bottom, .rate-panel::after,
+  .masthead::after { display: none !important; }
 
   /* ── Masthead: compact, dark, no overflow tricks ── */
   .masthead {
@@ -1643,12 +1680,14 @@ html.dark .prog-milestone.reached { background: var(--paper); }
     max-width: 100% !important;
     padding: 0 !important;
     display: flex !important;
+    flex-direction: row !important;
     justify-content: space-between !important;
     align-items: center !important;
     flex-wrap: nowrap !important;
   }
-  .mast-title   { font-size: var(--text-lg) !important; color: #fff !important; line-height: 1.2 !important; letter-spacing: -.2px !important; }
-  .mast-sub     { font-size: 10px !important; color: rgba(255,255,255,.6) !important; margin-top: 4px !important; }
+  .mast-title   { font-size: var(--text-lg) !important; color: #fff !important; line-height: 1.2 !important; letter-spacing: -.2px !important; padding-right: 0 !important; }
+  .mast-meta    { font-size: 10px !important; color: rgba(255,255,255,.6) !important; margin-top: 4px !important; display: block !important; }
+  .mast-sub     { font-size: 10px !important; color: rgba(255,255,255,.6) !important; margin-top: 4px !important; display: block !important; }
   .mast-flags   { gap: 6px !important; }
   .flag-chip    { font-size: 10px !important; padding: 4px 10px !important; color: rgba(255,255,255,.8) !important; border: 1px solid rgba(255,255,255,.2) !important; background: rgba(255,255,255,.08) !important; }
 
@@ -2483,15 +2522,32 @@ const toggleTheme = () => {
 <header class="masthead" role="banner">
   <div class="masthead-inner">
     <div class="masthead-left">
+      <!-- Row 1: Title -->
       <h1 class="mast-title">Joint Loan Tracker</h1>
+      <!-- Legacy elements kept for JS/print compatibility -->
       <div class="mast-timeline">Feb 2026 – Dec 2033</div>
       <div class="mast-sub">€20,000 · 95 months · Your share 41.25%</div>
     </div>
+
+    <!-- Row 2: Meta line -->
+    <div class="mast-meta">
+      Feb 2026 – Dec 2033<span class="mast-meta-sep"></span>€20,000 · 95 months<span class="mast-meta-sep"></span>Your share 41.25%
+    </div>
+
+    <!-- Row 3: Flag chips -->
     <div class="mast-flags">
       <div class="flag-chip">🇩🇪 You — Germany</div>
       <div class="flag-chip">🇮🇳 Friend — India</div>
+    </div>
+
+    <!-- Row 4: Sync indicator + Export -->
+    <div class="mast-bottom">
+      <div class="mast-sync">
+        <div class="sync-dot connecting" id="syncDot"></div>
+        <span class="sync-text" id="syncText" aria-live="polite" aria-atomic="true">Connecting to Firebase…</span>
+      </div>
       <button class="export-btn" onclick="exportPDF()" aria-label="Export to PDF">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         Export PDF
       </button>
     </div>
@@ -2500,12 +2556,6 @@ const toggleTheme = () => {
 
 <!-- ══ RATE PANEL ══════════════════════════════════════════ -->
 <div class="rate-panel">
-  <div class="sync-bar-wrap">
-    <div class="sync-bar">
-      <div class="sync-dot connecting" id="syncDot"></div>
-      <span class="sync-text" id="syncText" aria-live="polite" aria-atomic="true">Connecting to Firebase…</span>
-    </div>
-  </div>
   <div class="rate-panel-inner" id="ratePanelInner">
     <!-- Skeleton shown until JS populates real rate cells -->
     <div class="rp-skel-wrap skel-section" id="rateSkel">
@@ -3480,7 +3530,7 @@ const buildCard = (mo, i, cmap) => {
 
   const pctPaid   = FRIEND_EUR > 0 ? Math.min(100, Math.round((paidEur / FRIEND_EUR) * 100)) : 0;
   const progColor = paidEur >= FRIEND_EUR ? 'var(--green)' : (paidEur > 0 ? '#f59e0b' : 'var(--red)');
-  const progressBar = upco ? '' : `<div class="card-progress"><div class="card-progress-fill" style="width:${pctPaid}%;background:${progColor};"></div></div>`;
+  const progressBar = (!upco && pctPaid > 0 && pctPaid < 100) ? `<div class="card-progress"><div class="card-progress-fill" style="width:${pctPaid}%;background:${progColor};"></div></div>` : '';
 
   return `<div class="mcard ${mc} ${dimClass}" id="card-${k}" role="listitem" aria-label="${monthLabel}" style="${delay}" data-status="${st}">
     <div class="mcard-body">
