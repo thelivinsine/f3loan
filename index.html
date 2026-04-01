@@ -2436,7 +2436,7 @@ const toggleTheme = () => {
     <div class="masthead-left">
       <h1 class="mast-title">Joint Loan Tracker</h1>
       <div class="mast-timeline">Feb 2026 – Dec 2033</div>
-      <div class="mast-sub">€20,000 · 96 months · Your share 41.25%</div>
+      <div class="mast-sub">€20,000 · 95 months · Your share 41.25%</div>
     </div>
     <div class="mast-flags">
       <div class="flag-chip">🇩🇪 You — Germany</div>
@@ -2998,7 +2998,7 @@ const renderRatePanel = () => {
 /* ══════════════════════════════════════════════════════
    STATS
 ══════════════════════════════════════════════════════ */
-const renderStats = () => {
+let renderStats = () => {
   const months = getMonths();
   let elapsed = 0, totalDue = 0, totalPaid = 0, upcoming = 0, totalPaidInr = 0;
 
@@ -3054,8 +3054,7 @@ const renderStats = () => {
   document.getElementById('kpiOutstandingSub').textContent = out > 0 ? 'still to send' : '\u2713 all sent';
 
   document.getElementById('kpiRemain').textContent    = upcoming;
-  document.getElementById('kpiRemainInr').textContent = ri ? fmt_inr(upcoming * FRIEND_EUR * ri.rate) : '\u20B9 rate TBD';
-  document.getElementById('kpiRemainSub').textContent = `${fmt_eur(upcoming * FRIEND_EUR)} ahead`;
+  document.getElementById('kpiRemainSub').innerHTML = `${fmt_eur(upcoming * FRIEND_EUR)} ahead · <span id="kpiRemainInr">${ri ? fmt_inr(upcoming * FRIEND_EUR * ri.rate) : '\u20B9 rate TBD'}</span> remaining`;
 
   document.getElementById('kpiEmiInr').textContent    = ri ? fmt_inr(268.91 * ri.rate) : '\u20B9 rate TBD';
   document.getElementById('kpiFriendInr').textContent = ri ? fmt_inr(FRIEND_EUR * ri.rate) : '\u20B9 rate TBD';
@@ -3320,12 +3319,13 @@ const buildCard = (mo, i, cmap) => {
   const isOpen    = !!openDrawers[k];
   const toggleTxt = isOpen ? '\u25B2 close' : '\u25BC log \u20B9 payment';
   const pmtObj    = payments[k];
-  const savedInr  = (pmtObj && pmtObj.inr != null) ? pmtObj.inr : '';
+  const savedInr  = '';
+  const savedTotal = (pmtObj && pmtObj.inr != null) ? pmtObj.inr : 0;
   let equivTxt;
   if (!ri) {
     equivTxt = 'Rate not yet available for this month';
-  } else if (savedInr) {
-    equivTxt = `\u2248 <strong>${fmt_inr(savedInr)}</strong> logged`;
+  } else if (savedTotal > 0) {
+    equivTxt = `\u2248 <strong>${fmt_inr(savedTotal)}</strong> logged so far`;
   } else {
     equivTxt = 'Enter \u20B9 amount above';
   }
@@ -3510,8 +3510,8 @@ const onInrInput = (k, rate) => {
   if (!el || !eq) return;
   const inr = parseFloat(el.value) || 0;
   const r   = parseFloat(rate) || 0;
-  eq.innerHTML = inr > 0
-    ? `\u2248 <strong>${fmt_inr(inr)}</strong> logged`
+  eq.innerHTML = inr > 0 && r > 0
+    ? `\u2248 <strong>${fmt_eur(inr / r)}</strong> · ${fmt_inr(inr)}`
     : (r > 0 ? 'Enter \u20B9 amount above' : 'Rate not available');
 };
 
@@ -3519,7 +3519,7 @@ const savePayment = (k, rate) => {
   const el = document.getElementById(`inp-${k}`);
   if (!el) return;
   const inr = parseFloat(el.value);
-  if (isNaN(inr) || inr < 0) { alert('Enter a valid \u20B9 amount.'); return; }
+  if (isNaN(inr) || inr <= 0) { alert('Enter a valid \u20B9 amount.'); return; }
   const r = parseFloat(rate);
   if (!r) { alert('Rate not yet available for this month.'); return; }
   const eur   = parseFloat((inr / r).toFixed(2));
@@ -3558,6 +3558,7 @@ const savePayment = (k, rate) => {
 
 const deleteHistoryEntry = (k, idx) => {
   if (!payments[k] || !payments[k].history) return;
+  if (!confirm('Delete this payment entry?')) return;
   payments[k].history.splice(idx, 1);
   if (payments[k].history.length === 0) {
     delete payments[k];
@@ -3578,6 +3579,7 @@ const deleteHistoryEntry = (k, idx) => {
 };
 
 const clearPayment = k => {
+  if (!confirm('Clear all payment entries for this month? This cannot be undone.')) return;
   delete payments[k];
   payStatus[k]   = false;
   openDrawers[k] = true;
@@ -3589,6 +3591,8 @@ const togglePaid = k => {
   const [ys, ms] = k.split('-').map(Number);
   if (isUpco(ys, ms)) return;
   if (payStatus[k]) {
+    const hasHistory = payments[k] && payments[k].history && payments[k].history.length > 0;
+    if (hasHistory && !confirm('Unmark as paid? This will delete all logged payment entries for this month.')) return;
     payStatus[k] = false;
     delete payments[k];
   } else {
@@ -3617,7 +3621,7 @@ const togglePaid = k => {
     if (ran) return;
     ran = true;
     setTimeout(() => {
-      document.querySelectorAll('.kpi-value').forEach(el => {
+      document.querySelectorAll('.hero-value, .meta-value').forEach(el => {
         const text = el.textContent.trim();
         const inrMatch = text.match(/^[\u20B9]([0-9,]+)$/);
         const numMatch = text.match(/^([0-9]+)$/);
