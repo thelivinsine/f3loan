@@ -2365,6 +2365,23 @@ html.dark .method-section + .method-section { border-color: var(--rule); }
 /* Dark mode tints for new tokens */
 html.dark .hero-card.hc-received    .hero-eur { color: var(--green); }
 html.dark .hero-card.hc-outstanding .hero-eur { color: var(--red); }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   CSS-BASED FILTER SYSTEM
+   Cards carry data-status attr. The month-list carries
+   a data-filter attr. CSS hides non-matching cards.
+   This is the primary filter mechanism — immune to
+   async Firebase events and JS timing issues.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+#monthList[data-filter="paid"]     .mcard:not([data-status="paid"])     { display: none; }
+#monthList[data-filter="partial"]  .mcard:not([data-status="partial"])  { display: none; }
+#monthList[data-filter="upcoming"] .mcard:not([data-status="upcoming"]) { display: none; }
+#monthList[data-filter="unpaid"]   .mcard:not([data-status="unpaid"]):not([data-status="current"]) { display: none; }
+/* year separators: hide if all cards in that year are hidden */
+#monthList[data-filter="paid"]     .year-sep { display: none; }
+#monthList[data-filter="partial"]  .year-sep { display: none; }
+#monthList[data-filter="upcoming"] .year-sep { display: none; }
+#monthList[data-filter="unpaid"]   .year-sep { display: none; }
 </style>
   <!-- Firebase SDK (compat v9 — works in plain HTML, no bundler needed) -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -3097,8 +3114,18 @@ let activeFilter = 'all';
 const setFilter = (f, btn) => {
   activeFilter = f;
 
-  /* Close all open drawers so stale drawer state doesn't bleed across filters */
+  /* Close all open drawers */
   Object.keys(openDrawers).forEach(k => { openDrawers[k] = false; });
+
+  /* Apply CSS filter — primary visibility mechanism */
+  const ml = document.getElementById('monthList');
+  if (ml) {
+    if (f === 'all') ml.removeAttribute('data-filter');
+    else             ml.setAttribute('data-filter', f);
+  }
+
+  /* Update count, year separators, button states */
+  _applyFilterUI(f);
 
   document.querySelectorAll('.t-btn').forEach(b => {
     b.classList.remove('active');
@@ -3106,17 +3133,60 @@ const setFilter = (f, btn) => {
   });
   btn.classList.add('active');
   btn.setAttribute('aria-pressed', 'true');
-  renderAll();
+};
+
+/* Shared helper — updates tCount and year-sep visibility for a given filter.
+   Called by both setFilter (on click) and renderCards (after Firebase re-render). */
+const _applyFilterUI = f => {
+  const ml = document.getElementById('monthList');
+  if (!ml) return;
+
+  /* Count visible cards */
+  let count = 0;
+  ml.querySelectorAll('.mcard').forEach(card => {
+    const st = card.getAttribute('data-status');
+    if (
+      f === 'all' ||
+      (f === 'paid'     && st === 'paid')    ||
+      (f === 'partial'  && st === 'partial') ||
+      (f === 'unpaid'   && (st === 'unpaid' || st === 'current')) ||
+      (f === 'upcoming' && st === 'upcoming')
+    ) count++;
+  });
+  const tCount = document.getElementById('tCount');
+  if (tCount) tCount.textContent = `${count} / ${TOTAL_MONTHS}`;
+
+  /* Show year separators only if they precede at least one visible card */
+  ml.querySelectorAll('.year-sep').forEach(sep => {
+    const year = sep.getAttribute('aria-label');
+    let hasVisible = false;
+    ml.querySelectorAll(`.mcard[id^="card-${year}-"]`).forEach(card => {
+      const st = card.getAttribute('data-status');
+      if (
+        f === 'all' ||
+        (f === 'paid'     && st === 'paid')    ||
+        (f === 'partial'  && st === 'partial') ||
+        (f === 'unpaid'   && (st === 'unpaid' || st === 'current')) ||
+        (f === 'upcoming' && st === 'upcoming')
+      ) hasVisible = true;
+    });
+    sep.style.display = hasVisible ? '' : 'none';
+  });
 };
 
 const renderAll = () => { renderStats(); renderCards(); };
 
 const renderCards = () => {
-  const months  = getMonths();
-  const cmap    = buildCumulMap();
-  const filtered = [];
+  const months = getMonths();
+  const cmap   = buildCumulMap();
 
-  for (const mo of months) {
+  /* Always render ALL cards — CSS data-filter handles visibility.
+     This ensures switching back to "All" always shows every card,
+     even if Firebase fired during an active filter. */
+  let yearHtml = '';
+  let lastYear = 0;
+  for (let ci = 0; ci < months.length; ci++) {
+    const mo = months[ci];
     const { y, m, idx } = mo;
     const k       = mkey(y, m);
     const past    = isPast(y, m);
@@ -3132,27 +3202,25 @@ const renderCards = () => {
     else if (curr)    st = 'current';
     else              st = 'unpaid';
 
-    if (activeFilter === 'paid'     && st !== 'paid')                         continue;
-    if (activeFilter === 'partial'  && st !== 'partial')                      continue;
-    if (activeFilter === 'unpaid'   && st !== 'unpaid' && st !== 'current')   continue;
-    if (activeFilter === 'upcoming' && st !== 'upcoming')                     continue;
-
-    filtered.push({ y, m, idx, k, past, curr, upco, paid, paidEur, partial, st });
-  }
-
-  document.getElementById('tCount').textContent = `${filtered.length} / ${TOTAL_MONTHS}`;
-
-  let yearHtml = '';
-  let lastYear = 0;
-  for (let ci = 0; ci < filtered.length; ci++) {
-    const f = filtered[ci];
-    if (f.y !== lastYear) {
-      yearHtml += `<div class="year-sep" role="separator" aria-label="${f.y}"><span>${f.y}</span></div>`;
-      lastYear = f.y;
+    if (mo.y !== lastYear) {
+      yearHtml += `<div class="year-sep" role="separator" aria-label="${mo.y}"><span>${mo.y}</span></div>`;
+      lastYear = mo.y;
     }
-    yearHtml += buildCard(f, ci, cmap);
+    yearHtml += buildCard({ y, m, idx, k, past, curr, upco, paid, paidEur, partial, st }, ci, cmap);
   }
-  document.getElementById('monthList').innerHTML = yearHtml;
+
+  const ml = document.getElementById('monthList');
+  ml.innerHTML = yearHtml;
+
+  /* Re-apply CSS filter attribute so Firebase re-renders stay filtered */
+  if (activeFilter && activeFilter !== 'all') {
+    ml.setAttribute('data-filter', activeFilter);
+  } else {
+    ml.removeAttribute('data-filter');
+  }
+
+  /* Update visible count and year separators to match current filter */
+  _applyFilterUI(activeFilter);
 };
 
 const buildCard = (mo, i, cmap) => {
@@ -3348,7 +3416,7 @@ const buildCard = (mo, i, cmap) => {
   const progColor = paidEur >= FRIEND_EUR ? 'var(--green)' : (paidEur > 0 ? '#f59e0b' : 'var(--red)');
   const progressBar = upco ? '' : `<div class="card-progress"><div class="card-progress-fill" style="width:${pctPaid}%;background:${progColor};"></div></div>`;
 
-  return `<div class="mcard ${mc} ${dimClass}" id="card-${k}" role="listitem" aria-label="${monthLabel}" style="${delay}">
+  return `<div class="mcard ${mc} ${dimClass}" id="card-${k}" role="listitem" aria-label="${monthLabel}" style="${delay}" data-status="${st}">
     <div class="mcard-body">
       <div class="mc-num">${idx}</div>
       <div class="mc-info">
