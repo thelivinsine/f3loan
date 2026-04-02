@@ -1741,6 +1741,279 @@ html.dark .ph-edit-input { background: #20283a; border-color: var(--rule); color
 
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   PREPAYMENTS SECTION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.pp-summary {
+  background: var(--paper);
+  border-radius: var(--r-lg);
+  padding: var(--s14) var(--s20);
+  box-shadow: var(--shadow-sm);
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  color: var(--ink3);
+  display: none; /* shown by JS when prepayments exist */
+  align-items: center;
+  gap: var(--s8);
+  margin-bottom: var(--s14);
+}
+.pp-summary.has-data { display: flex; }
+.pp-summary strong { color: var(--ink); font-weight: 700; }
+
+.pp-add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s6);
+  padding: var(--s10) var(--s20);
+  border-radius: var(--r-sm);
+  border: 1.5px dashed var(--rule);
+  background: var(--paper);
+  color: var(--teal);
+  font-family: var(--font-display);
+  font-size: var(--text-md);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .18s;
+  min-height: 44px;
+  box-shadow: var(--shadow-sm);
+}
+.pp-add-btn:hover { border-color: var(--teal); background: var(--cream); box-shadow: var(--shadow-md); }
+.pp-add-btn:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+
+.pp-drawer {
+  display: grid;
+  grid-template-rows: 0fr;
+  overflow: hidden;
+  transition: grid-template-rows .38s cubic-bezier(.16,1,.3,1);
+  visibility: hidden;
+}
+.pp-drawer > .pp-drawer-pad { min-height: 0; overflow: hidden; padding: 0; }
+.pp-drawer.open {
+  grid-template-rows: 1fr;
+  visibility: visible;
+  transition: grid-template-rows .38s cubic-bezier(.16,1,.3,1), visibility 0s 0s;
+}
+.pp-drawer.open > .pp-drawer-pad {
+  padding: var(--s20) 0 var(--s8);
+}
+
+.pp-form {
+  background: var(--paper);
+  border-radius: var(--r-lg);
+  padding: var(--s20);
+  box-shadow: var(--shadow-float);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s16);
+}
+.pp-form-row {
+  display: flex;
+  gap: var(--s12);
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+.pp-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s6);
+  flex: 1;
+  min-width: 140px;
+}
+.pp-form-lbl {
+  font-family: 'Sora', sans-serif;
+  font-size: var(--text-2xs);
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--ink4);
+}
+.pp-form-input {
+  border: 1.5px solid var(--rule);
+  border-radius: var(--r-sm);
+  background: var(--paper);
+  padding: var(--s10) var(--s12);
+  font-family: 'Sora', sans-serif;
+  font-size: var(--text-lg);
+  font-weight: 500;
+  color: var(--ink);
+  outline: none;
+  transition: border-color .15s;
+  min-height: 44px;
+  width: 100%;
+}
+.pp-form-input:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(13,148,136,.12); }
+.pp-form-input::placeholder { color: var(--ink4); font-weight: 400; font-size: 14px; }
+.pp-form-sub {
+  font-family: 'Sora', sans-serif;
+  font-size: var(--text-xs);
+  color: var(--ink4);
+  margin-top: 2px;
+}
+.pp-form-note-input {
+  border: 1.5px solid var(--rule);
+  border-radius: var(--r-sm);
+  background: var(--paper);
+  padding: var(--s10) var(--s12);
+  font-family: var(--font-display);
+  font-size: var(--text-md);
+  color: var(--ink);
+  outline: none;
+  width: 100%;
+  min-height: 44px;
+  transition: border-color .15s;
+}
+.pp-form-note-input:focus { border-color: var(--teal); }
+.pp-form-note-input::placeholder { color: var(--ink4); }
+
+/* Effect toggle */
+.pp-effect-toggle {
+  display: flex;
+  gap: var(--s6);
+}
+.pp-effect-btn {
+  padding: var(--s8) var(--s16);
+  border-radius: 99px;
+  border: 1.5px solid var(--rule);
+  background: var(--paper);
+  color: var(--ink3);
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .18s;
+  min-height: 44px;
+}
+.pp-effect-btn:hover { border-color: var(--navy); color: var(--navy); }
+.pp-effect-btn.active {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: #fff;
+  box-shadow: 0 3px 12px rgba(12,28,53,.22);
+}
+
+.pp-form-btns {
+  display: flex;
+  gap: var(--s8);
+  padding-top: var(--s8);
+}
+.pp-form-save {
+  padding: var(--s10) var(--s24);
+  border-radius: var(--r-sm);
+  border: none;
+  background: var(--teal);
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: var(--text-md);
+  font-weight: 700;
+  cursor: pointer;
+  min-height: 44px;
+  transition: background .18s;
+}
+.pp-form-save:hover { background: #0a7a70; }
+.pp-form-cancel {
+  padding: var(--s10) var(--s16);
+  border-radius: var(--r-sm);
+  border: 1.5px solid var(--rule);
+  background: transparent;
+  color: var(--ink3);
+  font-family: var(--font-display);
+  font-size: var(--text-md);
+  font-weight: 600;
+  cursor: pointer;
+  min-height: 44px;
+  transition: all .18s;
+}
+.pp-form-cancel:hover { border-color: var(--red); color: var(--red); }
+.pp-form-error {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  color: var(--red);
+  font-weight: 600;
+  display: none;
+}
+.pp-form-error.show { display: block; }
+
+/* Prepayment history cards */
+.pp-list { display: flex; flex-direction: column; gap: var(--s10); margin-top: var(--s14); }
+.pp-card {
+  background: var(--paper);
+  border-radius: var(--r-lg);
+  padding: var(--s16) var(--s20);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s8);
+  position: relative;
+}
+.pp-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--s12);
+}
+.pp-card-date {
+  font-family: var(--font-display);
+  font-size: var(--text-md);
+  font-weight: 700;
+  color: var(--ink);
+}
+.pp-card-amount {
+  font-family: 'Sora', sans-serif;
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--green);
+}
+.pp-card-badge {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: var(--text-2xs);
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: var(--s4) var(--s8);
+  border-radius: var(--r-sm);
+}
+.pp-badge-emi    { background: var(--blue-bg); color: var(--blue); }
+.pp-badge-tenure { background: var(--purple-bg); color: var(--purple); }
+.pp-card-shares {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  color: var(--ink3);
+  line-height: 1.6;
+}
+.pp-card-shares strong { color: var(--ink2); font-weight: 600; }
+.pp-card-note {
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  color: var(--ink4);
+  font-style: italic;
+}
+.pp-card-delete {
+  position: absolute;
+  top: var(--s12);
+  right: var(--s12);
+  background: none;
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: var(--text-lg);
+  color: var(--ink4);
+  cursor: pointer;
+  transition: all .15s;
+}
+.pp-card-delete:hover { border-color: var(--red); color: var(--red); background: var(--red-bg); }
+
+/* Dark mode */
+html.dark .pp-form { background: var(--paper); }
+html.dark .pp-form-input { background: #20283a; border-color: var(--rule); color: var(--ink); }
+html.dark .pp-form-note-input { background: #20283a; border-color: var(--rule); color: var(--ink); }
+html.dark .pp-card { background: var(--paper); }
+html.dark .pp-summary { background: var(--paper); }
+html.dark .pp-add-btn { background: var(--paper); border-color: var(--rule); }
+html.dark .pp-effect-btn { background: var(--paper); border-color: var(--rule); color: var(--ink3); }
+html.dark .pp-effect-btn.active { background: var(--teal); border-color: var(--teal); }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    EXPORT BUTTON — styles defined in masthead section
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 
@@ -1779,6 +2052,7 @@ html.dark .ph-edit-input { background: #20283a; border-color: var(--rule); color
   .pay-history, .chart-legend,
   .mast-sync, .mast-bottom, .sync-pill,
   .mast-bg-layer, .mast-eyebrow, .chip-badge,
+  .pp-add-wrap, .pp-drawer, .pp-card-delete,
   .rate-panel::after,
   .masthead::after { display: none !important; }
 
@@ -2858,6 +3132,64 @@ const toggleTheme = () => {
     </div>
   </div>
 
+  <!-- PREPAYMENTS -->
+  <div class="section" id="prepaymentSection">
+    <div class="section-head"><span class="section-head-label">Prepayments</span><span class="section-head-line"></span></div>
+    <div class="pp-summary" id="ppSummary"></div>
+    <div class="pp-add-wrap">
+      <button class="pp-add-btn" onclick="togglePpDrawer()">＋ Log prepayment</button>
+      <div class="pp-drawer" id="ppDrawer">
+        <div class="pp-drawer-pad">
+          <div class="pp-form" id="ppForm">
+            <div class="pp-form-row">
+              <div class="pp-form-field">
+                <label class="pp-form-lbl" for="ppDate">Date</label>
+                <input type="date" class="pp-form-input" id="ppDate">
+              </div>
+              <div class="pp-form-field">
+                <label class="pp-form-lbl">Effect</label>
+                <div class="pp-effect-toggle">
+                  <button class="pp-effect-btn active" onclick="setPpEffect('emi',this)" type="button">Reduces EMI</button>
+                  <button class="pp-effect-btn" onclick="setPpEffect('tenure',this)" type="button">Reduces Tenure</button>
+                </div>
+              </div>
+            </div>
+            <div class="pp-form-row">
+              <div class="pp-form-field">
+                <label class="pp-form-lbl" for="ppTotalEur">Total paid to bank (€)</label>
+                <input type="number" class="pp-form-input" id="ppTotalEur" placeholder="e.g. 500" step="0.01" min="0">
+              </div>
+            </div>
+            <div class="pp-form-row">
+              <div class="pp-form-field">
+                <label class="pp-form-lbl" for="ppIndiaInr">Your contribution (₹)</label>
+                <input type="number" class="pp-form-input" id="ppIndiaInr" placeholder="e.g. 30000" step="1" min="0" oninput="onPpInrInput()">
+                <div class="pp-form-sub" id="ppIndiaEurSub">≈ €—</div>
+              </div>
+              <div class="pp-form-field">
+                <label class="pp-form-lbl" for="ppGermanyInr">Friend's contribution (₹)</label>
+                <input type="number" class="pp-form-input" id="ppGermanyInr" placeholder="e.g. 23000" step="1" min="0" oninput="onPpInrInput()">
+                <div class="pp-form-sub" id="ppGermanyEurSub">≈ €—</div>
+              </div>
+            </div>
+            <div class="pp-form-row">
+              <div class="pp-form-field" style="min-width:100%">
+                <label class="pp-form-lbl" for="ppNote">Note (optional)</label>
+                <input type="text" class="pp-form-note-input" id="ppNote" placeholder="e.g. April bonus prepayment" maxlength="100">
+              </div>
+            </div>
+            <div class="pp-form-error" id="ppError"></div>
+            <div class="pp-form-btns">
+              <button class="pp-form-save" onclick="savePrepayment()" type="button">Save prepayment</button>
+              <button class="pp-form-cancel" onclick="togglePpDrawer()" type="button">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pp-list" id="ppList"></div>
+  </div>
+
   <!-- TOOLBAR + MONTH LIST -->
   <div class="section">
     <div class="section-head"><span class="section-head-label">Monthly Payments</span><span class="section-head-line"></span></div>
@@ -3041,11 +3373,12 @@ const dbRef = db.ref('loandata');
 /* ══════════════════════════════════════════════════════
    STATE — mutable; updated by Firebase listener
 ══════════════════════════════════════════════════════ */
-let payStatus   = {};
-let payments    = {};
-let fbRates     = {};   // rates fetched from Firebase — overrides hardcoded RATES
-let openDrawers = {};
-let fbReady     = false;
+let payStatus    = {};
+let payments     = {};
+let fbRates      = {};   // rates fetched from Firebase — overrides hardcoded RATES
+let prepayments  = {};   // lump-sum prepayments — read from Firebase
+let openDrawers  = {};
+let fbReady      = false;
 
 /* ══════════════════════════════════════════════════════
    SYNC INDICATOR
@@ -3075,13 +3408,15 @@ const persist = () => {
 dbRef.on('value', snapshot => {
   const data = snapshot.val();
   if (data) {
-    payStatus = data.payStatus || {};
-    payments  = data.payments  || {};
-    fbRates   = data.rates     || {};   // merge Firebase rates
+    payStatus    = data.payStatus    || {};
+    payments     = data.payments     || {};
+    fbRates      = data.rates        || {};   // merge Firebase rates
+    prepayments  = data.prepayments  || {};   // lump-sum prepayments
   } else {
-    payStatus = {};
-    payments  = {};
-    fbRates   = {};
+    payStatus    = {};
+    payments     = {};
+    fbRates      = {};
+    prepayments  = {};
   }
   if (!fbReady) {
     fbReady = true;
@@ -3284,6 +3619,12 @@ let renderStats = () => {
     }
   }
 
+  /* Prepayment impact — adjust KPIs if prepayments exist */
+  const ppImpact = calcPrepaymentImpact();
+  const effectiveEmi    = ppImpact && ppImpact.emiEffect    ? ppImpact.newEmiEur : ORIG_EMI_EUR;
+  const effectiveShare  = effectiveEmi * 0.4125;
+  const effectiveMonths = ppImpact && ppImpact.tenureEffect ? Math.max(0, ppImpact.newTenureMonths - elapsed) : upcoming;
+
   document.getElementById('kpiReceived').textContent    = fmt_eur(totalPaid);
   document.getElementById('kpiReceivedInr').textContent = totalPaidInr > 0 ? fmt_inr(totalPaidInr) : '\u20B90';
   document.getElementById('kpiReceivedSub').textContent = `${elapsed} month${elapsed !== 1 ? 's' : ''} elapsed`;
@@ -3292,11 +3633,11 @@ let renderStats = () => {
   document.getElementById('kpiOutstandingInr').textContent = outInr > 0 ? fmt_inr(outInr) : '\u20B90';
   document.getElementById('kpiOutstandingSub').textContent = out > 0 ? 'still to send' : '\u2713 all sent';
 
-  document.getElementById('kpiRemain').textContent    = upcoming;
-  document.getElementById('kpiRemainSub').innerHTML = `${fmt_eur(upcoming * FRIEND_EUR)} ahead · <span id="kpiRemainInr">${latestRi ? fmt_inr(upcoming * FRIEND_EUR * latestRi.rate) : '\u20B9 rate TBD'}</span> remaining`;
+  document.getElementById('kpiRemain').textContent    = effectiveMonths;
+  document.getElementById('kpiRemainSub').innerHTML = `${fmt_eur(effectiveMonths * effectiveShare)} ahead · <span id="kpiRemainInr">${latestRi ? fmt_inr(effectiveMonths * effectiveShare * latestRi.rate) : '\u20B9 rate TBD'}</span> remaining`;
 
-  document.getElementById('kpiEmiInr').textContent    = latestRi ? fmt_inr(268.91 * latestRi.rate) : '\u20B9 rate TBD';
-  document.getElementById('kpiFriendInr').textContent = latestRi ? fmt_inr(FRIEND_EUR * latestRi.rate) : '\u20B9 rate TBD';
+  document.getElementById('kpiEmiInr').textContent    = latestRi ? fmt_inr(effectiveEmi * latestRi.rate) : '\u20B9 rate TBD';
+  document.getElementById('kpiFriendInr').textContent = latestRi ? fmt_inr(effectiveShare * latestRi.rate) : '\u20B9 rate TBD';
 
   setTimeout(() => {
     document.getElementById('pf1').style.width = `${elPct}%`;
@@ -3412,7 +3753,7 @@ const _applyFilterUI = f => {
   });
 };
 
-const renderAll = () => { renderStats(); renderCards(); };
+const renderAll = () => { renderStats(); renderCards(); renderPrepayments(); };
 
 const renderCards = () => {
   const months = getMonths();
@@ -3991,6 +4332,249 @@ const editHistoryTs = (k, idx, evt) => {
 };
 
 /* ══════════════════════════════════════════════════════
+   PREPAYMENTS — LOAN MATH
+══════════════════════════════════════════════════════ */
+const PRINCIPAL_EUR   = 20000;
+const ORIG_MONTHS     = TOTAL_MONTHS;      // 95
+const ORIG_EMI_EUR    = TOTAL_EMI;         // 268.91
+/* Derive monthly interest rate from PMT formula:
+   EMI = P * r * (1+r)^n / ((1+r)^n - 1)
+   For €20,000 over 95 months at EMI €268.91, r ≈ 0.00625 (7.5% annual) */
+const MONTHLY_INT_RATE = 0.00625;
+
+const calcPrepaymentImpact = () => {
+  const ppList = Object.values(prepayments);
+  if (ppList.length === 0) return null;
+
+  let totalPrepaidEur = 0;
+  let emiEffect = false, tenureEffect = false;
+  for (const pp of ppList) {
+    totalPrepaidEur += pp.totalEur || 0;
+    if (pp.effect === 'emi')    emiEffect = true;
+    if (pp.effect === 'tenure') tenureEffect = true;
+  }
+
+  /* Compute remaining principal after prepayments */
+  /* Simplified: subtract prepaid amount from original principal */
+  const remainingPrincipal = Math.max(0, PRINCIPAL_EUR - totalPrepaidEur);
+
+  /* Elapsed months */
+  const months = getMonths();
+  let elapsed = 0;
+  for (const mo of months) { if (!isUpco(mo.y, mo.m)) elapsed++; }
+  const remainingMonths = Math.max(1, ORIG_MONTHS - elapsed);
+
+  let newEmiEur = ORIG_EMI_EUR;
+  let newTenureMonths = ORIG_MONTHS;
+
+  if (emiEffect && remainingPrincipal > 0) {
+    /* Recompute EMI with reduced principal, same remaining term */
+    const r = MONTHLY_INT_RATE;
+    const n = remainingMonths;
+    const rn = Math.pow(1 + r, n);
+    newEmiEur = parseFloat((remainingPrincipal * r * rn / (rn - 1)).toFixed(2));
+  }
+
+  if (tenureEffect && remainingPrincipal > 0) {
+    /* Recompute tenure with reduced principal, same EMI */
+    const r = MONTHLY_INT_RATE;
+    const emi = ORIG_EMI_EUR;
+    /* n = -ln(1 - P*r/EMI) / ln(1+r) */
+    const inner = 1 - (remainingPrincipal * r / emi);
+    if (inner > 0) {
+      newTenureMonths = Math.ceil(-Math.log(inner) / Math.log(1 + r)) + elapsed;
+    }
+  }
+
+  /* Compute new end date */
+  let endY = 2026, endM = 1 + newTenureMonths;
+  while (endM > 12) { endM -= 12; endY++; }
+  const newEndDate = `${SHORT_NAMES[endM - 1]} ${endY}`;
+
+  return { newEmiEur, newTenureMonths, newEndDate, totalPrepaidEur, emiEffect, tenureEffect };
+};
+
+/* ══════════════════════════════════════════════════════
+   PREPAYMENTS — RENDER
+══════════════════════════════════════════════════════ */
+const renderPrepayments = () => {
+  const summaryEl = document.getElementById('ppSummary');
+  const listEl    = document.getElementById('ppList');
+  if (!summaryEl || !listEl) return;
+
+  const ppList = Object.entries(prepayments);
+  if (ppList.length === 0) {
+    summaryEl.classList.remove('has-data');
+    summaryEl.innerHTML = '';
+    listEl.innerHTML = '';
+    return;
+  }
+
+  /* Sort by date descending */
+  ppList.sort((a, b) => (b[1].ts || 0) - (a[1].ts || 0));
+
+  let totalEur = 0, totalInrIndia = 0;
+  for (const [, pp] of ppList) {
+    totalEur += pp.totalEur || 0;
+    totalInrIndia += pp.indiaInr || 0;
+  }
+
+  summaryEl.classList.add('has-data');
+  summaryEl.innerHTML = `<strong>${ppList.length}</strong> prepayment${ppList.length !== 1 ? 's' : ''} · <strong>${fmt_eur(totalEur)}</strong> total · <strong>${fmt_inr(totalInrIndia)}</strong> your share`;
+
+  listEl.innerHTML = ppList.map(([fbKey, pp]) => {
+    const badgeClass = pp.effect === 'emi' ? 'pp-badge-emi' : 'pp-badge-tenure';
+    const badgeText  = pp.effect === 'emi' ? 'EMI ↓' : 'Tenure ↓';
+    const noteHtml   = pp.note ? `<div class="pp-card-note">"${pp.note}"</div>` : '';
+    const dateDisp   = pp.date || new Date(pp.ts).toLocaleDateString();
+    return `<div class="pp-card">
+      <button class="pp-card-delete" onclick="deletePrepayment('${fbKey}')" title="Delete prepayment" aria-label="Delete prepayment">×</button>
+      <div class="pp-card-top">
+        <div>
+          <div class="pp-card-date">${dateDisp}</div>
+          <div class="pp-card-amount">${fmt_eur(pp.totalEur)}</div>
+        </div>
+        <span class="pp-card-badge ${badgeClass}">${badgeText}</span>
+      </div>
+      <div class="pp-card-shares">
+        🇮🇳 You: <strong>${fmt_inr(pp.indiaInr || 0)}</strong> (${fmt_eur(pp.indiaEur || 0)})<br>
+        🇩🇪 Friend: <strong>${fmt_inr(pp.germanyInr || 0)}</strong> (${fmt_eur(pp.germanyEur || 0)})
+      </div>
+      ${noteHtml}
+    </div>`;
+  }).join('');
+};
+
+/* ══════════════════════════════════════════════════════
+   PREPAYMENTS — INTERACTIONS
+══════════════════════════════════════════════════════ */
+let ppDrawerOpen = false;
+let ppEffect     = 'emi';
+
+const togglePpDrawer = () => {
+  ppDrawerOpen = !ppDrawerOpen;
+  const drawer = document.getElementById('ppDrawer');
+  if (drawer) drawer.classList.toggle('open', ppDrawerOpen);
+  if (!ppDrawerOpen) resetPpForm();
+};
+
+const setPpEffect = (effect, btn) => {
+  ppEffect = effect;
+  document.querySelectorAll('.pp-effect-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+};
+
+const onPpInrInput = () => {
+  const t = today();
+  const ri = getRate(t.y, t.m);
+  let latestRi = ri;
+  if (!latestRi) {
+    const allM = getMonths();
+    for (let i = allM.length - 1; i >= 0; i--) {
+      const mr = getRate(allM[i].y, allM[i].m);
+      if (mr) { latestRi = mr; break; }
+    }
+  }
+  const rate = latestRi ? latestRi.rate : 0;
+
+  const indiaInr   = parseFloat(document.getElementById('ppIndiaInr').value) || 0;
+  const germanyInr = parseFloat(document.getElementById('ppGermanyInr').value) || 0;
+  document.getElementById('ppIndiaEurSub').textContent   = rate > 0 ? `≈ ${fmt_eur(indiaInr / rate)}` : '≈ €—';
+  document.getElementById('ppGermanyEurSub').textContent = rate > 0 ? `≈ ${fmt_eur(germanyInr / rate)}` : '≈ €—';
+};
+
+const resetPpForm = () => {
+  const d = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  document.getElementById('ppDate').value = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+  document.getElementById('ppTotalEur').value = '';
+  document.getElementById('ppIndiaInr').value = '';
+  document.getElementById('ppGermanyInr').value = '';
+  document.getElementById('ppNote').value = '';
+  document.getElementById('ppIndiaEurSub').textContent = '≈ €—';
+  document.getElementById('ppGermanyEurSub').textContent = '≈ €—';
+  document.getElementById('ppError').classList.remove('show');
+  document.getElementById('ppError').textContent = '';
+  ppEffect = 'emi';
+  document.querySelectorAll('.pp-effect-btn').forEach((b, i) => b.classList.toggle('active', i === 0));
+};
+
+const savePrepayment = () => {
+  const errEl = document.getElementById('ppError');
+  errEl.classList.remove('show');
+
+  const dateVal    = document.getElementById('ppDate').value;
+  const totalEur   = parseFloat(document.getElementById('ppTotalEur').value);
+  const indiaInr   = parseFloat(document.getElementById('ppIndiaInr').value);
+  const germanyInr = parseFloat(document.getElementById('ppGermanyInr').value);
+  const note       = document.getElementById('ppNote').value.trim().slice(0, 100);
+
+  if (!dateVal) { errEl.textContent = 'Please enter a date.'; errEl.classList.add('show'); return; }
+  if (isNaN(totalEur) || totalEur <= 0) { errEl.textContent = 'Enter a valid total EUR amount.'; errEl.classList.add('show'); return; }
+  if (isNaN(indiaInr) || indiaInr < 0)  { errEl.textContent = 'Enter a valid India ₹ amount.'; errEl.classList.add('show'); return; }
+  if (isNaN(germanyInr) || germanyInr < 0) { errEl.textContent = 'Enter a valid Germany ₹ amount.'; errEl.classList.add('show'); return; }
+
+  /* Get rate for conversion */
+  const t = today();
+  const ri = getRate(t.y, t.m);
+  let latestRi = ri;
+  if (!latestRi) {
+    const allM = getMonths();
+    for (let i = allM.length - 1; i >= 0; i--) {
+      const mr = getRate(allM[i].y, allM[i].m);
+      if (mr) { latestRi = mr; break; }
+    }
+  }
+  if (!latestRi) { errEl.textContent = 'No exchange rate available yet.'; errEl.classList.add('show'); return; }
+  const rate = latestRi.rate;
+
+  const indiaEur   = parseFloat((indiaInr / rate).toFixed(2));
+  const germanyEur = parseFloat((germanyInr / rate).toFixed(2));
+  const sumEur     = indiaEur + germanyEur;
+
+  /* Validate contributions sum ≈ total (within ±2%) */
+  const tolerance = totalEur * 0.02;
+  if (Math.abs(sumEur - totalEur) > Math.max(tolerance, 1)) {
+    errEl.textContent = `Contributions sum to ${fmt_eur(sumEur)} but total is ${fmt_eur(totalEur)}. Must be within ±2%.`;
+    errEl.classList.add('show');
+    return;
+  }
+
+  const entry = {
+    ts: Date.now(),
+    date: dateVal,
+    totalEur,
+    indiaInr: Math.round(indiaInr),
+    germanyInr: Math.round(germanyInr),
+    indiaEur,
+    germanyEur,
+    rate,
+    effect: ppEffect,
+    note: note || null,
+  };
+
+  setSyncStatus('connecting', 'Saving…');
+  db.ref('loandata/prepayments').push(entry)
+    .then(() => {
+      setSyncStatus('synced', 'Synced ✓');
+      togglePpDrawer();
+    })
+    .catch(() => {
+      setSyncStatus('error', 'Save failed — check connection');
+      errEl.textContent = 'Save failed. Check your connection.';
+      errEl.classList.add('show');
+    });
+};
+
+const deletePrepayment = fbKey => {
+  if (!confirm('Delete this prepayment? This cannot be undone.')) return;
+  setSyncStatus('connecting', 'Deleting…');
+  db.ref(`loandata/prepayments/${fbKey}`).remove()
+    .then(() => setSyncStatus('synced', 'Synced ✓'))
+    .catch(() => setSyncStatus('error', 'Delete failed — check connection'));
+};
+
+/* ══════════════════════════════════════════════════════
    GLOBAL HANDLER EXPOSURE
    const/let are block-scoped — not on window by default.
    Inline onclick="fn()" resolves against window, so every
@@ -4005,6 +4589,11 @@ window.deleteHistoryEntry = deleteHistoryEntry;
 window.onInrInput         = onInrInput;
 window.exportPDF          = exportPDF;
 window.editHistoryTs      = editHistoryTs;
+window.togglePpDrawer     = togglePpDrawer;
+window.setPpEffect        = setPpEffect;
+window.onPpInrInput       = onPpInrInput;
+window.savePrepayment     = savePrepayment;
+window.deletePrepayment   = deletePrepayment;
 
 /* ══════════════════════════════════════════════════════
    SCROLL LISTENER — runs after full DOM is parsed.
@@ -4012,6 +4601,14 @@ window.editHistoryTs      = editHistoryTs;
    we defer the getElementById call to DOMContentLoaded.
 ══════════════════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', () => {
+  /* Init prepayment date field to today */
+  const ppDateEl = document.getElementById('ppDate');
+  if (ppDateEl) {
+    const d = new Date();
+    const pad = n => String(n).padStart(2, '0');
+    ppDateEl.value = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+  }
+
   const bar = document.getElementById('stickyBar');
   if (!bar) return;
   let ticking = false;
