@@ -2977,6 +2977,7 @@ const dbRef = db.ref('loandata');
 ══════════════════════════════════════════════════════ */
 let payStatus   = {};
 let payments    = {};
+let fbRates     = {};   // rates fetched from Firebase — overrides hardcoded RATES
 let openDrawers = {};
 let fbReady     = false;
 
@@ -3010,9 +3011,11 @@ dbRef.on('value', snapshot => {
   if (data) {
     payStatus = data.payStatus || {};
     payments  = data.payments  || {};
+    fbRates   = data.rates     || {};   // merge Firebase rates
   } else {
     payStatus = {};
     payments  = {};
+    fbRates   = {};
   }
   if (!fbReady) {
     fbReady = true;
@@ -3076,6 +3079,9 @@ const getMonths = () => {
 
 const getRate = (y, m) => {
   const k = mkey(y, m);
+  // Firebase rates take precedence — written by automated pipeline
+  if (fbRates[k] && fbRates[k].rate) return fbRates[k];
+  // Fall back to hardcoded RATES (Feb + Mar 2026 already recorded there)
   return Object.prototype.hasOwnProperty.call(RATES, k) ? RATES[k] : null;
 };
 
