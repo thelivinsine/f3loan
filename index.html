@@ -1672,6 +1672,45 @@ html.dark .prog-milestone.reached { background: var(--paper); }
 }
 .ph-delete:hover { border-color: var(--red); color: var(--red); background: var(--red-bg); }
 
+/* Editable transaction date */
+.ph-date-edit {
+  cursor: pointer;
+  border-bottom: 1px dashed var(--rule);
+  padding-bottom: 1px;
+  transition: border-color .15s, color .15s;
+}
+.ph-date-edit:hover { border-color: var(--teal); color: var(--teal); }
+.ph-edit-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.ph-edit-input {
+  font-family: 'Sora', sans-serif;
+  font-size: var(--text-xs);
+  padding: 3px 6px;
+  border: 1px solid var(--rule);
+  border-radius: var(--r-sm);
+  background: var(--paper);
+  color: var(--ink);
+  outline: none;
+}
+.ph-edit-input:focus { border-color: var(--teal); }
+.ph-edit-ok, .ph-edit-cancel {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  padding: 2px;
+  transition: color .15s;
+}
+.ph-edit-ok { color: var(--green); }
+.ph-edit-ok:hover { color: #22c55e; }
+.ph-edit-cancel { color: var(--ink4); }
+.ph-edit-cancel:hover { color: var(--red); }
+html.dark .ph-edit-input { background: #20283a; border-color: var(--rule); color: var(--ink); }
+
 
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -1735,7 +1774,7 @@ html.dark .prog-milestone.reached { background: var(--paper); }
   .mast-title   { font-size: var(--text-lg) !important; color: #fff !important; line-height: 1.2 !important; letter-spacing: -.2px !important; padding-right: 0 !important; }
   .mast-meta    { font-size: 10px !important; color: rgba(255,255,255,.6) !important; margin-top: 4px !important; display: none !important; }
   .mast-subtitle { font-size: 10px !important; color: rgba(255,255,255,.6) !important; margin-top: 4px !important; }
-  .mast-sub     { font-size: 10px !important; color: rgba(255,255,255,.6) !important; margin-top: 4px !important; display: block !important; }
+  .mast-sub     { display: none !important; }
   .mast-flags   { gap: 6px !important; }
   .flag-chip    { font-size: 10px !important; padding: 4px 10px !important; color: rgba(255,255,255,.8) !important; border: 1px solid rgba(255,255,255,.2) !important; background: rgba(255,255,255,.08) !important; }
 
@@ -2993,10 +3032,10 @@ const setSyncStatus = (state, msg) => {
   text.textContent = msg;
 };
 
-/* Write to Firebase — single write for the whole data object */
+/* Write to Firebase — update only payStatus and payments, preserving rates/ */
 const persist = () => {
   setSyncStatus('connecting', 'Saving…');
-  dbRef.set({ payStatus, payments })
+  dbRef.update({ payStatus, payments })
     .then(() => setSyncStatus('synced', 'Synced ✓'))
     .catch(() => setSyncStatus('error', 'Save failed — check connection'));
 };
@@ -3537,11 +3576,11 @@ const buildCard = (mo, i, cmap) => {
       const hMM    = String(hDate.getMinutes()).padStart(2, '0');
       const hTime  = `${hHH}:${hMM}`;
       const hColor = hi === hist.length - 1 ? 'ph-entry-latest' : '';
-      return `<div class="ph-entry ${hColor}">
+      return `<div class="ph-entry ${hColor}" data-k="${k}" data-hi="${hi}">
         <div class="ph-dot"></div>
         <div class="ph-body">
           <div class="ph-amount">${fmt_inr(he.inr)}</div>
-          <div class="ph-meta">${hDay} ${hMon} ${hYr} · ${hTime} · \u20B9${he.rate.toFixed(2)}/\u20AC</div>
+          <div class="ph-meta"><span class="ph-date-edit" onclick="editHistoryTs('${k}',${hi})" title="Tap to edit date">${hDay} ${hMon} ${hYr} · ${hTime}</span> · \u20B9${he.rate.toFixed(2)}/\u20AC</div>
         </div>
         <button class="ph-delete" onclick="deleteHistoryEntry('${k}',${hi})" title="Remove entry" aria-label="Delete payment entry">\u00D7</button>
       </div>`;
@@ -3770,12 +3809,15 @@ const togglePaid = k => {
     delete payments[k];
   } else {
     payStatus[k] = true;
-    const ri = getRate(ys, ms);
-    payments[k] = {
-      eur: FRIEND_EUR,
-      inr: ri ? Math.round(FRIEND_EUR * ri.rate) : null,
-      history: [{ inr: ri ? Math.round(FRIEND_EUR * ri.rate) : 0, eur: FRIEND_EUR, rate: ri ? ri.rate : 0, ts: Date.now() }],
-    };
+    /* Only create payment data if none exists — never overwrite existing history */
+    if (!payments[k] || !payments[k].history || payments[k].history.length === 0) {
+      const ri = getRate(ys, ms);
+      payments[k] = {
+        eur: FRIEND_EUR,
+        inr: ri ? Math.round(FRIEND_EUR * ri.rate) : null,
+        history: [{ inr: ri ? Math.round(FRIEND_EUR * ri.rate) : 0, eur: FRIEND_EUR, rate: ri ? ri.rate : 0, ts: Date.now() }],
+      };
+    }
   }
   persist();
   renderAll();
@@ -3852,6 +3894,70 @@ const exportPDF = () => {
 };
 
 /* ══════════════════════════════════════════════════════
+   FEATURE: EDIT TRANSACTION DATE
+   Surgical DOM update — no renderAll() call.
+══════════════════════════════════════════════════════ */
+const editHistoryTs = (k, idx) => {
+  if (!payments[k] || !payments[k].history || !payments[k].history[idx]) return;
+  const he = payments[k].history[idx];
+
+  /* Find the specific ph-entry in the DOM */
+  const entries = document.querySelectorAll(`#drawer-${k} .ph-entry`);
+  /* Entries are displayed in reverse order; map display index to original index */
+  const displayIdx = payments[k].history.length - 1 - idx;
+  const entryEl = entries[displayIdx];
+  if (!entryEl) return;
+
+  const metaEl = entryEl.querySelector('.ph-meta');
+  if (!metaEl) return;
+
+  /* Convert ts to datetime-local format (local timezone) */
+  const d = new Date(he.ts);
+  const pad = n => String(n).padStart(2, '0');
+  const localStr = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+
+  /* Store original HTML for cancel */
+  const origHTML = metaEl.innerHTML;
+
+  /* Replace with edit UI */
+  metaEl.innerHTML =
+    `<span class="ph-edit-row">` +
+    `<input type="datetime-local" class="ph-edit-input" value="${localStr}">` +
+    `<button class="ph-edit-ok" title="Save">✓</button>` +
+    `<button class="ph-edit-cancel" title="Cancel">✗</button>` +
+    `</span>`;
+
+  const input  = metaEl.querySelector('.ph-edit-input');
+  const okBtn  = metaEl.querySelector('.ph-edit-ok');
+  const canBtn = metaEl.querySelector('.ph-edit-cancel');
+
+  canBtn.addEventListener('click', () => { metaEl.innerHTML = origHTML; });
+
+  okBtn.addEventListener('click', () => {
+    const newTs = new Date(input.value).getTime();
+    if (isNaN(newTs)) { alert('Invalid date.'); return; }
+
+    /* Update in-memory and persist to Firebase */
+    payments[k].history[idx].ts = newTs;
+    openDrawers[k] = true;  /* keep drawer open through Firebase re-render */
+    persist();
+
+    /* Re-render just this entry's date display */
+    const nd  = new Date(newTs);
+    const nDay  = nd.getDate();
+    const nMon  = SHORT_NAMES[nd.getMonth()];
+    const nYr   = nd.getFullYear();
+    const nHH   = pad(nd.getHours());
+    const nMM   = pad(nd.getMinutes());
+    metaEl.innerHTML =
+      `<span class="ph-date-edit" onclick="editHistoryTs('${k}',${idx})" title="Tap to edit date">` +
+      `${nDay} ${nMon} ${nYr} · ${nHH}:${nMM}</span> · \u20B9${he.rate.toFixed(2)}/\u20AC`;
+  });
+
+  input.focus();
+};
+
+/* ══════════════════════════════════════════════════════
    GLOBAL HANDLER EXPOSURE
    const/let are block-scoped — not on window by default.
    Inline onclick="fn()" resolves against window, so every
@@ -3865,6 +3971,7 @@ window.clearPayment       = clearPayment;
 window.deleteHistoryEntry = deleteHistoryEntry;
 window.onInrInput         = onInrInput;
 window.exportPDF          = exportPDF;
+window.editHistoryTs      = editHistoryTs;
 
 /* ══════════════════════════════════════════════════════
    SCROLL LISTENER — runs after full DOM is parsed.
