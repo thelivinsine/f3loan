@@ -1676,21 +1676,34 @@ html.dark .prog-milestone.reached { background: var(--paper); }
 .ph-date-edit {
   cursor: pointer;
   border-bottom: 1px dashed rgba(13,148,136,.5);
-  padding-bottom: 1px;
+  padding: 4px 2px;
   transition: border-color .15s, color .15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 36px;
 }
 .ph-date-edit::after {
-  content: ' ✎';
-  font-size: 10px;
-  opacity: .45;
+  content: '✎';
+  font-size: 13px;
+  opacity: .5;
   transition: opacity .15s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(13,148,136,.1);
+  flex-shrink: 0;
 }
 .ph-date-edit:hover { border-color: var(--teal); color: var(--teal); }
-.ph-date-edit:hover::after { opacity: .9; }
+.ph-date-edit:hover::after { opacity: .9; background: rgba(13,148,136,.2); }
 .ph-edit-row {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 .ph-edit-input {
   font-family: 'Sora', sans-serif;
@@ -1705,17 +1718,24 @@ html.dark .prog-milestone.reached { background: var(--paper); }
 .ph-edit-input:focus { border-color: var(--teal); }
 .ph-edit-ok, .ph-edit-cancel {
   background: none;
-  border: none;
+  border: 1px solid var(--rule);
   cursor: pointer;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1;
-  padding: 2px;
-  transition: color .15s;
+  padding: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: color .15s, background .15s, border-color .15s;
+  flex-shrink: 0;
 }
 .ph-edit-ok { color: var(--green); }
-.ph-edit-ok:hover { color: #22c55e; }
+.ph-edit-ok:hover { color: #fff; background: var(--green); border-color: var(--green); }
 .ph-edit-cancel { color: var(--ink4); }
-.ph-edit-cancel:hover { color: var(--red); }
+.ph-edit-cancel:hover { color: #fff; background: var(--red); border-color: var(--red); }
 html.dark .ph-edit-input { background: #20283a; border-color: var(--rule); color: var(--ink); }
 
 
@@ -3587,7 +3607,7 @@ const buildCard = (mo, i, cmap) => {
         <div class="ph-dot"></div>
         <div class="ph-body">
           <div class="ph-amount">${fmt_inr(he.inr)}</div>
-          <div class="ph-meta"><span class="ph-date-edit" onclick="editHistoryTs('${k}',${hi})" title="Tap to edit date">${hDay} ${hMon} ${hYr} · ${hTime}</span> · \u20B9${he.rate.toFixed(2)}/\u20AC</div>
+          <div class="ph-meta"><span class="ph-date-edit" onclick="editHistoryTs('${k}',${hi},event)" title="Tap to edit date">${hDay} ${hMon} ${hYr} · ${hTime}</span> · \u20B9${he.rate.toFixed(2)}/\u20AC</div>
         </div>
         <button class="ph-delete" onclick="deleteHistoryEntry('${k}',${hi})" title="Remove entry" aria-label="Delete payment entry">\u00D7</button>
       </div>`;
@@ -3904,7 +3924,8 @@ const exportPDF = () => {
    FEATURE: EDIT TRANSACTION DATE
    Surgical DOM update — no renderAll() call.
 ══════════════════════════════════════════════════════ */
-const editHistoryTs = (k, idx) => {
+const editHistoryTs = (k, idx, evt) => {
+  if (evt) { evt.stopPropagation(); evt.preventDefault(); }
   if (!payments[k] || !payments[k].history || !payments[k].history[idx]) return;
   const he = payments[k].history[idx];
 
@@ -3930,13 +3951,18 @@ const editHistoryTs = (k, idx) => {
   metaEl.innerHTML =
     `<span class="ph-edit-row">` +
     `<input type="datetime-local" class="ph-edit-input" value="${localStr}">` +
-    `<button class="ph-edit-ok" title="Save">✓</button>` +
+    `<button class="ph-edit-ok" title="Save date">✓</button>` +
     `<button class="ph-edit-cancel" title="Cancel">✗</button>` +
     `</span>`;
 
   const input  = metaEl.querySelector('.ph-edit-input');
   const okBtn  = metaEl.querySelector('.ph-edit-ok');
   const canBtn = metaEl.querySelector('.ph-edit-cancel');
+
+  /* Stop propagation on all edit UI elements to prevent drawer collapse */
+  [input, okBtn, canBtn].forEach(el => {
+    el.addEventListener('click', e => e.stopPropagation());
+  });
 
   canBtn.addEventListener('click', () => { metaEl.innerHTML = origHTML; });
 
@@ -3957,7 +3983,7 @@ const editHistoryTs = (k, idx) => {
     const nHH   = pad(nd.getHours());
     const nMM   = pad(nd.getMinutes());
     metaEl.innerHTML =
-      `<span class="ph-date-edit" onclick="editHistoryTs('${k}',${idx})" title="Tap to edit date">` +
+      `<span class="ph-date-edit" onclick="editHistoryTs('${k}',${idx},event)" title="Tap to edit date">` +
       `${nDay} ${nMon} ${nYr} · ${nHH}:${nMM}</span> · \u20B9${he.rate.toFixed(2)}/\u20AC`;
   });
 
