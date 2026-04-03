@@ -748,21 +748,7 @@ html:not(.dark) .rate-panel {
   border-color: currentColor;
 }
 
-/* Responsive */
-@media (max-width: 680px) {
-  .progress-card {
-    grid-template-columns: 1fr;
-    gap: 24px 0;
-    padding: 20px 20px 20px;
-  }
-  .prog-block + .prog-block {
-    border-left: none;
-    padding-left: 0;
-    border-top: 1px solid var(--rule2);
-    padding-top: 24px;
-  }
-  .prog-pct { font-size: var(--num-sm); }
-}
+/* Responsive — progress card handled by U1 block */
 
 /* Dark mode */
 html.dark .progress-card { background: var(--paper); }
@@ -941,24 +927,49 @@ html.dark .prog-milestone.reached { background: var(--paper); }
 .mc-log-btn {
   display: inline-flex;
   align-items: center;
-  gap: var(--s4);
-  margin-top: var(--s4);
-  font-size: var(--text-xs);
+  justify-content: center;
+  gap: var(--s6);
+  font-size: var(--text-sm);
   font-weight: 700;
-  color: var(--teal);
   cursor: pointer;
-  background: none;
-  border: none;
   font-family: var(--font-display);
-  padding: 6px 8px 6px 0;
+  padding: var(--s8) var(--s20);
   text-decoration: none;
-  border-bottom: 1px solid rgba(13,148,136,.3);
-  transition: color .18s, border-color .18s;
+  border-radius: 99px;
   min-height: 44px;
-  letter-spacing: .2px;
+  letter-spacing: .3px;
+  transition: background .18s, border-color .18s, color .18s, box-shadow .18s;
+  white-space: nowrap;
+  /* Default: solid teal fill for unpaid/current/partial */
+  background: var(--teal);
+  color: #fff;
+  border: 1.5px solid var(--teal);
 }
-.mc-log-btn:hover { color: #0a7a70; border-color: rgba(13,148,136,.7); }
-.mc-log-btn:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; border-radius: 2px; }
+.mc-log-btn:hover { background: #0a7a70; border-color: #0a7a70; box-shadow: 0 3px 12px rgba(13,148,136,.35); }
+.mc-log-btn:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; border-radius: 99px; }
+/* Paid cards: ghost pill style */
+.mc-log-btn.mc-log-paid {
+  background: transparent;
+  color: var(--teal);
+  border: 1.5px solid rgba(13,148,136,.4);
+}
+.mc-log-btn.mc-log-paid:hover { background: rgba(13,148,136,.08); border-color: var(--teal); }
+/* Dark mode */
+html.dark .mc-log-btn { background: var(--teal); color: #fff; border-color: var(--teal); }
+html.dark .mc-log-btn.mc-log-paid { background: transparent; color: var(--teal); border-color: rgba(13,148,136,.4); }
+html.dark .mc-log-btn.mc-log-paid:hover { background: rgba(13,148,136,.15); }
+
+/* Action row — positions the log button below the card body grid */
+.mc-action {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 var(--s16) var(--s12) var(--s16);
+}
+@media (max-width: 680px) {
+  .mc-action {
+    padding: var(--s4) var(--s16) var(--s14) var(--s20);
+  }
+}
 
 /* Data cell */
 .mc-cell {
@@ -1741,6 +1752,162 @@ html.dark .ph-edit-input { background: #20283a; border-color: var(--rule); color
 
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   U1 — CIRCULAR PROGRESS ARC
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.progress-card {
+  grid-template-columns: 1fr auto 1fr;
+  align-items: start;
+}
+.prog-arc-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--s8) 0;
+}
+.prog-arc-svg {
+  width: 140px;
+  height: 140px;
+  transform: rotate(-90deg);
+}
+.prog-arc-bg {
+  fill: none;
+  stroke: var(--rule2);
+  stroke-width: 10;
+}
+.prog-arc-fill {
+  fill: none;
+  stroke-width: 10;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1.4s cubic-bezier(.16,1,.3,1);
+}
+.prog-arc-fill.arc-green { stroke: var(--green); }
+.prog-arc-center {
+  text-anchor: middle;
+  dominant-baseline: central;
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  fill: var(--ink);
+}
+.prog-arc-center-pct { font-size: 28px; letter-spacing: -1px; }
+.prog-arc-center-label {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  fill: var(--ink4);
+}
+html.dark .prog-arc-bg { stroke: var(--rule2); }
+@media (prefers-reduced-motion: no-preference) {
+  .prog-arc-fill { transition: stroke-dashoffset 1.4s cubic-bezier(.16,1,.3,1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .prog-arc-fill { transition: none; }
+}
+@media (max-width: 680px) {
+  .progress-card {
+    grid-template-columns: 1fr;
+  }
+  .prog-arc-wrap { order: -1; padding-bottom: var(--s16); }
+  .prog-block + .prog-block {
+    border-left: none;
+    padding-left: 0;
+    border-top: 1px solid var(--rule2);
+    padding-top: 24px;
+  }
+  .prog-arc-svg { width: 120px; height: 120px; }
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   U2 — LOAN HEALTH BANNER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.loan-health {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s8);
+  padding: var(--s10) var(--s20);
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  letter-spacing: .3px;
+  text-align: center;
+}
+.loan-health.show { display: flex; }
+.loan-health.lh-ok    { background: var(--green-bg); color: var(--green); }
+.loan-health.lh-warn  { background: var(--amber-bg); color: var(--amber); }
+.loan-health.lh-alert { background: var(--red-bg); color: var(--red); }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   U4 — COLLAPSED UPCOMING MONTHS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.upcoming-collapse {
+  background: var(--paper);
+  border-radius: var(--r-lg);
+  padding: var(--s14) var(--s20);
+  text-align: center;
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: var(--text-md);
+  font-weight: 600;
+  color: var(--ink3);
+  border: 1.5px dashed var(--rule);
+  transition: all .18s;
+  margin-top: var(--s6);
+  box-shadow: var(--shadow-sm);
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s6);
+}
+.upcoming-collapse:hover { border-color: var(--teal); color: var(--teal); background: var(--cream); }
+html.dark .upcoming-collapse { background: var(--paper); border-color: var(--rule); }
+html.dark .upcoming-collapse:hover { border-color: var(--teal); }
+/* When upcoming is expanded, hide the collapse bar */
+#monthList.upcoming-expanded .upcoming-collapse { display: none; }
+/* When collapsed (default), hide upcoming cards — but NOT when the "upcoming" filter is active */
+#monthList:not(.upcoming-expanded):not([data-filter="upcoming"]) .mcard[data-status="upcoming"] { display: none !important; }
+/* Also hide year separators that only contain upcoming cards when collapsed */
+#monthList:not(.upcoming-expanded):not([data-filter="upcoming"]) .year-sep.upcoming-only { display: none !important; }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   U5 — PAYMENT TOAST
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.pay-toast {
+  position: fixed;
+  bottom: 70px;
+  left: 50%;
+  transform: translateX(-50%) translateY(120%);
+  background: var(--navy);
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: var(--text-md);
+  font-weight: 700;
+  padding: var(--s12) var(--s24);
+  border-radius: 99px;
+  box-shadow: 0 4px 20px rgba(12,28,53,.25), 0 8px 32px rgba(12,28,53,.15);
+  z-index: 200;
+  pointer-events: none;
+  white-space: nowrap;
+  letter-spacing: .2px;
+  opacity: 0;
+  transition: none;
+  padding-bottom: calc(var(--s12) + env(safe-area-inset-bottom, 0px));
+}
+.pay-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+html.dark .pay-toast { background: var(--teal); color: #fff; }
+@media (prefers-reduced-motion: no-preference) {
+  .pay-toast { transition: transform .35s cubic-bezier(.16,1,.3,1), opacity .35s; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pay-toast.show { transform: translateX(-50%) translateY(0); }
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    PREPAYMENTS SECTION
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .pp-summary {
@@ -2048,7 +2215,7 @@ html.dark .pp-effect-btn.active { background: var(--teal); border-color: var(--t
   /* ── Hide everything interactive ── */
   .skip-link, .export-btn, .sticky-bar,
   .toolbar, .t-btn, .t-count,
-  .mc-log-btn, .mc-drawer,
+  .mc-log-btn, .mc-action, .mc-drawer,
   .pay-history, .chart-legend,
   .mast-sync, .mast-bottom, .sync-pill,
   .mast-bg-layer, .mast-eyebrow, .chip-badge,
@@ -2945,6 +3112,9 @@ const toggleTheme = () => {
   </div>
 </header>
 
+<!-- ══ LOAN HEALTH BANNER ════════════════════════════════ -->
+<div class="loan-health" id="loanHealth" role="status" aria-live="polite"></div>
+
 <!-- ══ RATE PANEL ══════════════════════════════════════════ -->
 <div class="rate-panel">
   <div class="rate-panel-inner" id="ratePanelInner">
@@ -3097,6 +3267,20 @@ const toggleTheme = () => {
             <strong>—</strong> of 95 months complete
           </div>
         </div>
+      </div>
+
+      <!-- U1: Circular progress arc -->
+      <div class="prog-arc-wrap">
+        <svg class="prog-arc-svg" viewBox="0 0 160 160" aria-hidden="true">
+          <circle class="prog-arc-bg" cx="80" cy="80" r="65"></circle>
+          <circle class="prog-arc-fill arc-green" id="progArcFill" cx="80" cy="80" r="65"
+            stroke-dasharray="408.4" stroke-dashoffset="408.4"></circle>
+        </svg>
+        <div style="margin-top:-100px;text-align:center;position:relative;">
+          <div id="progArcPct" style="font-family:'Sora',sans-serif;font-size:28px;font-weight:700;color:var(--ink);letter-spacing:-1px;">0%</div>
+          <div style="font-family:'Sora',sans-serif;font-size:9px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink4);margin-top:2px;">LOAN PAID</div>
+        </div>
+        <div style="height:60px;"></div>
       </div>
 
       <!-- Block 2: Amount sent -->
@@ -3682,7 +3866,59 @@ let renderStats = () => {
   if (sbDue) sbDue.textContent = totalDueInr > 0 ? fmt_inr(totalDueInr) : '\u20B90';
   if (sbRec) sbRec.textContent = totalPaidInr > 0 ? fmt_inr(totalPaidInr) : '\u20B90';
   if (sbOut) sbOut.textContent = outInr > 0 ? fmt_inr(outInr) : '\u20B90';
-  if (sbMon) sbMon.textContent = `${upcoming} months`;
+
+  /* U3 — Next Due date instead of months count */
+  if (sbMon) {
+    let nextDue = '\u2014';
+    for (const mo of months) {
+      const mk = mkey(mo.y, mo.m);
+      if (!isUpco(mo.y, mo.m) && !payStatus[mk]) {
+        nextDue = `10 ${SHORT_NAMES[mo.m - 1]}`;
+        break;
+      }
+      if (isUpco(mo.y, mo.m)) {
+        nextDue = `10 ${SHORT_NAMES[mo.m - 1]}`;
+        break;
+      }
+    }
+    sbMon.textContent = nextDue;
+  }
+
+  /* U1 — Circular progress arc */
+  const arcEl = document.getElementById('progArcFill');
+  const arcPctEl = document.getElementById('progArcPct');
+  if (arcEl) {
+    const totalLoanPaid = totalPaid;
+    const totalLoanDueAll = TOTAL_MONTHS * FRIEND_EUR;
+    const overallPct = totalLoanDueAll > 0 ? Math.min(100, (totalLoanPaid / totalLoanDueAll) * 100) : 0;
+    const circumference = 2 * Math.PI * 65; // r=65
+    const offset = circumference - (overallPct / 100) * circumference;
+    setTimeout(() => { arcEl.style.strokeDashoffset = offset; }, 150);
+    if (arcPctEl) arcPctEl.textContent = `${overallPct.toFixed(1)}%`;
+  }
+
+  /* U2 — Loan health banner */
+  const healthEl = document.getElementById('loanHealth');
+  if (healthEl && elapsed > 0) {
+    let paidCount = 0;
+    for (const mo of months) {
+      if (!isUpco(mo.y, mo.m) && payStatus[mkey(mo.y, mo.m)]) paidCount++;
+    }
+    const behind = elapsed - paidCount;
+    healthEl.className = 'loan-health show';
+    if (behind <= 0) {
+      healthEl.classList.add('lh-ok');
+      healthEl.textContent = '\u2713 On track \u2014 all elapsed months are paid';
+    } else if (behind === 1) {
+      healthEl.classList.add('lh-warn');
+      healthEl.textContent = '\u26A0 1 month behind \u2014 ' + behind + ' unpaid month';
+    } else {
+      healthEl.classList.add('lh-alert');
+      healthEl.textContent = '\u26A0 ' + behind + ' months behind \u2014 ' + behind + ' unpaid months';
+    }
+  } else if (healthEl) {
+    healthEl.className = 'loan-health';
+  }
 };
 
 /* ══════════════════════════════════════════════════════
@@ -3790,6 +4026,37 @@ const renderCards = () => {
 
   const ml = document.getElementById('monthList');
   ml.innerHTML = yearHtml;
+
+  /* U4 — Collapse upcoming months behind a single tappable row */
+  const upcoCards = ml.querySelectorAll('.mcard[data-status="upcoming"]');
+  if (upcoCards.length > 0) {
+    const firstUpco = upcoCards[0];
+    const lastUpco  = upcoCards[upcoCards.length - 1];
+    const fk = firstUpco.id.replace('card-', '').split('-');
+    const lk = lastUpco.id.replace('card-', '').split('-');
+    const rangeStr = `${SHORT_NAMES[parseInt(fk[1]) - 1]} ${fk[0]} \u2013 ${SHORT_NAMES[parseInt(lk[1]) - 1]} ${lk[0]}`;
+    const collapseBar = document.createElement('div');
+    collapseBar.className = 'upcoming-collapse';
+    collapseBar.setAttribute('role', 'button');
+    collapseBar.setAttribute('tabindex', '0');
+    collapseBar.innerHTML = `\u25BC ${upcoCards.length} upcoming months \u00B7 ${rangeStr}`;
+    collapseBar.addEventListener('click', () => {
+      ml.classList.toggle('upcoming-expanded');
+      collapseBar.innerHTML = ml.classList.contains('upcoming-expanded')
+        ? `\u25B2 Collapse upcoming months`
+        : `\u25BC ${upcoCards.length} upcoming months \u00B7 ${rangeStr}`;
+    });
+    /* Insert before the first upcoming card */
+    firstUpco.parentNode.insertBefore(collapseBar, firstUpco);
+
+    /* Mark year separators that contain only upcoming cards */
+    ml.querySelectorAll('.year-sep').forEach(sep => {
+      const year = sep.getAttribute('aria-label');
+      const allCards = ml.querySelectorAll(`.mcard[id^="card-${year}-"]`);
+      const allUpcoming = [...allCards].every(c => c.getAttribute('data-status') === 'upcoming');
+      if (allUpcoming && allCards.length > 0) sep.classList.add('upcoming-only');
+    });
+  }
 
   /* Re-apply CSS filter attribute so Firebase re-renders stay filtered */
   if (activeFilter && activeFilter !== 'all') {
@@ -3981,8 +4248,20 @@ const buildCard = (mo, i, cmap) => {
     mobCumul = `<div class="mms-item"><span class="mms-label">Total Remaining</span><span class="mms-val ${mobCumC}">${mobCumV}</span></div>`;
   }
 
+  let logBtnLabel, logBtnClass;
+  if (isOpen) {
+    logBtnLabel = '\u2715 Close';
+    logBtnClass = 'mc-log-btn mc-log-paid';
+  } else if (paid) {
+    logBtnLabel = 'View / Edit';
+    logBtnClass = 'mc-log-btn mc-log-paid';
+  } else {
+    logBtnLabel = '+ Log payment';
+    logBtnClass = 'mc-log-btn';
+  }
+
   const logBtn = !upco
-    ? `<button class="mc-log-btn" onclick="toggleDrawer('${k}')" aria-expanded="${isOpen}" aria-controls="drawer-${k}" aria-label="${isOpen ? 'Close payment drawer for ' : 'Log payment for '}${monthLabel}">${toggleTxt}</button>`
+    ? `<button class="${logBtnClass}" onclick="toggleDrawer('${k}')" aria-expanded="${isOpen}" aria-controls="drawer-${k}" aria-label="${isOpen ? 'Close payment drawer for ' : 'Log payment for '}${monthLabel}">${logBtnLabel}</button>`
     : '';
 
   const nowBadge    = curr ? `<span class="mc-badge" aria-label="current month">now</span>` : '';
@@ -4002,7 +4281,6 @@ const buildCard = (mo, i, cmap) => {
       <div class="mc-info">
         <div class="mc-month-name">${FULL_NAMES[m - 1]} ${y}${nowBadge}</div>
         <div class="mc-sub">mo ${idx} of ${TOTAL_MONTHS}</div>
-        ${logBtn}
         <div class="mc-mobile-strip">
           <div class="mms-item"><span class="mms-label">Due</span><span class="mms-val c-blue">${mobDue} <span class="mms-eur">\u20AC110.93</span></span></div>
           <div class="mms-item"><span class="mms-label">Paid</span><span class="mms-val ${mobPaidC}">${mobPaid}</span></div>
@@ -4013,6 +4291,7 @@ const buildCard = (mo, i, cmap) => {
       ${dueHTML}${paidHTML}${netHTML}${cumHTML}
       <div class="mc-status">${pill}</div>
     </div>
+    ${logBtn ? `<div class="mc-action">${logBtn}</div>` : ''}
     ${progressBar}
     <div class="${drawerClass}" id="drawer-${k}" role="region" aria-label="Payment details for ${monthLabel}">
       <div class="drawer-pad">
@@ -4133,6 +4412,9 @@ const savePayment = (k, rate) => {
         saveBtn2.classList.remove('save-ok');
       }, 1400);
     }
+    /* U5 — Toast notification */
+    const [sy, sm] = k.split('-').map(Number);
+    showToast(`${fmt_inr(Math.round(inr))} logged for ${FULL_NAMES[sm - 1]} \u2713`);
   }, 20);
 };
 
@@ -4259,6 +4541,22 @@ const exportPDF = () => {
       alert('To save as PDF: use your browser menu → Share → Print, or File → Print.');
     }
   }, 80);
+};
+
+/* ══════════════════════════════════════════════════════
+   U5: PAYMENT TOAST
+══════════════════════════════════════════════════════ */
+let toastTimer = null;
+const showToast = msg => {
+  const el = document.getElementById('payToast');
+  if (!el) return;
+  if (toastTimer) { clearTimeout(toastTimer); }
+  el.textContent = msg;
+  el.classList.remove('show');
+  /* Force reflow so re-triggering works */
+  void el.offsetWidth;
+  el.classList.add('show');
+  toastTimer = setTimeout(() => { el.classList.remove('show'); toastTimer = null; }, 2500);
 };
 
 /* ══════════════════════════════════════════════════════
@@ -4589,6 +4887,7 @@ window.deleteHistoryEntry = deleteHistoryEntry;
 window.onInrInput         = onInrInput;
 window.exportPDF          = exportPDF;
 window.editHistoryTs      = editHistoryTs;
+window.showToast          = showToast;
 window.togglePpDrawer     = togglePpDrawer;
 window.setPpEffect        = setPpEffect;
 window.onPpInrInput       = onPpInrInput;
@@ -4671,8 +4970,8 @@ document.addEventListener('DOMContentLoaded', () => {
       <span class="sb-label" aria-hidden="true">Outstanding</span>
       <span class="sb-value sb-red" id="sbOutstanding" aria-live="polite">—</span>
     </div>
-    <div class="sb-item" aria-label="Months remaining in loan">
-      <span class="sb-label" aria-hidden="true">Months Left</span>
+    <div class="sb-item" aria-label="Next payment due date">
+      <span class="sb-label" aria-hidden="true">Next Due</span>
       <span class="sb-value sb-amber" id="sbMonths" aria-live="polite">—</span>
     </div>
   </div>
@@ -4694,6 +4993,9 @@ document.addEventListener('DOMContentLoaded', () => {
   syncAria();
 })();
 </script>
+
+<!-- ══ PAYMENT TOAST ══════════════════════════════════ -->
+<div class="pay-toast" id="payToast" aria-live="polite"></div>
 
 </body>
 </html>
