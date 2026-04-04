@@ -1794,10 +1794,10 @@ html.dark .pay-toast { background: var(--teal); color: #fff; }
 }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   PREPAYMENTS — OUTCOME-FIRST DESIGN
+   PREPAYMENTS — FULL REDESIGN
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 
-/* Part A — Impact summary card */
+/* Impact card */
 .pp-impact-card {
   background: var(--paper);
   border-radius: var(--r-xl);
@@ -1805,315 +1805,160 @@ html.dark .pay-toast { background: var(--teal); color: #fff; }
   box-shadow: var(--shadow-float);
   margin-bottom: var(--s14);
 }
-.pp-impact-empty {
-  font-family: var(--font-display);
-  font-size: var(--text-sm);
-  color: var(--ink4);
-  line-height: 1.65;
-}
-.pp-impact-stats {
-  display: flex;
-  flex-direction: column;
-  gap: var(--s10);
-}
-.pp-impact-total {
-  font-family: 'Sora', sans-serif;
-  font-size: var(--num-sm);
-  font-weight: 700;
-  color: var(--green);
-}
-.pp-impact-total-sub {
-  font-family: 'Sora', sans-serif;
-  font-size: var(--text-sm);
-  color: var(--ink4);
-  margin-top: 2px;
-}
-.pp-impact-effect {
-  font-family: var(--font-display);
-  font-size: var(--text-sm);
-  color: var(--ink3);
-  line-height: 1.6;
-  padding: var(--s10) var(--s14);
-  background: var(--cream);
-  border-radius: var(--r-md);
-}
+.pp-impact-empty { font-family: var(--font-display); font-size: var(--text-sm); color: var(--ink4); line-height: 1.65; }
+.pp-impact-stats { display: flex; flex-direction: column; gap: var(--s10); }
+.pp-impact-total { font-family: 'Sora', sans-serif; font-size: var(--num-sm); font-weight: 700; color: var(--green); }
+.pp-impact-total-sub { font-family: 'Sora', sans-serif; font-size: var(--text-sm); color: var(--ink4); margin-top: 2px; }
+.pp-impact-effect { font-family: var(--font-display); font-size: var(--text-sm); color: var(--ink3); line-height: 1.6; padding: var(--s10) var(--s14); background: var(--cream); border-radius: var(--r-md); }
 .pp-impact-effect strong { color: var(--ink); font-weight: 700; }
 
 /* Log button */
 .pp-log-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--s6);
-  width: 100%;
-  padding: var(--s12) var(--s24);
-  border-radius: var(--r-sm);
-  border: none;
-  background: var(--teal);
-  color: #fff;
-  font-family: var(--font-display);
-  font-size: var(--text-md);
-  font-weight: 700;
-  cursor: pointer;
-  min-height: 44px;
-  transition: background .18s;
+  display: flex; align-items: center; justify-content: center; gap: var(--s6);
+  width: 100%; padding: var(--s12) var(--s24); border-radius: var(--r-sm); border: none;
+  background: var(--teal); color: #fff; font-family: var(--font-display); font-size: var(--text-md);
+  font-weight: 700; cursor: pointer; min-height: 44px; transition: background .18s;
   box-shadow: 0 2px 8px rgba(13,148,136,.25);
 }
 .pp-log-btn:hover { background: #0a7a70; }
-.pp-log-btn:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
 
-/* Part B — Form drawer */
+/* Form drawer */
 .pp-form-drawer {
-  display: grid;
-  grid-template-rows: 0fr;
-  overflow: hidden;
-  visibility: hidden;
+  display: grid; grid-template-rows: 0fr; overflow: hidden; visibility: hidden;
   transition: grid-template-rows .38s cubic-bezier(.16,1,.3,1), visibility 0s .38s;
 }
 .pp-form-drawer > .pp-form-inner { min-height: 0; overflow: hidden; padding: 0; }
-.pp-form-drawer.open {
-  grid-template-rows: 1fr;
-  visibility: visible;
-  transition: grid-template-rows .38s cubic-bezier(.16,1,.3,1), visibility 0s 0s;
-}
+.pp-form-drawer.open { grid-template-rows: 1fr; visibility: visible; transition: grid-template-rows .38s cubic-bezier(.16,1,.3,1), visibility 0s 0s; }
 .pp-form-drawer.open > .pp-form-inner { padding: var(--s16) 0 0; }
 
 .pp-form {
-  background: var(--paper);
-  border-radius: var(--r-xl);
-  padding: var(--s20);
-  box-shadow: var(--shadow-float);
-  display: flex;
-  flex-direction: column;
-  gap: var(--s16);
+  background: var(--paper); border-radius: var(--r-xl); padding: var(--s20);
+  box-shadow: var(--shadow-float); display: flex; flex-direction: column; gap: var(--s16);
 }
-.pp-form-lbl {
-  font-family: 'Sora', sans-serif;
-  font-size: var(--text-2xs);
-  font-weight: 700;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  color: var(--ink4);
-  margin-bottom: var(--s6);
-  display: block;
-}
+.pp-form-lbl { font-family: 'Sora', sans-serif; font-size: var(--text-2xs); font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--ink4); margin-bottom: var(--s6); display: block; }
 .pp-form-input {
-  border: 1.5px solid var(--rule);
-  border-radius: var(--r-sm);
-  background: var(--paper);
-  padding: var(--s10) var(--s14);
-  font-family: 'Sora', sans-serif;
-  font-size: var(--text-lg);
-  font-weight: 500;
-  color: var(--ink);
-  outline: none;
-  min-height: 44px;
-  width: 100%;
-  transition: border-color .15s;
+  border: 1.5px solid var(--rule); border-radius: var(--r-sm); background: var(--paper);
+  padding: var(--s10) var(--s14); font-family: 'Sora', sans-serif; font-size: var(--text-lg);
+  font-weight: 500; color: var(--ink); outline: none; min-height: 44px; width: 100%; transition: border-color .15s;
 }
 .pp-form-input:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(13,148,136,.12); }
 .pp-form-input::placeholder { color: var(--ink4); font-weight: 400; font-size: 14px; }
-.pp-form-sub {
-  font-family: 'Sora', sans-serif;
-  font-size: var(--text-xs);
-  color: var(--teal);
-  margin-top: 3px;
-  font-weight: 500;
+.pp-form-input[readonly] { background: var(--cream); cursor: default; }
+.pp-form-sub { font-family: 'Sora', sans-serif; font-size: var(--text-xs); color: var(--teal); margin-top: 3px; font-weight: 500; }
+
+/* Currency toggle */
+.pp-currency-toggle {
+  display: inline-flex; background: var(--rule2); border-radius: 99px; padding: 2px; gap: 0;
+  font-family: var(--font-display); font-size: var(--text-xs); font-weight: 600;
 }
+.pp-cur-btn {
+  padding: var(--s4) var(--s12); border-radius: 99px; border: none; background: transparent;
+  color: var(--ink3); cursor: pointer; transition: all .18s; min-height: 28px;
+  font-family: inherit; font-size: inherit; font-weight: inherit;
+}
+.pp-cur-btn.active { background: var(--paper); color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+
+/* Rate disclosure */
+.pp-rate-line { font-family: var(--font-display); font-size: var(--text-xs); color: var(--ink4); line-height: 1.5; }
 
 /* Segmented control */
-.pp-segmented {
-  display: flex;
-  background: var(--rule2);
-  border-radius: 99px;
-  padding: 3px;
-  gap: 0;
-}
+.pp-segmented { display: flex; background: var(--rule2); border-radius: 99px; padding: 3px; gap: 0; }
 .pp-seg-btn {
-  flex: 1;
-  padding: var(--s8) var(--s14);
-  border-radius: 99px;
-  border: none;
-  background: transparent;
-  color: var(--ink3);
-  font-family: var(--font-display);
-  font-size: var(--text-sm);
-  font-weight: 600;
-  cursor: pointer;
-  transition: all .2s;
-  min-height: 40px;
-  text-align: center;
+  flex: 1; padding: var(--s8) var(--s14); border-radius: 99px; border: none; background: transparent;
+  color: var(--ink3); font-family: var(--font-display); font-size: var(--text-sm); font-weight: 600;
+  cursor: pointer; transition: all .2s; min-height: 40px; text-align: center;
 }
-.pp-seg-btn.active {
-  background: var(--paper);
-  color: var(--ink);
-  box-shadow: 0 1px 4px rgba(0,0,0,.1);
-}
+.pp-seg-btn.active { background: var(--paper); color: var(--ink); box-shadow: 0 1px 4px rgba(0,0,0,.1); }
 
-/* Live impact preview */
+/* Live preview */
 .pp-preview {
-  background: var(--cream);
-  border-radius: var(--r-md);
-  padding: var(--s12) var(--s16);
-  font-family: var(--font-display);
-  font-size: var(--text-sm);
-  color: var(--ink3);
-  line-height: 1.55;
-  min-height: 40px;
-  display: flex;
-  align-items: center;
+  background: rgba(13,148,136,.06); border: 1px solid rgba(13,148,136,.15); border-radius: var(--r-md);
+  padding: var(--s12) var(--s16); font-family: var(--font-display); font-size: 13px;
+  color: var(--ink3); line-height: 1.55; min-height: 40px; display: flex; align-items: center;
 }
 .pp-preview strong { color: var(--green); font-weight: 700; }
 
-/* Split inputs row */
-.pp-split-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--s12);
+/* Split mode chips */
+.pp-split-chips {
+  display: flex; gap: var(--s6); overflow-x: auto; -webkit-overflow-scrolling: touch;
+  padding-bottom: 2px; scrollbar-width: none;
 }
+.pp-split-chips::-webkit-scrollbar { display: none; }
+.pp-split-chip {
+  flex-shrink: 0; padding: var(--s6) var(--s14); border-radius: 99px;
+  border: 1.5px solid var(--rule); background: var(--paper); color: var(--ink3);
+  font-family: var(--font-display); font-size: var(--text-xs); font-weight: 600;
+  cursor: pointer; transition: all .18s; white-space: nowrap; min-height: 36px;
+  display: flex; align-items: center;
+}
+.pp-split-chip:hover { border-color: var(--teal); color: var(--teal); }
+.pp-split-chip.active { background: var(--teal); border-color: var(--teal); color: #fff; }
+
+/* Split row */
+.pp-split-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s12); }
 @media (max-width: 480px) { .pp-split-row { grid-template-columns: 1fr; } }
 
-/* More options — collapsed */
-.pp-more-toggle {
-  font-family: var(--font-display);
-  font-size: var(--text-xs);
-  font-weight: 600;
-  color: var(--ink4);
-  cursor: pointer;
-  background: none;
-  border: none;
-  padding: var(--s4) 0;
-  transition: color .15s;
-}
+/* Total check line */
+.pp-total-check { font-family: var(--font-display); font-size: var(--text-xs); line-height: 1.5; padding: var(--s4) 0; }
+.pp-total-check.pp-ok   { color: var(--green); }
+.pp-total-check.pp-warn { color: var(--amber); }
+.pp-total-check.pp-err  { color: var(--red); }
+
+/* More options */
+.pp-more-toggle { font-family: var(--font-display); font-size: var(--text-xs); font-weight: 600; color: var(--ink4); cursor: pointer; background: none; border: none; padding: var(--s4) 0; transition: color .15s; }
 .pp-more-toggle:hover { color: var(--teal); }
-.pp-more-opts {
-  display: none;
-  flex-direction: column;
-  gap: var(--s12);
-}
+.pp-more-opts { display: none; flex-direction: column; gap: var(--s12); }
 .pp-more-opts.show { display: flex; }
 
 /* Form actions */
-.pp-form-save {
-  width: 100%;
-  padding: var(--s12) var(--s24);
-  border-radius: var(--r-sm);
-  border: none;
-  background: var(--teal);
-  color: #fff;
-  font-family: var(--font-display);
-  font-size: var(--text-md);
-  font-weight: 700;
-  cursor: pointer;
-  min-height: 44px;
-  transition: background .18s;
-}
+.pp-form-save { width: 100%; padding: var(--s12) var(--s24); border-radius: var(--r-sm); border: none; background: var(--teal); color: #fff; font-family: var(--font-display); font-size: var(--text-md); font-weight: 700; cursor: pointer; min-height: 44px; transition: background .18s; }
 .pp-form-save:hover { background: #0a7a70; }
-.pp-form-cancel {
-  display: block;
-  text-align: center;
-  font-family: var(--font-display);
-  font-size: var(--text-sm);
-  font-weight: 500;
-  color: var(--ink4);
-  cursor: pointer;
-  background: none;
-  border: none;
-  padding: var(--s8) 0;
-  transition: color .15s;
-}
+.pp-form-cancel { display: block; text-align: center; font-family: var(--font-display); font-size: var(--text-sm); font-weight: 500; color: var(--ink4); cursor: pointer; background: none; border: none; padding: var(--s8) 0; transition: color .15s; }
 .pp-form-cancel:hover { color: var(--red); }
-.pp-form-error {
-  font-family: var(--font-display);
-  font-size: var(--text-sm);
-  color: var(--red);
-  font-weight: 600;
-  display: none;
-}
+.pp-form-error { font-family: var(--font-display); font-size: var(--text-sm); color: var(--red); font-weight: 600; display: none; }
 .pp-form-error.show { display: block; }
 
-/* Part C — Timeline history */
-.pp-timeline { margin-top: var(--s14); }
-.pp-timeline-entry {
-  display: flex;
-  align-items: center;
-  gap: var(--s12);
-  padding: var(--s10) 0;
-  border-bottom: 1px solid var(--rule2);
-  flex-wrap: wrap;
-}
-.pp-timeline-entry:last-child { border-bottom: none; }
-.pp-tl-date {
-  font-family: var(--font-display);
-  font-size: var(--text-sm);
-  font-weight: 700;
-  color: var(--ink);
-  min-width: 80px;
-  flex-shrink: 0;
-}
-.pp-tl-center {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: var(--s8);
-  min-width: 0;
-}
-.pp-tl-amount {
-  font-family: 'Sora', sans-serif;
-  font-size: var(--text-md);
-  font-weight: 700;
-  color: var(--green);
-}
-.pp-effect-badge {
-  display: inline-block;
-  font-family: var(--font-display);
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: .8px;
-  text-transform: uppercase;
-  padding: 2px 8px;
-  border-radius: 99px;
-  white-space: nowrap;
-}
-.pp-effect-badge.emi    { background: rgba(13,148,136,.12); color: var(--teal); }
-.pp-effect-badge.tenure { background: var(--amber-bg); color: var(--amber); }
-.pp-tl-shares {
-  font-family: var(--font-display);
-  font-size: var(--text-xs);
-  color: var(--ink4);
-  white-space: nowrap;
-}
-.pp-tl-delete {
-  background: none;
-  border: 1px solid var(--rule);
-  border-radius: 50%;
-  width: 28px; height: 28px;
+/* Quick-log chips */
+.pp-quick-chips { display: flex; gap: var(--s8); flex-wrap: wrap; margin-bottom: var(--s8); }
+.pp-quick-chip {
+  flex: 1; min-width: 100px; padding: var(--s12) var(--s14); border-radius: var(--r-md);
+  border: 1.5px solid var(--rule); background: var(--paper); text-align: center;
+  font-family: var(--font-display); font-size: var(--text-sm); font-weight: 700;
+  color: var(--ink2); cursor: pointer; transition: all .18s; min-height: 44px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 14px;
-  color: var(--ink4);
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: all .15s;
 }
+.pp-quick-chip:hover { border-color: var(--teal); color: var(--teal); }
+.pp-quick-chip.active { background: var(--teal); border-color: var(--teal); color: #fff; }
+
+/* Timeline */
+.pp-timeline { margin-top: var(--s14); }
+.pp-timeline-entry { display: flex; align-items: center; gap: var(--s12); padding: var(--s10) 0; border-bottom: 1px solid var(--rule2); flex-wrap: wrap; }
+.pp-timeline-entry:last-child { border-bottom: none; }
+.pp-tl-date { font-family: var(--font-display); font-size: var(--text-sm); font-weight: 700; color: var(--ink); min-width: 80px; flex-shrink: 0; }
+.pp-tl-center { flex: 1; display: flex; align-items: center; gap: var(--s8); min-width: 0; }
+.pp-tl-amount { font-family: 'Sora', sans-serif; font-size: var(--text-md); font-weight: 700; color: var(--green); }
+.pp-effect-badge { display: inline-block; font-family: var(--font-display); font-size: 10px; font-weight: 800; letter-spacing: .8px; text-transform: uppercase; padding: 2px 8px; border-radius: 99px; white-space: nowrap; }
+.pp-effect-badge.emi { background: rgba(13,148,136,.12); color: var(--teal); }
+.pp-effect-badge.tenure { background: var(--amber-bg); color: var(--amber); }
+.pp-tl-shares { font-family: var(--font-display); font-size: var(--text-xs); color: var(--ink4); white-space: nowrap; }
+.pp-tl-delete { background: none; border: 1px solid var(--rule); border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 14px; color: var(--ink4); cursor: pointer; flex-shrink: 0; transition: all .15s; }
 .pp-tl-delete:hover { border-color: var(--red); color: var(--red); background: var(--red-bg); }
-.pp-tl-note {
-  width: 100%;
-  font-family: var(--font-display);
-  font-size: var(--text-xs);
-  color: var(--ink4);
-  font-style: italic;
-  padding-left: 92px;
-  margin-top: -4px;
-}
+.pp-tl-note { width: 100%; font-family: var(--font-display); font-size: var(--text-xs); color: var(--ink4); font-style: italic; padding-left: 92px; margin-top: -4px; }
 
 /* Dark mode */
 html.dark .pp-impact-card { background: var(--paper); }
 html.dark .pp-impact-effect { background: var(--rule2); }
 html.dark .pp-form { background: var(--paper); }
 html.dark .pp-form-input { background: #20283a; border-color: var(--rule); color: var(--ink); }
+html.dark .pp-form-input[readonly] { background: var(--rule2); }
 html.dark .pp-segmented { background: var(--rule); }
 html.dark .pp-seg-btn.active { background: var(--paper); }
-html.dark .pp-preview { background: var(--rule2); }
+html.dark .pp-preview { background: rgba(13,148,136,.08); border-color: rgba(13,148,136,.2); }
+html.dark .pp-currency-toggle { background: var(--rule); }
+html.dark .pp-cur-btn.active { background: var(--paper); }
+html.dark .pp-split-chip { background: var(--paper); border-color: var(--rule); }
+html.dark .pp-split-chip.active { background: var(--teal); border-color: var(--teal); }
+html.dark .pp-quick-chip { background: var(--paper); border-color: var(--rule); }
 
 @media print { #prepaymentSection { display: none !important; } }
 
@@ -3217,46 +3062,81 @@ const toggleTheme = () => {
   <div class="section" id="prepaymentSection">
     <div class="section-head"><span class="section-head-label">Prepayments</span><span class="section-head-line"></span></div>
 
-    <!-- Part A: Impact summary card -->
+    <!-- Part A: Impact summary -->
     <div class="pp-impact-card" id="ppImpactCard">
-      <div class="pp-impact-empty">No prepayments logged yet. A lump-sum payment reduces your outstanding balance and shortens your loan.</div>
+      <div class="pp-impact-empty">No prepayments logged yet — a lump-sum payment reduces your outstanding balance and can lower your monthly share or shorten the loan.</div>
     </div>
 
-    <!-- Log button + Part B: Form drawer -->
+    <!-- Log button -->
     <button class="pp-log-btn" onclick="togglePpForm()" id="ppLogBtn" style="margin-top:var(--s12)">＋ Log prepayment</button>
+
+    <!-- Form drawer -->
     <div class="pp-form-drawer" id="ppFormDrawer">
       <div class="pp-form-inner">
-        <div class="pp-form">
-          <!-- 1. Amount -->
-          <div>
-            <label class="pp-form-lbl" for="ppTotalEur">Total paid to bank (€)</label>
-            <input type="number" class="pp-form-input" id="ppTotalEur" placeholder="e.g. 500" step="0.01" min="0" oninput="onPpAmountInput()">
+
+        <!-- Part B: Quick-log shortcuts -->
+        <div class="pp-quick-chips" id="ppQuickChips">
+          <button class="pp-quick-chip" onclick="setPpQuickMode('india-all',this)" type="button">I paid it all</button>
+          <button class="pp-quick-chip" onclick="setPpQuickMode('germany-all',this)" type="button">Friend paid it all</button>
+          <button class="pp-quick-chip" onclick="setPpQuickMode('split',this)" type="button">Split it</button>
+        </div>
+
+        <!-- Part C: Detailed form -->
+        <div class="pp-form" id="ppForm" style="display:none">
+          <!-- 1. Currency toggle -->
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <span class="pp-form-lbl" style="margin-bottom:0">Currency</span>
+            <div class="pp-currency-toggle">
+              <button class="pp-cur-btn active" onclick="setPpCurrency('inr',this)" type="button">₹ INR</button>
+              <button class="pp-cur-btn" onclick="setPpCurrency('eur',this)" type="button">€ EUR</button>
+            </div>
           </div>
-          <!-- 2. Effect segmented control -->
+          <!-- 2. Rate disclosure -->
+          <div class="pp-rate-line" id="ppRateLine">Using rate…</div>
+          <!-- 3. Total amount -->
+          <div>
+            <label class="pp-form-lbl" for="ppTotalAmt">Total paid to bank</label>
+            <input type="number" class="pp-form-input" id="ppTotalAmt" placeholder="e.g. 54000" step="any" min="0" oninput="onPpFormInput()">
+            <div class="pp-form-sub" id="ppTotalSub"></div>
+          </div>
+          <!-- 4. Effect -->
           <div>
             <label class="pp-form-lbl">Effect on loan</label>
             <div class="pp-segmented">
-              <button class="pp-seg-btn active" onclick="setPpEffect('emi',this)" type="button">Reduces EMI</button>
-              <button class="pp-seg-btn" onclick="setPpEffect('tenure',this)" type="button">Reduces Tenure</button>
+              <button class="pp-seg-btn active" onclick="setPpEffect('emi',this)" type="button">Reduces monthly share</button>
+              <button class="pp-seg-btn" onclick="setPpEffect('tenure',this)" type="button">Shortens loan</button>
             </div>
           </div>
-          <!-- 3. Live impact preview -->
-          <div class="pp-preview" id="ppPreview">Enter an amount above to see the impact</div>
-          <!-- 4. Split -->
+          <!-- 5. Live preview -->
+          <div class="pp-preview" id="ppPreview">Enter an amount to see the impact</div>
+          <!-- 6. Split mode -->
+          <div id="ppSplitSection">
+            <label class="pp-form-lbl">Who paid?</label>
+            <div class="pp-split-chips">
+              <button class="pp-split-chip active" onclick="setPpSplitMode('india-all',this)" type="button">You paid all</button>
+              <button class="pp-split-chip" onclick="setPpSplitMode('germany-all',this)" type="button">Friend paid all</button>
+              <button class="pp-split-chip" onclick="setPpSplitMode('proportional',this)" type="button">41/59 split</button>
+              <button class="pp-split-chip" onclick="setPpSplitMode('equal',this)" type="button">50/50</button>
+              <button class="pp-split-chip" onclick="setPpSplitMode('custom',this)" type="button">Custom</button>
+            </div>
+          </div>
+          <!-- 7. Split fields -->
           <div class="pp-split-row">
             <div>
-              <label class="pp-form-lbl" for="ppIndiaInr">Your contribution (₹)</label>
-              <input type="number" class="pp-form-input" id="ppIndiaInr" placeholder="e.g. 30000" step="1" min="0" oninput="onPpInrInput()">
-              <div class="pp-form-sub" id="ppIndiaEurSub">≈ €—</div>
+              <label class="pp-form-lbl" for="ppIndiaAmt">Your share</label>
+              <input type="number" class="pp-form-input" id="ppIndiaAmt" placeholder="0" step="any" min="0" readonly oninput="onPpFormInput()">
+              <div class="pp-form-sub" id="ppIndiaSub"></div>
             </div>
             <div>
-              <label class="pp-form-lbl" for="ppGermanyInr">Friend's contribution (₹)</label>
-              <input type="number" class="pp-form-input" id="ppGermanyInr" placeholder="e.g. 23000" step="1" min="0" oninput="onPpInrInput()">
-              <div class="pp-form-sub" id="ppGermanyEurSub">≈ €—</div>
+              <label class="pp-form-lbl" for="ppGermanyAmt">Friend's share</label>
+              <input type="number" class="pp-form-input" id="ppGermanyAmt" placeholder="0" step="any" min="0" readonly oninput="onPpFormInput()">
+              <div class="pp-form-sub" id="ppGermanySub"></div>
             </div>
           </div>
-          <!-- 5. More options -->
-          <button class="pp-more-toggle" onclick="togglePpMoreOpts()" type="button" id="ppMoreBtn">+ Date & note</button>
+          <!-- 8. Running total check -->
+          <div class="pp-total-check" id="ppTotalCheck"></div>
+          <!-- 9. More options -->
+          <button class="pp-more-toggle" onclick="togglePpMoreOpts()" type="button" id="ppMoreBtn">＋ More options</button>
           <div class="pp-more-opts" id="ppMoreOpts">
             <div>
               <label class="pp-form-lbl" for="ppDate">Date</label>
@@ -3267,7 +3147,7 @@ const toggleTheme = () => {
               <input type="text" class="pp-form-input" id="ppNote" placeholder="e.g. bonus payment" maxlength="100" style="font-family:var(--font-display);font-size:var(--text-md);">
             </div>
           </div>
-          <!-- 6+7. Save + Cancel -->
+          <!-- 10+11. Save + Cancel -->
           <div class="pp-form-error" id="ppError"></div>
           <button class="pp-form-save" onclick="savePrepayment()" type="button">Save prepayment</button>
           <button class="pp-form-cancel" onclick="togglePpForm()" type="button">Cancel</button>
@@ -3275,7 +3155,7 @@ const toggleTheme = () => {
       </div>
     </div>
 
-    <!-- Part C: Timeline history -->
+    <!-- Part D: Timeline -->
     <div class="pp-timeline" id="ppList"></div>
   </div>
 
@@ -4594,9 +4474,8 @@ const renderPrepayments = () => {
 
   const ppEntries = Object.entries(prepayments);
 
-  /* Part A — Impact card */
   if (ppEntries.length === 0) {
-    impactEl.innerHTML = '<div class="pp-impact-empty">No prepayments logged yet. A lump-sum payment reduces your outstanding balance and shortens your loan.</div>';
+    impactEl.innerHTML = '<div class="pp-impact-empty">No prepayments logged yet \u2014 a lump-sum payment reduces your outstanding balance and can lower your monthly share or shorten the loan.</div>';
     listEl.innerHTML = '';
     return;
   }
@@ -4605,7 +4484,8 @@ const renderPrepayments = () => {
   let effectText = '';
   if (impact) {
     if (impact.emiEffect) {
-      const saving = ORIG_EMI_EUR * 0.4125 - impact.newEmiEur * 0.4125;
+      const newShare = impact.newEmiEur * 0.4125;
+      const saving = FRIEND_EUR - newShare;
       effectText += `Monthly share reduced by approx. <strong>${fmt_eur(Math.abs(saving))}</strong>`;
     }
     if (impact.tenureEffect) {
@@ -4619,29 +4499,29 @@ const renderPrepayments = () => {
   impactEl.innerHTML =
     `<div class="pp-impact-stats">
       <div>
-        <div class="pp-impact-total">${fmt_eur(impact ? impact.totalPrepaidEur : 0)} · ${fmt_inr(totalInr)}</div>
-        <div class="pp-impact-total-sub">${ppEntries.length} prepayment${ppEntries.length !== 1 ? 's' : ''} total</div>
+        <div class="pp-impact-total">${fmt_eur(impact ? impact.totalPrepaidEur : 0)} total \u00B7 ${fmt_inr(totalInr)}</div>
+        <div class="pp-impact-total-sub">${ppEntries.length} prepayment${ppEntries.length !== 1 ? 's' : ''}</div>
       </div>
       ${effectText ? `<div class="pp-impact-effect">${effectText}</div>` : ''}
     </div>`;
 
-  /* Part C — Timeline */
+  /* Timeline */
   ppEntries.sort((a, b) => (b[1].ts || 0) - (a[1].ts || 0));
   listEl.innerHTML = ppEntries.map(([fbKey, pp]) => {
     const d = pp.date ? new Date(pp.date + 'T00:00:00') : new Date(pp.ts);
     const dateStr = `${d.getDate()} ${SHORT_NAMES[d.getMonth()]} ${d.getFullYear()}`;
     const totalInrPp = (pp.indiaInr || 0) + (pp.germanyInr || 0);
     const badgeClass = pp.effect === 'emi' ? 'emi' : 'tenure';
-    const badgeText  = pp.effect === 'emi' ? 'EMI ↓' : 'Tenure ↓';
-    const noteHtml   = pp.note ? `<div class="pp-tl-note">"${pp.note}"</div>` : '';
+    const badgeText  = pp.effect === 'emi' ? 'Share \u2193' : 'Tenure \u2193';
+    const noteHtml   = pp.note ? `<div class="pp-tl-note">\u201C${pp.note}\u201D</div>` : '';
     return `<div class="pp-timeline-entry">
       <span class="pp-tl-date">${dateStr}</span>
       <span class="pp-tl-center">
-        <span class="pp-tl-amount">${fmt_eur(pp.totalEur)} · ${fmt_inr(totalInrPp)}</span>
+        <span class="pp-tl-amount">${fmt_eur(pp.totalEur)} \u00B7 ${fmt_inr(totalInrPp)}</span>
         <span class="pp-effect-badge ${badgeClass}">${badgeText}</span>
       </span>
-      <span class="pp-tl-shares">🇮🇳 ${fmt_inr(pp.indiaInr || 0)} · 🇩🇪 ${fmt_inr(pp.germanyInr || 0)}</span>
-      <button class="pp-tl-delete" onclick="deletePrepayment('${fbKey}')" title="Delete" aria-label="Delete prepayment">×</button>
+      <span class="pp-tl-shares">You ${fmt_inr(pp.indiaInr || 0)} \u00B7 Friend ${fmt_inr(pp.germanyInr || 0)}</span>
+      <button class="pp-tl-delete" onclick="deletePrepayment('${fbKey}')" title="Delete" aria-label="Delete prepayment">\u00D7</button>
       ${noteHtml}
     </div>`;
   }).join('');
@@ -4650,8 +4530,11 @@ const renderPrepayments = () => {
 /* ══════════════════════════════════════════════════════
    PREPAYMENTS — INTERACTIONS
 ══════════════════════════════════════════════════════ */
-let ppFormOpen = false;
-let ppEffect   = 'emi';
+let ppFormOpen  = false;
+let ppEffect    = 'emi';
+let ppCurrency  = 'inr';
+let ppSplitMode = 'india-all';
+let ppQuickMode = null; // 'india-all' | 'germany-all' | 'split'
 
 const getLatestRate = () => {
   const t = today();
@@ -4666,22 +4549,48 @@ const getLatestRate = () => {
   return ri;
 };
 
+const ppGetRate = () => {
+  /* Check if a custom date is set in more options */
+  const dateEl = document.getElementById('ppDate');
+  if (dateEl && dateEl.value) {
+    const [y, m] = dateEl.value.split('-').map(Number);
+    if (y && m) {
+      const customRi = getRate(y, m);
+      if (customRi) return customRi;
+    }
+  }
+  return getLatestRate();
+};
+
+const ppUpdateRateLine = () => {
+  const el = document.getElementById('ppRateLine');
+  if (!el) return;
+  const ri = ppGetRate();
+  if (ri) {
+    el.textContent = `Using \u20B9${ri.rate.toFixed(2)}/\u20AC \u2014 ${ri.src}`;
+  } else {
+    el.textContent = 'No rate available \u2014 enter amounts in both currencies manually.';
+  }
+};
+
 const calcPrepaymentPreview = (extraEur, effect) => {
   const totalPrepaid = Object.values(prepayments).reduce((s, p) => s + (p.totalEur || 0), 0) + extraEur;
   const remaining = Math.max(0, PRINCIPAL_EUR - totalPrepaid);
+  if (remaining <= 0) return 'Loan fully prepaid!';
   const months = getMonths();
   let elapsed = 0;
   for (const mo of months) { if (!isUpco(mo.y, mo.m)) elapsed++; }
   const left = Math.max(1, ORIG_MONTHS - elapsed);
   const r = MONTHLY_INT_RATE;
 
-  if (effect === 'emi' && remaining > 0) {
+  if (effect === 'emi') {
     const rn = Math.pow(1 + r, left);
     const newTotal = remaining * r * rn / (rn - 1);
-    const newShare = newTotal * 0.4125;
-    const saving = FRIEND_EUR - newShare;
-    return `This reduces your monthly share by approx. <strong>${fmt_eur(Math.abs(saving))}</strong>`;
-  } else if (effect === 'tenure' && remaining > 0) {
+    const newShare = parseFloat((newTotal * 0.4125).toFixed(2));
+    const ri = ppGetRate();
+    const inrStr = ri ? ` (${fmt_inr(Math.round(newShare * ri.rate))})` : '';
+    return `Your monthly share reduces from ${fmt_eur(FRIEND_EUR)} to approx. <strong>${fmt_eur(newShare)}</strong>${inrStr}`;
+  } else {
     const inner = 1 - (remaining * r / ORIG_EMI_EUR);
     if (inner > 0) {
       const newN = Math.ceil(-Math.log(inner) / Math.log(1 + r));
@@ -4689,12 +4598,86 @@ const calcPrepaymentPreview = (extraEur, effect) => {
       if (saved > 0) {
         let endM = 1 + elapsed + newN, endY = 2026;
         while (endM > 12) { endM -= 12; endY++; }
-        return `This shortens the loan by approx. <strong>${saved} month${saved !== 1 ? 's' : ''}</strong> (ends ${SHORT_NAMES[endM - 1]} ${endY})`;
+        return `Loan ends approx. <strong>${saved} month${saved !== 1 ? 's' : ''} earlier</strong> \u2014 ${SHORT_NAMES[endM - 1]} ${endY} instead of Dec 2033`;
       }
     }
-    return 'Amount too small to shorten the loan measurably';
+    return 'Amount too small to measurably shorten the loan';
   }
-  return remaining <= 0 ? 'Loan fully prepaid!' : 'Enter an amount above to see the impact';
+};
+
+const ppGetAmounts = () => {
+  const ri = ppGetRate();
+  const rate = ri ? ri.rate : 0;
+  const totalRaw = parseFloat(document.getElementById('ppTotalAmt').value) || 0;
+  const indiaRaw = parseFloat(document.getElementById('ppIndiaAmt').value) || 0;
+  const germanyRaw = parseFloat(document.getElementById('ppGermanyAmt').value) || 0;
+
+  if (ppCurrency === 'inr' && rate > 0) {
+    return { totalEur: totalRaw / rate, totalInr: totalRaw, indiaInr: indiaRaw, germanyInr: germanyRaw, indiaEur: indiaRaw / rate, germanyEur: germanyRaw / rate, rate };
+  } else if (ppCurrency === 'eur') {
+    return { totalEur: totalRaw, totalInr: rate > 0 ? totalRaw * rate : 0, indiaInr: rate > 0 ? indiaRaw * rate : 0, germanyInr: rate > 0 ? germanyRaw * rate : 0, indiaEur: indiaRaw, germanyEur: germanyRaw, rate };
+  }
+  return { totalEur: 0, totalInr: 0, indiaInr: 0, germanyInr: 0, indiaEur: 0, germanyEur: 0, rate: 0 };
+};
+
+const onPpFormInput = () => {
+  const ri = ppGetRate();
+  const rate = ri ? ri.rate : 0;
+  const a = ppGetAmounts();
+  const otherCur = ppCurrency === 'inr' ? 'eur' : 'inr';
+
+  /* Total sub */
+  const totalSub = document.getElementById('ppTotalSub');
+  if (totalSub && rate > 0) {
+    totalSub.textContent = otherCur === 'eur' ? `\u2248 ${fmt_eur(a.totalEur)}` : `\u2248 ${fmt_inr(Math.round(a.totalInr))}`;
+  }
+
+  /* Split subs */
+  const iSub = document.getElementById('ppIndiaSub');
+  const gSub = document.getElementById('ppGermanySub');
+  if (iSub && rate > 0) iSub.textContent = otherCur === 'eur' ? `\u2248 ${fmt_eur(a.indiaEur)}` : `\u2248 ${fmt_inr(Math.round(a.indiaInr))}`;
+  if (gSub && rate > 0) gSub.textContent = otherCur === 'eur' ? `\u2248 ${fmt_eur(a.germanyEur)}` : `\u2248 ${fmt_inr(Math.round(a.germanyInr))}`;
+
+  /* Auto-fill split fields for presets */
+  if (ppSplitMode !== 'custom') {
+    const totalRaw = parseFloat(document.getElementById('ppTotalAmt').value) || 0;
+    let iVal = 0, gVal = 0;
+    if (ppSplitMode === 'india-all')     { iVal = totalRaw; gVal = 0; }
+    else if (ppSplitMode === 'germany-all')  { iVal = 0; gVal = totalRaw; }
+    else if (ppSplitMode === 'proportional') { iVal = parseFloat((totalRaw * 0.4125).toFixed(2)); gVal = parseFloat((totalRaw * 0.5875).toFixed(2)); }
+    else if (ppSplitMode === 'equal')        { iVal = parseFloat((totalRaw / 2).toFixed(2)); gVal = parseFloat((totalRaw / 2).toFixed(2)); }
+    document.getElementById('ppIndiaAmt').value = iVal || '';
+    document.getElementById('ppGermanyAmt').value = gVal || '';
+    /* Re-read for subs */
+    if (iSub && rate > 0) {
+      if (ppCurrency === 'inr') iSub.textContent = `\u2248 ${fmt_eur(iVal / rate)}`;
+      else iSub.textContent = `\u2248 ${fmt_inr(Math.round(iVal * rate))}`;
+    }
+    if (gSub && rate > 0) {
+      if (ppCurrency === 'inr') gSub.textContent = `\u2248 ${fmt_eur(gVal / rate)}`;
+      else gSub.textContent = `\u2248 ${fmt_inr(Math.round(gVal * rate))}`;
+    }
+  }
+
+  /* Running total check */
+  const checkEl = document.getElementById('ppTotalCheck');
+  if (checkEl && a.totalEur > 0) {
+    const splitSum = a.indiaEur + a.germanyEur;
+    const diff = Math.abs(splitSum - a.totalEur);
+    const pct = (diff / a.totalEur) * 100;
+    const diffInr = rate > 0 ? fmt_inr(Math.round(diff * rate)) : '';
+    checkEl.textContent = `Split: ${fmt_eur(splitSum)} \u00B7 Total: ${fmt_eur(a.totalEur)} \u00B7 Diff: ${fmt_eur(diff)}${diffInr ? ` (${diffInr})` : ''}`;
+    checkEl.className = `pp-total-check ${pct <= 3 ? 'pp-ok' : pct <= 8 ? 'pp-warn' : 'pp-err'}`;
+  } else if (checkEl) {
+    checkEl.textContent = '';
+    checkEl.className = 'pp-total-check';
+  }
+
+  /* Preview */
+  const preview = document.getElementById('ppPreview');
+  if (preview) {
+    preview.innerHTML = a.totalEur > 0 ? calcPrepaymentPreview(a.totalEur, ppEffect) : 'Enter an amount to see the impact';
+  }
 };
 
 const togglePpForm = () => {
@@ -4703,7 +4686,64 @@ const togglePpForm = () => {
   const btn    = document.getElementById('ppLogBtn');
   if (drawer) drawer.classList.toggle('open', ppFormOpen);
   if (btn) btn.style.display = ppFormOpen ? 'none' : '';
-  if (!ppFormOpen) resetPpForm();
+  if (!ppFormOpen) {
+    resetPpForm();
+    document.getElementById('ppForm').style.display = 'none';
+    document.querySelectorAll('.pp-quick-chip').forEach(b => b.classList.remove('active'));
+    ppQuickMode = null;
+  }
+};
+
+const setPpQuickMode = (mode, btn) => {
+  ppQuickMode = mode;
+  document.querySelectorAll('.pp-quick-chip').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('ppForm').style.display = '';
+  if (mode === 'india-all')   { ppSplitMode = 'india-all'; }
+  else if (mode === 'germany-all') { ppSplitMode = 'germany-all'; }
+  else { ppSplitMode = 'custom'; }
+  /* Update split chip UI */
+  document.querySelectorAll('.pp-split-chip').forEach(b => {
+    b.classList.toggle('active', b.textContent.toLowerCase().includes(
+      ppSplitMode === 'india-all' ? 'you paid' : ppSplitMode === 'germany-all' ? 'friend paid' : 'custom'
+    ));
+  });
+  const iEl = document.getElementById('ppIndiaAmt');
+  const gEl = document.getElementById('ppGermanyAmt');
+  iEl.readOnly = ppSplitMode !== 'custom';
+  gEl.readOnly = ppSplitMode !== 'custom';
+  ppUpdateRateLine();
+  onPpFormInput();
+};
+
+const setPpCurrency = (cur, btn) => {
+  ppCurrency = cur;
+  document.querySelectorAll('.pp-cur-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  /* Clear values on switch to avoid confusion */
+  document.getElementById('ppTotalAmt').value = '';
+  document.getElementById('ppIndiaAmt').value = '';
+  document.getElementById('ppGermanyAmt').value = '';
+  document.getElementById('ppTotalAmt').placeholder = cur === 'inr' ? 'e.g. 54000' : 'e.g. 500';
+  onPpFormInput();
+};
+
+const setPpEffect = (effect, btn) => {
+  ppEffect = effect;
+  document.querySelectorAll('.pp-seg-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  onPpFormInput();
+};
+
+const setPpSplitMode = (mode, btn) => {
+  ppSplitMode = mode;
+  document.querySelectorAll('.pp-split-chip').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const iEl = document.getElementById('ppIndiaAmt');
+  const gEl = document.getElementById('ppGermanyAmt');
+  iEl.readOnly = mode !== 'custom';
+  gEl.readOnly = mode !== 'custom';
+  onPpFormInput();
 };
 
 const togglePpMoreOpts = () => {
@@ -4712,77 +4752,53 @@ const togglePpMoreOpts = () => {
   if (!el) return;
   const show = !el.classList.contains('show');
   el.classList.toggle('show', show);
-  if (btn) btn.textContent = show ? '− Hide date & note' : '+ Date & note';
-};
-
-const setPpEffect = (effect, btn) => {
-  ppEffect = effect;
-  document.querySelectorAll('.pp-seg-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  onPpAmountInput();
-};
-
-const onPpAmountInput = () => {
-  const eurVal = parseFloat(document.getElementById('ppTotalEur').value) || 0;
-  const preview = document.getElementById('ppPreview');
-  if (preview) {
-    preview.innerHTML = eurVal > 0
-      ? calcPrepaymentPreview(eurVal, ppEffect)
-      : 'Enter an amount above to see the impact';
-  }
-};
-
-const onPpInrInput = () => {
-  const ri = getLatestRate();
-  const rate = ri ? ri.rate : 0;
-  const indiaInr   = parseFloat(document.getElementById('ppIndiaInr').value) || 0;
-  const germanyInr = parseFloat(document.getElementById('ppGermanyInr').value) || 0;
-  document.getElementById('ppIndiaEurSub').textContent   = rate > 0 ? `≈ ${fmt_eur(indiaInr / rate)}` : '≈ €—';
-  document.getElementById('ppGermanyEurSub').textContent = rate > 0 ? `≈ ${fmt_eur(germanyInr / rate)}` : '≈ €—';
+  if (btn) btn.textContent = show ? '\u2212 Fewer options' : '\uFF0B More options';
 };
 
 const resetPpForm = () => {
   const d = new Date();
   const pad = n => String(n).padStart(2, '0');
   document.getElementById('ppDate').value = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
-  document.getElementById('ppTotalEur').value = '';
-  document.getElementById('ppIndiaInr').value = '';
-  document.getElementById('ppGermanyInr').value = '';
+  document.getElementById('ppTotalAmt').value = '';
+  document.getElementById('ppIndiaAmt').value = '';
+  document.getElementById('ppGermanyAmt').value = '';
   document.getElementById('ppNote').value = '';
-  document.getElementById('ppIndiaEurSub').textContent = '≈ €—';
-  document.getElementById('ppGermanyEurSub').textContent = '≈ €—';
+  document.getElementById('ppTotalSub').textContent = '';
+  document.getElementById('ppIndiaSub').textContent = '';
+  document.getElementById('ppGermanySub').textContent = '';
   document.getElementById('ppError').classList.remove('show');
-  document.getElementById('ppPreview').innerHTML = 'Enter an amount above to see the impact';
-  ppEffect = 'emi';
+  document.getElementById('ppPreview').innerHTML = 'Enter an amount to see the impact';
+  document.getElementById('ppTotalCheck').textContent = '';
+  document.getElementById('ppTotalCheck').className = 'pp-total-check';
+  ppEffect = 'emi'; ppCurrency = 'inr'; ppSplitMode = 'india-all';
   document.querySelectorAll('.pp-seg-btn').forEach((b, i) => b.classList.toggle('active', i === 0));
+  document.querySelectorAll('.pp-cur-btn').forEach((b, i) => b.classList.toggle('active', i === 0));
+  document.querySelectorAll('.pp-split-chip').forEach((b, i) => b.classList.toggle('active', i === 0));
+  document.getElementById('ppIndiaAmt').readOnly = true;
+  document.getElementById('ppGermanyAmt').readOnly = true;
+  document.getElementById('ppTotalAmt').placeholder = 'e.g. 54000';
   const moreOpts = document.getElementById('ppMoreOpts');
   if (moreOpts) moreOpts.classList.remove('show');
   const moreBtn = document.getElementById('ppMoreBtn');
-  if (moreBtn) moreBtn.textContent = '+ Date & note';
+  if (moreBtn) moreBtn.textContent = '\uFF0B More options';
+  ppUpdateRateLine();
 };
 
 const savePrepayment = () => {
   const errEl = document.getElementById('ppError');
   errEl.classList.remove('show');
 
-  const totalEur   = parseFloat(document.getElementById('ppTotalEur').value);
-  const indiaInr   = parseFloat(document.getElementById('ppIndiaInr').value);
-  const germanyInr = parseFloat(document.getElementById('ppGermanyInr').value);
-  const dateVal    = document.getElementById('ppDate').value;
-  const note       = document.getElementById('ppNote').value.trim().slice(0, 100);
+  const a = ppGetAmounts();
+  const dateVal = document.getElementById('ppDate').value;
+  const note    = document.getElementById('ppNote').value.trim().slice(0, 100);
 
-  if (isNaN(totalEur) || totalEur <= 0) { errEl.textContent = 'Enter a valid total EUR amount.'; errEl.classList.add('show'); return; }
-  if (isNaN(indiaInr) || indiaInr < 0)  { errEl.textContent = 'Enter a valid ₹ amount.'; errEl.classList.add('show'); return; }
-  if (isNaN(germanyInr) || germanyInr < 0) { errEl.textContent = 'Enter a valid ₹ amount.'; errEl.classList.add('show'); return; }
+  if (a.totalEur <= 0) { errEl.textContent = 'Enter a valid amount.'; errEl.classList.add('show'); return; }
+  if (a.rate <= 0) { errEl.textContent = 'No exchange rate available.'; errEl.classList.add('show'); return; }
 
-  const ri = getLatestRate();
-  if (!ri) { errEl.textContent = 'No exchange rate available.'; errEl.classList.add('show'); return; }
-  const rate = ri.rate;
-
-  const sumEur = (indiaInr + germanyInr) / rate;
-  const tolerance = totalEur * 0.05;
-  if (Math.abs(sumEur - totalEur) > Math.max(tolerance, 2)) {
-    errEl.textContent = `Contributions (≈${fmt_eur(sumEur)}) don't match total (${fmt_eur(totalEur)}). Must be within ±5%.`;
+  const splitSum = a.indiaEur + a.germanyEur;
+  const tolerance = a.totalEur * 0.08;
+  if (Math.abs(splitSum - a.totalEur) > Math.max(tolerance, 2)) {
+    errEl.textContent = `Split (${fmt_eur(splitSum)}) doesn\u2019t match total (${fmt_eur(a.totalEur)}).`;
     errEl.classList.add('show');
     return;
   }
@@ -4792,25 +4808,32 @@ const savePrepayment = () => {
   const entry = {
     ts: Date.now(),
     date: dateVal || `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`,
-    totalEur,
-    indiaInr: Math.round(indiaInr),
-    germanyInr: Math.round(germanyInr),
-    rate,
+    totalEur: parseFloat(a.totalEur.toFixed(2)),
+    indiaInr: Math.round(a.indiaInr),
+    germanyInr: Math.round(a.germanyInr),
+    rate: a.rate,
     effect: ppEffect,
+    splitMode: ppSplitMode,
     note: note || null,
   };
 
-  setSyncStatus('connecting', 'Saving…');
+  setSyncStatus('connecting', 'Saving\u2026');
   db.ref('loandata/prepayments').push(entry)
-    .then(() => { setSyncStatus('synced', 'Synced ✓'); togglePpForm(); })
+    .then(() => {
+      setSyncStatus('synced', 'Synced \u2713');
+      const dateDisp = entry.date.split('-');
+      const dd = new Date(entry.date + 'T00:00:00');
+      showToast(`Prepayment logged \u2713 \u2014 ${fmt_inr(entry.indiaInr + entry.germanyInr)} on ${dd.getDate()} ${SHORT_NAMES[dd.getMonth()]} ${dd.getFullYear()}`);
+      togglePpForm();
+    })
     .catch(() => { setSyncStatus('error', 'Save failed'); errEl.textContent = 'Save failed.'; errEl.classList.add('show'); });
 };
 
 const deletePrepayment = fbKey => {
   if (!confirm('Delete this prepayment?')) return;
-  setSyncStatus('connecting', 'Deleting…');
+  setSyncStatus('connecting', 'Deleting\u2026');
   db.ref(`loandata/prepayments/${fbKey}`).remove()
-    .then(() => setSyncStatus('synced', 'Synced ✓'))
+    .then(() => setSyncStatus('synced', 'Synced \u2713'))
     .catch(() => setSyncStatus('error', 'Delete failed'));
 };
 
@@ -4832,9 +4855,11 @@ window.editHistoryTs      = editHistoryTs;
 window.showToast          = showToast;
 window.togglePpForm       = togglePpForm;
 window.setPpEffect        = setPpEffect;
-window.onPpAmountInput    = onPpAmountInput;
-window.onPpInrInput       = onPpInrInput;
+window.setPpCurrency      = setPpCurrency;
+window.setPpSplitMode     = setPpSplitMode;
+window.setPpQuickMode     = setPpQuickMode;
 window.togglePpMoreOpts   = togglePpMoreOpts;
+window.onPpFormInput      = onPpFormInput;
 window.savePrepayment     = savePrepayment;
 window.deletePrepayment   = deletePrepayment;
 
