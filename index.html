@@ -3449,7 +3449,10 @@ let fbReady      = false;
 
 /* Profile system state */
 let activeProfile = 'guest';
-let pinHashes     = { nani: null, arya: null };
+let pinHashes     = {
+  nani: '0ffe1abd1a08215353c233d6e009613e95eec4253832a761af28ff37ac5a150c', // test PIN: 1111
+  arya: 'edee29f882543b956620b26d0ee0e7e950399b1c4222f5de05e06425b4c995e9', // test PIN: 2222
+};
 let lastActivity  = Date.now();
 const SESSION_MS  = 10 * 60 * 1000;
 const SESSION_KEY = 'f3_session';
@@ -3523,8 +3526,8 @@ dbRef.on('value', snapshot => {
     payments     = data.payments     || {};
     fbRates      = data.rates        || {};   // merge Firebase rates
     prepayments  = data.prepayments  || {};   // lump-sum prepayments
-    pinHashes.nani = (data.pins && data.pins.nani) || null;
-    pinHashes.arya = (data.pins && data.pins.arya) || null;
+    if (data.pins && data.pins.nani) pinHashes.nani = data.pins.nani;
+    if (data.pins && data.pins.arya) pinHashes.arya = data.pins.arya;
   } else {
     payStatus    = {};
     payments     = {};
