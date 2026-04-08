@@ -1971,14 +1971,8 @@ html.dark .pp-quick-chip { background: var(--paper); border-color: var(--rule); 
 .flag-chip.chip-active { background: var(--teal) !important; color: #fff !important; border-color: var(--teal) !important; border-left-color: var(--teal) !important; }
 .flag-chip.chip-active .chip-badge { opacity: 1; }
 
-/* Guest pill */
-.guest-pill {
-  display: none; align-items: center; justify-content: center; gap: var(--s4);
-  background: var(--amber-bg); color: var(--amber); border: 1px solid rgba(217,119,6,.25);
-  border-radius: 99px; font-family: var(--font-display); font-size: 12px; font-weight: 600;
-  padding: 4px 12px; margin-top: var(--s8);
-}
-.guest-pill.show { display: inline-flex; }
+/* Guest chip accent */
+.flag-chip.fc-guest { border-left: 2px solid var(--rule); }
 
 /* Expiry banner */
 .expiry-banner {
@@ -2050,7 +2044,7 @@ html.dark .pin-input { background: #20283a; border-color: var(--rule); color: va
 html.dark .picker-btn { background: var(--paper); }
 html.dark .expiry-banner { background: var(--rule2); }
 
-@media print { .prof-backdrop, .expiry-banner, .guest-pill { display: none !important; } }
+@media print { .prof-backdrop, .expiry-banner, #guestNote { display: none !important; } }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    EXPORT BUTTON — styles defined in masthead section
@@ -2968,8 +2962,9 @@ const toggleTheme = () => {
     <div class="mast-flags">
       <button class="flag-chip fc-india" id="chipNani" onclick="handleChipClick('nani')">🇮🇳 Nani <span class="chip-badge">India</span></button>
       <button class="flag-chip fc-germany" id="chipArya" onclick="handleChipClick('arya')">🇩🇪 Arya <span class="chip-badge">Germany</span></button>
+      <button class="flag-chip fc-guest" id="chipGuest" onclick="handleChipClick('guest')">👤 Guest</button>
     </div>
-    <div class="guest-pill" id="guestPill">👤 Guest · changes not saved</div>
+    <div id="guestNote" style="display:none;font-size:11px;color:rgba(255,255,255,0.45);font-style:italic;margin-top:6px;">* Changes made in Guest mode are not saved</div>
 
     <!-- Row 4: Sync pill (#4) + Export -->
     <div class="mast-bottom">
@@ -4995,10 +4990,12 @@ const applyProfile = () => {
   const ca = document.getElementById('chipArya');
   if (cn) cn.classList.toggle('chip-active', activeProfile === 'nani');
   if (ca) ca.classList.toggle('chip-active', activeProfile === 'arya');
+  const cg = document.getElementById('chipGuest');
+  if (cg) cg.classList.toggle('chip-active', activeProfile === 'guest');
 
-  /* Guest pill */
-  const gp = document.getElementById('guestPill');
-  if (gp) gp.classList.toggle('show', activeProfile === 'guest');
+  /* Guest note */
+  const gn = document.getElementById('guestNote');
+  if (gn) gn.style.display = activeProfile === 'guest' ? '' : 'none';
 
   /* Dismiss expiry banner if logged in */
   if (activeProfile !== 'guest') dismissExpiry();
