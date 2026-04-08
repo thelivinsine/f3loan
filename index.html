@@ -1963,6 +1963,96 @@ html.dark .pp-quick-chip { background: var(--paper); border-color: var(--rule); 
 @media print { #prepaymentSection { display: none !important; } }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   PROFILE SYSTEM
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+/* Chip buttons (replace divs) */
+.flag-chip { cursor: pointer; border: 2px solid rgba(255,255,255,.13); }
+.flag-chip.chip-active { background: var(--teal) !important; color: #fff !important; border-color: var(--teal) !important; border-left-color: var(--teal) !important; }
+.flag-chip.chip-active .chip-badge { opacity: 1; }
+
+/* Guest pill */
+.guest-pill {
+  display: none; align-items: center; justify-content: center; gap: var(--s4);
+  background: var(--amber-bg); color: var(--amber); border: 1px solid rgba(217,119,6,.25);
+  border-radius: 99px; font-family: var(--font-display); font-size: 12px; font-weight: 600;
+  padding: 4px 12px; margin-top: var(--s8);
+}
+.guest-pill.show { display: inline-flex; }
+
+/* Expiry banner */
+.expiry-banner {
+  display: none; position: fixed; top: 0; left: 0; right: 0; z-index: 9997;
+  background: var(--amber-bg); border-bottom: 1px solid rgba(217,119,6,.25); color: var(--amber);
+  font-family: var(--font-display); font-size: var(--text-sm); font-weight: 600;
+  padding: var(--s10) var(--s20); text-align: center;
+  align-items: center; justify-content: center; gap: var(--s12);
+}
+.expiry-banner.show { display: flex; }
+.expiry-dismiss { background: none; border: none; color: var(--amber); font-size: 18px; cursor: pointer; padding: var(--s4); min-height: 44px; min-width: 44px; }
+
+/* Modal backdrop */
+.prof-backdrop {
+  display: none; position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 9998;
+  align-items: center; justify-content: center;
+}
+.prof-backdrop.show { display: flex; }
+
+/* Modal card */
+.prof-modal {
+  background: var(--paper); border-radius: var(--r-xl); box-shadow: 0 16px 48px rgba(0,0,0,.25);
+  padding: 28px 24px; position: relative; width: calc(100% - 40px); text-align: center;
+}
+.prof-modal-close {
+  position: absolute; top: 16px; right: 16px; background: none; border: none;
+  font-size: 20px; color: var(--ink3); cursor: pointer; min-height: 44px; min-width: 44px;
+  display: flex; align-items: center; justify-content: center;
+}
+.prof-modal-title { font-family: var(--font-display); font-size: 18px; font-weight: 800; color: var(--ink); margin-bottom: 4px; }
+.prof-modal-sub { font-family: var(--font-display); font-size: 13px; color: var(--ink4); margin-bottom: 24px; }
+
+/* Picker */
+.picker-modal { max-width: 320px; }
+.picker-btn {
+  display: flex; align-items: center; justify-content: center; width: 100%;
+  min-height: 52px; border-radius: 99px; font-family: var(--font-display); font-size: 15px;
+  font-weight: 700; border: 2px solid; background: var(--paper); cursor: pointer;
+  transition: background .18s, transform .1s; margin-bottom: 10px;
+}
+.picker-btn:hover { transform: scale(1.02); }
+.picker-btn:active { transform: scale(.98); }
+.picker-btn.pb-nani { border-color: var(--teal); color: var(--teal); }
+.picker-btn.pb-arya { border-color: var(--amber); color: var(--amber); }
+.picker-btn.pb-guest { border-color: var(--rule); color: var(--ink3); }
+
+/* PIN modal */
+.pin-modal { max-width: 280px; }
+.pin-input {
+  display: block; margin: 16px auto 8px; width: 160px; border: 2px solid var(--rule);
+  border-radius: var(--r-md); padding: 12px; font-family: 'Sora', sans-serif;
+  font-size: 28px; font-weight: 700; letter-spacing: 10px; text-align: center;
+  color: var(--ink); background: var(--paper); outline: none; transition: border-color .15s;
+}
+.pin-input:focus { border-color: var(--teal); }
+.pin-error { font-family: var(--font-display); font-size: var(--text-sm); color: var(--red); font-weight: 600; min-height: 20px; margin-top: 4px; }
+.pin-lockout { font-family: var(--font-display); font-size: var(--text-sm); color: var(--amber); font-weight: 600; margin: 16px 0; }
+
+@keyframes pinShake {
+  0%,100% { transform: translateX(0); }
+  20%,60% { transform: translateX(-6px); }
+  40%,80% { transform: translateX(6px); }
+}
+.pin-shake { animation: pinShake .4s; }
+
+/* Dark mode */
+html.dark .prof-modal { background: var(--paper); }
+html.dark .pin-input { background: #20283a; border-color: var(--rule); color: var(--ink); }
+html.dark .picker-btn { background: var(--paper); }
+html.dark .expiry-banner { background: var(--rule2); }
+
+@media print { .prof-backdrop, .expiry-banner, .guest-pill { display: none !important; } }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    EXPORT BUTTON — styles defined in masthead section
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 
@@ -2874,11 +2964,12 @@ const toggleTheme = () => {
       Your share: 41.25% · €110.93/month
     </div>
 
-    <!-- Row 3: Flag chips with role badges (#2) -->
+    <!-- Row 3: Profile chips -->
     <div class="mast-flags">
-      <div class="flag-chip fc-india">🇮🇳 You — India <span class="chip-badge">Primary</span></div>
-      <div class="flag-chip fc-germany">🇩🇪 Friend — Germany <span class="chip-badge">Lender</span></div>
+      <button class="flag-chip fc-india" id="chipNani" onclick="handleChipClick('nani')">🇮🇳 Nani <span class="chip-badge">India</span></button>
+      <button class="flag-chip fc-germany" id="chipArya" onclick="handleChipClick('arya')">🇩🇪 Arya <span class="chip-badge">Germany</span></button>
     </div>
+    <div class="guest-pill" id="guestPill">👤 Guest · changes not saved</div>
 
     <!-- Row 4: Sync pill (#4) + Export -->
     <div class="mast-bottom">
@@ -3349,6 +3440,52 @@ let prepayments  = {};   // lump-sum prepayments — read from Firebase
 let openDrawers  = {};
 let fbReady      = false;
 
+/* PIN SETUP — run this once in browser console to generate hashes:
+   hashPin('YOUR_4_DIGIT_PIN').then(h => console.log(h))
+   Then paste the hash into Firebase Console at:
+   loandata/pins/nani  →  "<hash>"
+   loandata/pins/arya  →  "<hash>"
+   Never store the actual PIN anywhere. */
+
+/* Profile system state */
+let activeProfile = 'guest';
+let pinHashes     = { nani: null, arya: null };
+let lastActivity  = Date.now();
+const SESSION_MS  = 10 * 60 * 1000;
+const SESSION_KEY = 'f3_session';
+let pinTarget     = null; // which profile we're entering PIN for
+
+/* Restore session on load */
+try {
+  const saved = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
+  if (saved && saved.expiresAt > Date.now()) activeProfile = saved.profile;
+} catch(e) {}
+
+const hashPin = async (pin) => {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pin));
+  return [...new Uint8Array(buf)].map(x => x.toString(16).padStart(2,'0')).join('');
+};
+
+/* POV wording system */
+const POV = {
+  nani: {
+    heroSentLabel: 'Total Sent', heroSentSub: 'sent by Nani', outstandingLabel: 'Outstanding',
+    outstandingSub: 'still to send', shareLabel: 'Nani\u2019s Share', ratePanelLabel: 'Nani sends this month',
+    progressCaption: 'sent by Nani', logBtnOpen: '\u25BC log \u20B9 payment', logBtnClose: '\u25B2 close',
+  },
+  arya: {
+    heroSentLabel: 'Total Received', heroSentSub: 'received by Arya', outstandingLabel: 'Still Owed',
+    outstandingSub: 'still to receive', shareLabel: 'Arya\u2019s Share', ratePanelLabel: 'Arya receives this month',
+    progressCaption: 'received by Arya', logBtnOpen: '\u25BC view payment', logBtnClose: '\u25B2 close',
+  },
+  guest: {
+    heroSentLabel: 'Total Paid', heroSentSub: 'paid by Nani to Arya', outstandingLabel: 'Amount Owed',
+    outstandingSub: 'Nani still owes Arya', shareLabel: 'Nani\u2019s Share', ratePanelLabel: 'Nani pays Arya this month',
+    progressCaption: 'paid by Nani', logBtnOpen: '\u25BC view payment', logBtnClose: '\u25B2 close',
+  },
+};
+const pov = key => POV[activeProfile][key];
+
 /* ══════════════════════════════════════════════════════
    SYNC INDICATOR
 ══════════════════════════════════════════════════════ */
@@ -3363,10 +3500,15 @@ const setSyncStatus = (state, msg) => {
 
 /* Write to Firebase — update only payStatus and payments, preserving rates/ */
 const persist = () => {
-  setSyncStatus('connecting', 'Saving…');
+  if (activeProfile === 'guest') {
+    /* Guest: update in-memory only, never write to Firebase */
+    renderAll();
+    return;
+  }
+  setSyncStatus('connecting', 'Saving\u2026');
   dbRef.update({ payStatus, payments })
-    .then(() => setSyncStatus('synced', 'Synced ✓'))
-    .catch(() => setSyncStatus('error', 'Save failed — check connection'));
+    .then(() => setSyncStatus('synced', 'Synced \u2713'))
+    .catch(() => setSyncStatus('error', 'Save failed \u2014 check connection'));
 };
 
 /* ══════════════════════════════════════════════════════
@@ -3381,6 +3523,8 @@ dbRef.on('value', snapshot => {
     payments     = data.payments     || {};
     fbRates      = data.rates        || {};   // merge Firebase rates
     prepayments  = data.prepayments  || {};   // lump-sum prepayments
+    pinHashes.nani = (data.pins && data.pins.nani) || null;
+    pinHashes.arya = (data.pins && data.pins.arya) || null;
   } else {
     payStatus    = {};
     payments     = {};
@@ -3391,9 +3535,11 @@ dbRef.on('value', snapshot => {
     fbReady = true;
     renderRatePanel();
     renderAll();
+    applyProfile();
+    if (!sessionStorage.getItem('f3_picker_shown')) showPicker();
     document.body.classList.remove('is-loading');
     document.body.classList.add('data-ready');
-    setSyncStatus('synced', 'Synced ✓');
+    setSyncStatus('synced', 'Synced \u2713');
   } else {
     renderAll();
     setSyncStatus('synced', 'Updated ✓');
@@ -3520,7 +3666,7 @@ const renderRatePanel = () => {
       <div class="rp-source">${rateSrc}</div>
     </div>
     <div class="rp-cell">
-      <div class="rp-label">You send this month</div>
+      <div class="rp-label">${pov('ratePanelLabel')}</div>
       <div class="rp-value">${friendInr}</div>
       <div class="rp-sub">= ${fmt_eur(FRIEND_EUR)} \u00D7 rate</div>
     </div>`;
@@ -3596,11 +3742,11 @@ let renderStats = () => {
 
   document.getElementById('kpiReceived').textContent    = fmt_eur(totalPaid);
   document.getElementById('kpiReceivedInr').textContent = totalPaidInr > 0 ? fmt_inr(totalPaidInr) : '\u20B90';
-  document.getElementById('kpiReceivedSub').textContent = `${elapsed} month${elapsed !== 1 ? 's' : ''} elapsed`;
+  document.getElementById('kpiReceivedSub').textContent = `${elapsed} month${elapsed !== 1 ? 's' : ''} elapsed \u00B7 ${pov('heroSentSub')}`;
 
   document.getElementById('kpiOutstanding').textContent    = fmt_eur(out);
   document.getElementById('kpiOutstandingInr').textContent = outInr > 0 ? fmt_inr(outInr) : '\u20B90';
-  document.getElementById('kpiOutstandingSub').textContent = out > 0 ? 'still to send' : '\u2713 all sent';
+  document.getElementById('kpiOutstandingSub').textContent = out > 0 ? pov('outstandingSub') : '\u2713 all settled';
 
   document.getElementById('kpiRemain').textContent    = effectiveMonths;
   document.getElementById('kpiRemainSub').innerHTML = `${fmt_eur(effectiveMonths * effectiveShare)} ahead · <span id="kpiRemainInr">${latestRi ? fmt_inr(effectiveMonths * effectiveShare * latestRi.rate) : '\u20B9 rate TBD'}</span> remaining`;
@@ -3936,7 +4082,7 @@ const buildCard = (mo, i, cmap) => {
 
   /* DRAWER */
   const isOpen    = !!openDrawers[k];
-  const toggleTxt = isOpen ? '\u25B2 close' : '\u25BC log \u20B9 payment';
+  const toggleTxt = isOpen ? pov('logBtnClose') : pov('logBtnOpen');
   const pmtObj    = payments[k];
   const savedInr  = '';
   const savedTotal = (pmtObj && pmtObj.inr != null) ? pmtObj.inr : 0;
@@ -4123,7 +4269,7 @@ const _updateLogBtn = (card, k, isOpen) => {
   const btn = card.querySelector('.mc-log-btn');
   if (!btn) return;
   btn.setAttribute('aria-expanded', String(isOpen));
-  btn.textContent = isOpen ? '\u25B2 close' : '\u25BC log \u20B9 payment';
+  btn.textContent = isOpen ? pov('logBtnClose') : pov('logBtnOpen');
   const nameEl = card.querySelector('.mc-month-name');
   let monthLabel = k;
   if (nameEl) {
@@ -4838,6 +4984,185 @@ const deletePrepayment = fbKey => {
 };
 
 /* ══════════════════════════════════════════════════════
+   PROFILE SYSTEM
+══════════════════════════════════════════════════════ */
+const applyProfile = () => {
+  /* Chip active states */
+  const cn = document.getElementById('chipNani');
+  const ca = document.getElementById('chipArya');
+  if (cn) cn.classList.toggle('chip-active', activeProfile === 'nani');
+  if (ca) ca.classList.toggle('chip-active', activeProfile === 'arya');
+
+  /* Guest pill */
+  const gp = document.getElementById('guestPill');
+  if (gp) gp.classList.toggle('show', activeProfile === 'guest');
+
+  /* Dismiss expiry banner if logged in */
+  if (activeProfile !== 'guest') dismissExpiry();
+
+  /* Update static labels */
+  const heroLabel = document.querySelector('.hc-received .hero-label');
+  if (heroLabel) heroLabel.textContent = pov('heroSentLabel');
+
+  /* Re-render rate panel with new POV wording */
+  renderRatePanel();
+
+  /* Single renderAll for dynamic content */
+  renderAll();
+};
+
+const showPicker = () => {
+  document.getElementById('pickerBackdrop').classList.add('show');
+};
+const dismissPicker = () => {
+  document.getElementById('pickerBackdrop').classList.remove('show');
+  sessionStorage.setItem('f3_picker_shown', '1');
+};
+
+const selectProfile = (profile) => {
+  dismissPicker();
+  if (profile === 'guest') {
+    activeProfile = 'guest';
+    localStorage.removeItem(SESSION_KEY);
+    applyProfile();
+    return;
+  }
+  pinTarget = profile;
+  openPinModal(profile);
+};
+
+const openPinModal = (profile) => {
+  pinTarget = profile;
+  const bd = document.getElementById('pinBackdrop');
+  const nameEl = document.getElementById('pinProfileName');
+  const inp = document.getElementById('pinInput');
+  const err = document.getElementById('pinError');
+  const lockEl = document.getElementById('pinLockoutMsg');
+
+  nameEl.textContent = profile === 'nani' ? '🇮🇳 Nani' : '🇩🇪 Arya';
+  err.textContent = '';
+  inp.value = '';
+
+  /* Check lockout */
+  const lockKey = `f3_lockout_${profile}`;
+  try {
+    const lock = JSON.parse(localStorage.getItem(lockKey) || 'null');
+    if (lock && lock.lockedUntil > Date.now()) {
+      inp.style.display = 'none';
+      lockEl.style.display = '';
+      const updateLock = () => {
+        const rem = Math.max(0, Math.ceil((lock.lockedUntil - Date.now()) / 1000));
+        if (rem <= 0) { lockEl.style.display = 'none'; inp.style.display = ''; inp.focus(); return; }
+        lockEl.textContent = `Too many attempts \u2014 try again in ${Math.floor(rem/60)}:${String(rem%60).padStart(2,'0')}`;
+        setTimeout(updateLock, 1000);
+      };
+      updateLock();
+    } else {
+      inp.style.display = '';
+      lockEl.style.display = 'none';
+    }
+  } catch(e) { inp.style.display = ''; lockEl.style.display = 'none'; }
+
+  bd.classList.add('show');
+  setTimeout(() => { if (inp.style.display !== 'none') inp.focus(); }, 100);
+
+  /* Auto-validate on 4 digits */
+  inp.oninput = async () => {
+    if (inp.value.length < 4) { err.textContent = ''; return; }
+    const hash = await hashPin(inp.value);
+    if (hash === pinHashes[pinTarget]) {
+      /* Success */
+      activeProfile = pinTarget;
+      localStorage.setItem(SESSION_KEY, JSON.stringify({ profile: activeProfile, expiresAt: Date.now() + SESSION_MS }));
+      localStorage.removeItem(`f3_lockout_${pinTarget}`);
+      bd.classList.remove('show');
+      applyProfile();
+    } else {
+      /* Wrong */
+      err.textContent = 'Incorrect PIN';
+      inp.value = '';
+      inp.classList.add('pin-shake');
+      setTimeout(() => inp.classList.remove('pin-shake'), 400);
+
+      const lockKey2 = `f3_lockout_${pinTarget}`;
+      let lock2 = { attempts: 0 };
+      try { lock2 = JSON.parse(localStorage.getItem(lockKey2) || '{"attempts":0}'); } catch(e) {}
+      lock2.attempts++;
+      if (lock2.attempts >= 3) {
+        lock2.lockedUntil = Date.now() + 5 * 60 * 1000;
+        localStorage.setItem(lockKey2, JSON.stringify(lock2));
+        inp.style.display = 'none';
+        const lockEl2 = document.getElementById('pinLockoutMsg');
+        lockEl2.style.display = '';
+        const updateLock2 = () => {
+          const rem = Math.max(0, Math.ceil((lock2.lockedUntil - Date.now()) / 1000));
+          if (rem <= 0) { lockEl2.style.display = 'none'; inp.style.display = ''; lock2.attempts = 0; localStorage.setItem(lockKey2, JSON.stringify(lock2)); inp.focus(); return; }
+          lockEl2.textContent = `Too many attempts \u2014 try again in ${Math.floor(rem/60)}:${String(rem%60).padStart(2,'0')}`;
+          setTimeout(updateLock2, 1000);
+        };
+        updateLock2();
+      } else {
+        localStorage.setItem(lockKey2, JSON.stringify(lock2));
+      }
+    }
+  };
+};
+
+const cancelPin = () => {
+  document.getElementById('pinBackdrop').classList.remove('show');
+  document.getElementById('pinInput').oninput = null;
+  showPicker();
+};
+
+const handleChipClick = (profile) => {
+  if (activeProfile === profile) {
+    /* Already active — sign out */
+    activeProfile = 'guest';
+    localStorage.removeItem(SESSION_KEY);
+    applyProfile();
+    return;
+  }
+  if (profile === 'guest') {
+    activeProfile = 'guest';
+    localStorage.removeItem(SESSION_KEY);
+    applyProfile();
+  } else {
+    openPinModal(profile);
+  }
+};
+
+const showExpiryBanner = () => {
+  const el = document.getElementById('expiryBanner');
+  if (el) el.classList.add('show');
+};
+const dismissExpiry = () => {
+  const el = document.getElementById('expiryBanner');
+  if (el) el.classList.remove('show');
+};
+
+/* Activity tracking */
+document.addEventListener('click', () => { lastActivity = Date.now(); });
+document.addEventListener('keydown', () => { lastActivity = Date.now(); });
+
+/* Session expiry check */
+setInterval(() => {
+  if (activeProfile === 'guest') return;
+  if (Date.now() - lastActivity > SESSION_MS) {
+    activeProfile = 'guest';
+    localStorage.removeItem(SESSION_KEY);
+    applyProfile();
+    showExpiryBanner();
+  }
+}, 30000);
+
+/* Escape key for modals */
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  if (document.getElementById('pinBackdrop').classList.contains('show')) { cancelPin(); return; }
+  if (document.getElementById('pickerBackdrop').classList.contains('show')) { dismissPicker(); activeProfile = 'guest'; applyProfile(); }
+});
+
+/* ══════════════════════════════════════════════════════
    GLOBAL HANDLER EXPOSURE
    const/let are block-scoped — not on window by default.
    Inline onclick="fn()" resolves against window, so every
@@ -4862,6 +5187,12 @@ window.togglePpMoreOpts   = togglePpMoreOpts;
 window.onPpFormInput      = onPpFormInput;
 window.savePrepayment     = savePrepayment;
 window.deletePrepayment   = deletePrepayment;
+window.handleChipClick    = handleChipClick;
+window.selectProfile      = selectProfile;
+window.cancelPin          = cancelPin;
+window.dismissPicker      = dismissPicker;
+window.dismissExpiry      = dismissExpiry;
+window.hashPin            = hashPin;
 
 /* ══════════════════════════════════════════════════════
    SCROLL LISTENER — runs after full DOM is parsed.
@@ -4962,6 +5293,36 @@ document.addEventListener('DOMContentLoaded', () => {
   syncAria();
 })();
 </script>
+
+<!-- ══ EXPIRY BANNER ══════════════════════════════════ -->
+<div class="expiry-banner" id="expiryBanner" role="alert">
+  <span>Session expired — tap a profile to sign back in</span>
+  <button class="expiry-dismiss" onclick="dismissExpiry()" aria-label="Dismiss">×</button>
+</div>
+
+<!-- ══ PROFILE PICKER MODAL ══════════════════════════ -->
+<div class="prof-backdrop" id="pickerBackdrop" role="dialog" aria-modal="true" aria-labelledby="pickerTitle">
+  <div class="prof-modal picker-modal">
+    <button class="prof-modal-close" onclick="dismissPicker()" aria-label="Close">×</button>
+    <div class="prof-modal-title" id="pickerTitle">Who are you?</div>
+    <div class="prof-modal-sub">Select a profile to continue</div>
+    <button class="picker-btn pb-nani" onclick="selectProfile('nani')">🇮🇳 Nani</button>
+    <button class="picker-btn pb-arya" onclick="selectProfile('arya')">🇩🇪 Arya</button>
+    <button class="picker-btn pb-guest" onclick="selectProfile('guest')">👤 Guest</button>
+  </div>
+</div>
+
+<!-- ══ PIN ENTRY MODAL ═══════════════════════════════ -->
+<div class="prof-backdrop" id="pinBackdrop" role="dialog" aria-modal="true" aria-labelledby="pinTitle">
+  <div class="prof-modal pin-modal">
+    <button class="prof-modal-close" onclick="cancelPin()" aria-label="Cancel">×</button>
+    <div class="prof-modal-title" id="pinTitle">Enter PIN</div>
+    <div class="prof-modal-sub" id="pinProfileName"></div>
+    <div id="pinLockoutMsg" class="pin-lockout" style="display:none"></div>
+    <input type="password" inputmode="numeric" maxlength="4" pattern="[0-9]*" class="pin-input" id="pinInput" autocomplete="off">
+    <div class="pin-error" id="pinError"></div>
+  </div>
+</div>
 
 <!-- ══ PAYMENT TOAST ══════════════════════════════════ -->
 <div class="pay-toast" id="payToast" aria-live="polite"></div>
