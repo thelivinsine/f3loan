@@ -2960,8 +2960,8 @@ const toggleTheme = () => {
 
     <!-- Row 3: Profile chips -->
     <div class="mast-flags">
-      <button class="flag-chip fc-india" id="chipNani" onclick="handleChipClick('nani')">🇮🇳 Nani <span class="chip-badge">India</span></button>
-      <button class="flag-chip fc-germany" id="chipArya" onclick="handleChipClick('arya')">🇩🇪 Arya <span class="chip-badge">Germany</span></button>
+      <button class="flag-chip fc-india" id="chipNani" onclick="handleChipClick('nani')"><img src="https://flagcdn.com/24x18/in.png" width="24" height="18" alt="" style="border-radius:2px;vertical-align:middle;margin-right:4px;"> Nani <span class="chip-badge">India</span></button>
+      <button class="flag-chip fc-germany" id="chipArya" onclick="handleChipClick('arya')"><img src="https://flagcdn.com/24x18/de.png" width="24" height="18" alt="" style="border-radius:2px;vertical-align:middle;margin-right:4px;"> Arya <span class="chip-badge">Germany</span></button>
       <button class="flag-chip fc-guest" id="chipGuest" onclick="handleChipClick('guest')">👤 Guest</button>
     </div>
     <div id="guestNote" style="display:none;font-size:11px;color:rgba(255,255,255,0.45);font-style:italic;margin-top:6px;">* Changes made in Guest mode are not saved</div>
@@ -5039,7 +5039,9 @@ const openPinModal = (profile) => {
   const err = document.getElementById('pinError');
   const lockEl = document.getElementById('pinLockoutMsg');
 
-  nameEl.textContent = profile === 'nani' ? '🇮🇳 Nani' : '🇩🇪 Arya';
+  nameEl.innerHTML = profile === 'nani'
+    ? '<img src="https://flagcdn.com/24x18/in.png" width="24" height="18" alt="" style="border-radius:2px;vertical-align:middle;margin-right:4px;"> Nani'
+    : '<img src="https://flagcdn.com/24x18/de.png" width="24" height="18" alt="" style="border-radius:2px;vertical-align:middle;margin-right:4px;"> Arya';
   err.textContent = '';
   inp.value = '';
 
@@ -5306,8 +5308,8 @@ document.addEventListener('DOMContentLoaded', () => {
     <button class="prof-modal-close" onclick="dismissPicker()" aria-label="Close">×</button>
     <div class="prof-modal-title" id="pickerTitle">Who are you?</div>
     <div class="prof-modal-sub">Select a profile to continue</div>
-    <button class="picker-btn pb-nani" onclick="selectProfile('nani')">🇮🇳 Nani</button>
-    <button class="picker-btn pb-arya" onclick="selectProfile('arya')">🇩🇪 Arya</button>
+    <button class="picker-btn pb-nani" onclick="selectProfile('nani')"><img src="https://flagcdn.com/24x18/in.png" width="24" height="18" alt="" style="border-radius:2px;vertical-align:middle;margin-right:6px;"> Nani</button>
+    <button class="picker-btn pb-arya" onclick="selectProfile('arya')"><img src="https://flagcdn.com/24x18/de.png" width="24" height="18" alt="" style="border-radius:2px;vertical-align:middle;margin-right:6px;"> Arya</button>
     <button class="picker-btn pb-guest" onclick="selectProfile('guest')">👤 Guest</button>
   </div>
 </div>
