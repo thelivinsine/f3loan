@@ -146,9 +146,7 @@ body::after {
   background:
     radial-gradient(ellipse 60% 40% at 0% 20%, rgba(13,148,136,.12) 0%, transparent 55%),
     radial-gradient(ellipse 80% 60% at 10% 110%, rgba(13,148,136,.18) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 80% at 90% -10%, rgba(26,70,204,.25) 0%, transparent 55%),
-    repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,.055) 39px, rgba(255,255,255,.055) 40px),
-    repeating-linear-gradient(135deg, transparent, transparent 11px, rgba(255,255,255,.015) 11px, rgba(255,255,255,.015) 12px);
+    radial-gradient(ellipse 50% 80% at 90% -10%, rgba(26,70,204,.25) 0%, transparent 55%);
 }
 
 /* #3 — SVG noise texture layer for depth */
@@ -158,7 +156,7 @@ body::after {
   pointer-events: none;
   z-index: 0;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-  opacity: 0.04;
+  opacity: 0.02;
   mix-blend-mode: overlay;
 }
 
@@ -331,8 +329,7 @@ html:not(.dark) .masthead {
 html:not(.dark) .masthead::before {
   background:
     radial-gradient(ellipse 80% 60% at 10% 110%, rgba(13,148,136,.14) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 80% at 90% -10%, rgba(56,120,220,.20) 0%, transparent 55%),
-    repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,.055) 39px, rgba(255,255,255,.055) 40px);
+    radial-gradient(ellipse 50% 80% at 90% -10%, rgba(56,120,220,.20) 0%, transparent 55%);
 }
 html:not(.dark) .rate-panel {
   background: linear-gradient(180deg, rgba(22,52,90,.97) 0%, rgba(15,38,70,1) 100%);
@@ -2948,14 +2945,14 @@ const toggleTheme = () => {
       <h1 class="mast-title">Joint Loan Tracker</h1>
       <!-- Legacy elements kept for JS/print compatibility -->
       <div class="mast-timeline">Feb 2026 – Dec 2033 · €20,000 · 95 months</div>
-      <div class="mast-sub">Your share: <strong class="mast-sub-strong">41.25%</strong> · <strong class="mast-sub-strong">€110.93</strong>/month</div>
+      <div class="mast-sub"><span id="mastSubLabel">Your share</span>: <strong class="mast-sub-strong">41.25%</strong> · <strong class="mast-sub-strong">€110.93</strong>/month</div>
       <div class="mast-meta">Feb 2026 – Dec 2033</div>
     </div>
 
     <!-- Row 2: Subtitle lines -->
     <div class="mast-subtitle">
       Feb 2026 – Dec 2033 · €20,000 · 95 months<br>
-      Your share: 41.25% · €110.93/month
+      <span id="mastSubLabel2">Your share</span>: 41.25% · €110.93/month
     </div>
 
     <!-- Row 3: Profile chips -->
@@ -3079,7 +3076,7 @@ const toggleTheme = () => {
       <div class="meta-card mc-share">
         <div class="meta-dot"></div>
         <div class="meta-body">
-          <div class="meta-label">Your Share</div>
+          <div class="meta-label" id="metaShareLabel">Your Share</div>
           <span class="skel skel-twin skel-num-md"></span>
           <div class="val-real meta-value" id="kpiFriendInr">₹—</div>
           <div class="meta-sub">€110.93 · 41.25% per month</div>
@@ -3199,8 +3196,8 @@ const toggleTheme = () => {
           <div id="ppSplitSection">
             <label class="pp-form-lbl">Who paid?</label>
             <div class="pp-split-chips">
-              <button class="pp-split-chip active" onclick="setPpSplitMode('india-all',this)" type="button">You paid all</button>
-              <button class="pp-split-chip" onclick="setPpSplitMode('germany-all',this)" type="button">Friend paid all</button>
+              <button class="pp-split-chip active" onclick="setPpSplitMode('india-all',this)" type="button" id="ppChipYou">You paid all</button>
+              <button class="pp-split-chip" onclick="setPpSplitMode('germany-all',this)" type="button" id="ppChipFriend">Friend paid all</button>
               <button class="pp-split-chip" onclick="setPpSplitMode('proportional',this)" type="button">41/59 split</button>
               <button class="pp-split-chip" onclick="setPpSplitMode('equal',this)" type="button">50/50</button>
               <button class="pp-split-chip" onclick="setPpSplitMode('custom',this)" type="button">Custom</button>
@@ -3209,12 +3206,12 @@ const toggleTheme = () => {
           <!-- 7. Split fields -->
           <div class="pp-split-row">
             <div>
-              <label class="pp-form-lbl" for="ppIndiaAmt">Your share</label>
+              <label class="pp-form-lbl" for="ppIndiaAmt" id="ppIndiaLabel">Your share</label>
               <input type="number" class="pp-form-input" id="ppIndiaAmt" placeholder="0" step="any" min="0" readonly oninput="onPpFormInput()">
               <div class="pp-form-sub" id="ppIndiaSub"></div>
             </div>
             <div>
-              <label class="pp-form-lbl" for="ppGermanyAmt">Friend's share</label>
+              <label class="pp-form-lbl" for="ppGermanyAmt" id="ppGermanyLabel">Friend's share</label>
               <input type="number" class="pp-form-input" id="ppGermanyAmt" placeholder="0" step="any" min="0" readonly oninput="onPpFormInput()">
               <div class="pp-form-sub" id="ppGermanySub"></div>
             </div>
@@ -3468,18 +3465,33 @@ const hashPin = async (pin) => {
 const POV = {
   nani: {
     heroSentLabel: 'Total Sent', heroSentSub: 'sent by Nani', outstandingLabel: 'Outstanding',
-    outstandingSub: 'still to send', shareLabel: 'Nani\u2019s Share', ratePanelLabel: 'Nani sends this month',
+    outstandingSub: 'still to send', shareLabel: 'Your Share', ratePanelLabel: 'Nani sends this month',
     progressCaption: 'sent by Nani', logBtnOpen: '\u25BC log \u20B9 payment', logBtnClose: '\u25B2 close',
+    mastSub: 'Your share', metaShareLabel: 'Your Share', dueLabel: 'Due (Arya)',
+    splitYou: 'Your share', splitFriend: 'Arya\u2019s share', tlYou: 'You', tlFriend: 'Arya',
+    ppEmpty: 'No prepayments logged yet \u2014 a lump-sum payment reduces your outstanding balance and can lower your monthly share or shorten the loan.',
+    previewEmi: 'Your monthly share reduces from',
+    sbSentLabel: 'Sent', sbSentAria: 'Total sent by Nani',
   },
   arya: {
     heroSentLabel: 'Total Received', heroSentSub: 'received by Arya', outstandingLabel: 'Still Owed',
-    outstandingSub: 'still to receive', shareLabel: 'Arya\u2019s Share', ratePanelLabel: 'Arya receives this month',
+    outstandingSub: 'still to receive', shareLabel: 'Nani\u2019s Share', ratePanelLabel: 'Arya receives this month',
     progressCaption: 'received by Arya', logBtnOpen: '\u25BC view payment', logBtnClose: '\u25B2 close',
+    mastSub: 'Nani\u2019s share', metaShareLabel: 'Nani\u2019s Share', dueLabel: 'Due (Nani)',
+    splitYou: 'Your share', splitFriend: 'Nani\u2019s share', tlYou: 'You', tlFriend: 'Nani',
+    ppEmpty: 'No prepayments logged yet \u2014 a lump-sum payment reduces the outstanding balance and can lower the monthly share or shorten the loan.',
+    previewEmi: 'Nani\u2019s monthly share reduces from',
+    sbSentLabel: 'Received', sbSentAria: 'Total received by Arya',
   },
   guest: {
     heroSentLabel: 'Total Paid', heroSentSub: 'paid by Nani to Arya', outstandingLabel: 'Amount Owed',
     outstandingSub: 'Nani still owes Arya', shareLabel: 'Nani\u2019s Share', ratePanelLabel: 'Nani pays Arya this month',
     progressCaption: 'paid by Nani', logBtnOpen: '\u25BC view payment', logBtnClose: '\u25B2 close',
+    mastSub: 'Nani\u2019s share', metaShareLabel: 'Nani\u2019s Share', dueLabel: 'Due (Nani)',
+    splitYou: 'Nani\u2019s share', splitFriend: 'Arya\u2019s share', tlYou: 'Nani', tlFriend: 'Arya',
+    ppEmpty: 'No prepayments logged yet \u2014 a lump-sum payment reduces the outstanding balance and can lower the monthly share or shorten the loan.',
+    previewEmi: 'Nani\u2019s monthly share reduces from',
+    sbSentLabel: 'Paid', sbSentAria: 'Total paid by Nani',
   },
 };
 const pov = key => POV[activeProfile][key];
@@ -4009,7 +4021,7 @@ const buildCard = (mo, i, cmap) => {
     : `<span class="src-badge src-null">Rate TBD</span>`;
   const dueHTML =
     `<div class="mc-cell col-due">
-      <div class="mc-cell-label">Due (friend)</div>
+      <div class="mc-cell-label">${pov('dueLabel')}</div>
       <div class="mc-primary c-blue">${dueInr || '\u20B9 TBD'}</div>
       <div class="mc-secondary c-muted">${fmt_eur(FRIEND_EUR)}</div>
       ${srcBadge}
@@ -4619,7 +4631,7 @@ const renderPrepayments = () => {
   const ppEntries = Object.entries(prepayments);
 
   if (ppEntries.length === 0) {
-    impactEl.innerHTML = '<div class="pp-impact-empty">No prepayments logged yet \u2014 a lump-sum payment reduces your outstanding balance and can lower your monthly share or shorten the loan.</div>';
+    impactEl.innerHTML = `<div class="pp-impact-empty">${pov('ppEmpty')}</div>`;
     listEl.innerHTML = '';
     return;
   }
@@ -4664,7 +4676,7 @@ const renderPrepayments = () => {
         <span class="pp-tl-amount">${fmt_eur(pp.totalEur)} \u00B7 ${fmt_inr(totalInrPp)}</span>
         <span class="pp-effect-badge ${badgeClass}">${badgeText}</span>
       </span>
-      <span class="pp-tl-shares">You ${fmt_inr(pp.indiaInr || 0)} \u00B7 Friend ${fmt_inr(pp.germanyInr || 0)}</span>
+      <span class="pp-tl-shares">${pov('tlYou')} ${fmt_inr(pp.indiaInr || 0)} \u00B7 ${pov('tlFriend')} ${fmt_inr(pp.germanyInr || 0)}</span>
       <button class="pp-tl-delete" onclick="deletePrepayment('${fbKey}')" title="Delete" aria-label="Delete prepayment">\u00D7</button>
       ${noteHtml}
     </div>`;
@@ -4733,7 +4745,7 @@ const calcPrepaymentPreview = (extraEur, effect) => {
     const newShare = parseFloat((newTotal * 0.4125).toFixed(2));
     const ri = ppGetRate();
     const inrStr = ri ? ` (${fmt_inr(Math.round(newShare * ri.rate))})` : '';
-    return `Your monthly share reduces from ${fmt_eur(FRIEND_EUR)} to approx. <strong>${fmt_eur(newShare)}</strong>${inrStr}`;
+    return `${pov('previewEmi')} ${fmt_eur(FRIEND_EUR)} to approx. <strong>${fmt_eur(newShare)}</strong>${inrStr}`;
   } else {
     const inner = 1 - (remaining * r / ORIG_EMI_EUR);
     if (inner > 0) {
@@ -5004,6 +5016,28 @@ const applyProfile = () => {
   const heroLabel = document.querySelector('.hc-received .hero-label');
   if (heroLabel) heroLabel.textContent = pov('heroSentLabel');
 
+  /* Masthead subtitle */
+  const ms1 = document.getElementById('mastSubLabel');
+  const ms2 = document.getElementById('mastSubLabel2');
+  if (ms1) ms1.textContent = pov('mastSub');
+  if (ms2) ms2.textContent = pov('mastSub');
+
+  /* Meta share card label */
+  const msl = document.getElementById('metaShareLabel');
+  if (msl) msl.textContent = pov('metaShareLabel');
+
+  /* Sticky bar sent label + aria */
+  const sbl = document.getElementById('sbSentLabel');
+  const sbi = document.getElementById('sbSentItem');
+  if (sbl) sbl.textContent = pov('sbSentLabel');
+  if (sbi) sbi.setAttribute('aria-label', pov('sbSentAria'));
+
+  /* Prepayment split labels */
+  const pil = document.getElementById('ppIndiaLabel');
+  const pgl = document.getElementById('ppGermanyLabel');
+  if (pil) pil.textContent = pov('splitYou');
+  if (pgl) pgl.textContent = pov('splitFriend');
+
   /* Re-render rate panel with new POV wording */
   renderRatePanel();
 
@@ -5264,8 +5298,8 @@ document.addEventListener('DOMContentLoaded', () => {
       <span class="sb-label" aria-hidden="true">Total Due</span>
       <span class="sb-value" id="sbDue" aria-live="polite">—</span>
     </div>
-    <div class="sb-item" aria-label="Total sent by you">
-      <span class="sb-label" aria-hidden="true">Sent</span>
+    <div class="sb-item" id="sbSentItem" aria-label="Total sent by Nani">
+      <span class="sb-label" aria-hidden="true" id="sbSentLabel">Sent</span>
       <span class="sb-value sb-green" id="sbReceived" aria-live="polite">—</span>
     </div>
     <div class="sb-item" aria-label="Outstanding balance">
