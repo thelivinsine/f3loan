@@ -3642,11 +3642,18 @@ const buildCumulMap = () => {
   const map = {};
   const months = getMonths();
   let run = 0;
+  let hasGap = false;           // true if any non-upcoming month lacks a rate
   for (const mo of months) {
     const k = mkey(mo.y, mo.m);
     if (!isUpco(mo.y, mo.m)) {
-      run = parseFloat((run + monthNet(k)).toFixed(2));
-      map[k] = run;
+      const ri = getRate(mo.y, mo.m);
+      const net = monthNet(k);   // EUR
+      if (ri) {
+        run = parseFloat((run + net * ri.rate).toFixed(2));
+      } else {
+        hasGap = true;           // can't convert — flag it
+      }
+      map[k] = hasGap ? null : run;   // null ⇒ "TBD" in display
     } else {
       map[k] = null;
     }
@@ -4002,7 +4009,7 @@ const buildCard = (mo, i, cmap) => {
 
   const ri       = getRate(y, m);
   const netEur   = monthNet(k);
-  const cumulEur = cmap[k];
+  const cumulInr = cmap[k];
 
   /* Card CSS class */
   let mc = 'mc-upcoming';
@@ -4061,17 +4068,17 @@ const buildCard = (mo, i, cmap) => {
 
   /* CUMULATIVE cell */
   let cumClass, cumPrim, cumNote;
-  if (cumulEur === null) {
+  if (cumulInr === null) {
     cumClass = 'c-muted'; cumPrim = '\u2014'; cumNote = 'upcoming';
-  } else if (cumulEur === 0) {
+  } else if (cumulInr === 0) {
     cumClass = 'c-green'; cumPrim = '\u20B90'; cumNote = 'all clear \u2713';
-  } else if (cumulEur < 0) {
+  } else if (cumulInr < 0) {
     cumClass = 'c-green';
-    cumPrim  = ri ? `\u2212${fmt_inr(-cumulEur * ri.rate)}` : '\u20B9 TBD';
+    cumPrim  = `\u2212${fmt_inr(-cumulInr)}`;
     cumNote  = 'net credit';
   } else {
     cumClass = 'c-red';
-    cumPrim  = ri ? fmt_inr(cumulEur * ri.rate) : '\u20B9 TBD';
+    cumPrim  = fmt_inr(cumulInr);
     cumNote  = 'total owed';
   }
   const cumHTML =
@@ -4111,12 +4118,12 @@ const buildCard = (mo, i, cmap) => {
     const pInr     = ri ? fmt_inr(paidEur * ri.rate) : '\u20B9\u2014';
     const remEur   = netEur;
     const remInr   = (ri && remEur > 0) ? fmt_inr(remEur * ri.rate) : '\u20B90';
-    const cval     = cumulEur !== null ? cumulEur : 0;
-    const cInr     = (ri && cval > 0) ? fmt_inr(cval * ri.rate) : '\u20B90';
+    const cval     = cumulInr !== null ? cumulInr : 0;
+    const cInr     = cval > 0 ? fmt_inr(cval) : '\u20B90';
     const remColor    = remEur > 0 ? 'c-red' : 'c-green';
     const remInrDisp  = remEur > 0 ? remInr : (remEur < 0 ? `\u2212${fmt_inr(-remEur * (ri ? ri.rate : 1))}` : '\u20B90');
     const cumColor    = cval > 0 ? 'c-red' : 'c-green';
-    const cumInrDisp  = cval > 0 ? cInr : (cval < 0 && ri ? `\u2212${fmt_inr(-cval * ri.rate)}` : '\u20B90');
+    const cumInrDisp  = cval > 0 ? cInr : (cval < 0 ? `\u2212${fmt_inr(-cval)}` : '\u20B90');
     bkdHTML =
       `<div class="pay-breakdown">
         <div class="pb-cell"><div class="pb-lbl">Due</div><div class="pb-val c-blue">${ri ? fmt_inr(FRIEND_EUR * ri.rate) : '\u20B9 TBD'}</div></div>
@@ -4167,12 +4174,12 @@ const buildCard = (mo, i, cmap) => {
   else                 mobPaid = ri ? fmt_inr(paidEur * ri.rate) : (payments[k] && payments[k].inr ? fmt_inr(payments[k].inr) : '\u20B9\u2014');
 
   let mobCumul = '';
-  if (cumulEur !== null) {
-    const mobCumC = cumulEur > 0 ? 'c-red' : 'c-green';
+  if (cumulInr !== null) {
+    const mobCumC = cumulInr > 0 ? 'c-red' : 'c-green';
     let mobCumV;
-    if (cumulEur === 0)    mobCumV = '\u20B90';
-    else if (cumulEur < 0) mobCumV = ri ? `\u2212${fmt_inr(-cumulEur * ri.rate)}` : '\u20B9 TBD';
-    else                   mobCumV = ri ? fmt_inr(cumulEur * ri.rate) : '\u20B9 TBD';
+    if (cumulInr === 0)    mobCumV = '\u20B90';
+    else if (cumulInr < 0) mobCumV = `\u2212${fmt_inr(-cumulInr)}`;
+    else                   mobCumV = fmt_inr(cumulInr);
     mobCumul = `<div class="mms-item"><span class="mms-label">Total Remaining</span><span class="mms-val ${mobCumC}">${mobCumV}</span></div>`;
   }
 
