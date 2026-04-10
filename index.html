@@ -757,9 +757,11 @@ html.dark .prog-timeline { border-top-color: var(--rule); }
   margin-right: 4px;
 }
 
+/* Filter pill wrapper — provides positioning context for its dropdown */
+.f-pill-wrap { position: relative; }
+
 /* Filter pill buttons */
 .f-pill {
-  position: relative;
   padding: var(--s10) 16px;
   padding-right: 32px;
   border-radius: 99px;
@@ -786,6 +788,7 @@ html.dark .prog-timeline { border-top-color: var(--rule); }
   border-right: 4px solid transparent;
   border-top: 5px solid var(--ink4);
   transition: transform .18s;
+  pointer-events: none;
 }
 .f-pill[aria-expanded="true"]::after { transform: translateY(-50%) rotate(180deg); }
 .f-pill:hover { border-color: var(--navy); color: var(--navy); background: var(--cream); }
@@ -798,11 +801,11 @@ html.dark .prog-timeline { border-top-color: var(--rule); }
 }
 .f-pill.active::after { border-top-color: rgba(255,255,255,.7); }
 
-/* Dropdown panels */
+/* Dropdown panels — anchored below their pill wrapper */
 .f-drop {
   display: none;
   position: absolute;
-  top: calc(100% + 6px);
+  top: calc(100% + 4px);
   left: 0;
   z-index: 200;
   background: var(--paper);
@@ -810,6 +813,8 @@ html.dark .prog-timeline { border-top-color: var(--rule); }
   border-radius: var(--r-lg);
   box-shadow: var(--shadow-float);
   min-width: 160px;
+  max-height: 240px;
+  overflow-y: auto;
   padding: var(--s6) 0;
   animation: fdropIn .15s cubic-bezier(.16,1,.3,1);
 }
@@ -846,7 +851,7 @@ html.dark .prog-timeline { border-top-color: var(--rule); }
 .f-range-panel {
   display: none;
   position: absolute;
-  top: calc(100% + 6px);
+  top: calc(100% + 4px);
   left: 0;
   z-index: 200;
   background: var(--paper);
@@ -864,7 +869,7 @@ html.dark .prog-timeline { border-top-color: var(--rule); }
   gap: 8px;
   margin-bottom: var(--s10);
 }
-.f-range-row:last-child { margin-bottom: 0; }
+.f-range-row:last-of-type { margin-bottom: 0; }
 .f-range-label {
   font-family: var(--font-display);
   font-size: var(--text-xs);
@@ -952,7 +957,7 @@ html.dark .prog-timeline { border-top-color: var(--rule); }
   color: var(--ink3);
 }
 
-/* Legacy class — keep alive for any external references */
+/* Legacy — keep alive for any external references */
 .t-btn { display: none; }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -1544,7 +1549,8 @@ html.dark .mc-log-btn.mc-log-paid:hover { background: rgba(13,148,136,.15); }
   .f-pill::after { right: 10px; }
   .t-count { flex-shrink: 0; }
   .f-clear-all { flex-shrink: 0; }
-  .f-drop, .f-range-panel { position: fixed; left: 12px; right: 12px; top: auto; bottom: 16px; min-width: auto; max-height: 60vh; overflow-y: auto; }
+  .f-drop { max-height: 200px; }
+  .f-range-panel { min-width: 220px; }
 
   /* Payment breakdown: 2-col */
   .pay-breakdown { grid-template-columns: repeat(2,1fr); }
@@ -3431,7 +3437,7 @@ const toggleTheme = () => {
     <div class="section-head"><span class="section-head-label">Monthly Payments</span><span class="section-head-line"></span></div>
     <div class="toolbar" id="filterBar">
       <!-- Type dropdown -->
-      <div style="position:relative">
+      <div class="f-pill-wrap">
         <button class="f-pill" id="fPillType" onclick="window.toggleFilterDrop('type')" aria-expanded="false" aria-haspopup="true">Type</button>
         <div class="f-drop" id="fDropType" role="listbox" aria-label="Filter by status">
           <button class="f-drop-item selected" onclick="window.pickType('all')" role="option" aria-selected="true">All</button>
@@ -3442,7 +3448,7 @@ const toggleTheme = () => {
         </div>
       </div>
       <!-- Year dropdown -->
-      <div style="position:relative">
+      <div class="f-pill-wrap">
         <button class="f-pill" id="fPillYear" onclick="window.toggleFilterDrop('year')" aria-expanded="false" aria-haspopup="true">Year</button>
         <div class="f-drop" id="fDropYear" role="listbox" aria-label="Filter by year">
           <button class="f-drop-item selected" onclick="window.pickYear('all')" role="option" aria-selected="true">All years</button>
@@ -3457,7 +3463,7 @@ const toggleTheme = () => {
         </div>
       </div>
       <!-- Date range -->
-      <div style="position:relative">
+      <div class="f-pill-wrap">
         <button class="f-pill" id="fPillRange" onclick="window.toggleFilterDrop('range')" aria-expanded="false" aria-haspopup="true">Date range</button>
         <div class="f-range-panel" id="fDropRange">
           <div class="f-range-row">
@@ -3553,23 +3559,23 @@ const toggleTheme = () => {
       <div class="method-grid">
         <div class="method-section">
           <div class="method-section-title">Exchange rates</div>
-          <p>Each month uses the EUR→INR mid-market rate recorded on the <strong>10th of that specific month</strong>. Rates are hardcoded — no live API is used, so values are stable and auditable.</p>
-          <p>Sources: <span class="fn-source">poundsterlinglive.com</span> (Feb 2026) and <span class="fn-source">Xe.com</span> (Mar 2026 onwards). Future months show <em>Rate TBD</em> until the 10th of that month passes.</p>
+          <p>Each month uses the EUR→INR rate published by the <strong>European Central Bank (ECB)</strong>. For Feb–Apr 2026 the rate was recorded on the <strong>10th</strong>; from May 2026 onwards it is recorded on the <strong>7th</strong>. A GitHub Actions cron job runs on the 7th, fetches the rate from <span class="fn-source">frankfurter.app</span> (ECB reference data, no API key required), and writes it to Firebase automatically.</p>
+          <p>Historical rates: Feb 2026 was sourced from <span class="fn-source">poundsterlinglive.com</span> and Mar 2026 from <span class="fn-source">Xe.com</span> before the automated pipeline was set up. Future months show <em>Rate TBD</em> until the rate day passes.</p>
         </div>
         <div class="method-section">
           <div class="method-section-title">Column definitions</div>
           <dl class="method-dl">
             <dt>Net Remaining</dt>
-            <dd>Amount due minus amount paid for that specific month</dd>
+            <dd>Amount due minus amount paid for that specific month, converted at that month's rate</dd>
             <dt>Total Remaining</dt>
-            <dd>Running total of all outstanding amounts from Feb 2026 through that row</dd>
+            <dd>Running sum of each month's net remaining in ₹, where each month's EUR balance is converted at its own month's rate — not a single EUR total converted at one rate</dd>
             <dt>Your Share</dt>
             <dd>41.25% of the €268.91 total monthly EMI = €110.93 per month</dd>
           </dl>
         </div>
         <div class="method-section">
           <div class="method-section-title">Data &amp; sync</div>
-          <p>All payment entries are stored in Firebase Realtime Database and sync live between both devices. When your friend logs a payment in India, your dashboard updates within seconds — no refresh needed.</p>
+          <p>All payment entries and exchange rates are stored in Firebase Realtime Database and sync live between both devices. Rates are written to <code>loandata/rates/YYYY-M</code> by the automated pipeline, and payment data lives under <code>loandata/payStatus</code> and <code>loandata/payments</code>.</p>
           <p>The Firebase <code>apiKey</code> in the source is a project identifier, not a secret. Security is enforced by database rules that restrict access to the <code>loandata</code> path only.</p>
         </div>
       </div>
@@ -3591,7 +3597,8 @@ const SHORT_NAMES  = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct
 /* ══════════════════════════════════════════════════════
    VERIFIED STATIC RATES
    Source: poundsterlinglive.com & Xe.com
-   Rate = EUR to INR on the 10th of each month.
+   Rate = EUR to INR on the rate day of each month
+   (10th for Feb–Apr 2026, 7th from May 2026 onwards).
    null = not yet reached.
 ══════════════════════════════════════════════════════ */
 const RATES = {
@@ -3804,16 +3811,20 @@ const isPast = (y, m) => {
   return y < t.y || (y === t.y && m < t.m);
 };
 
-/* A month is "current" only from the 10th onwards — that's when
-   the rate is recorded and the payment becomes due. Before the 10th,
+/* Rate day: the day of the month when the rate is recorded.
+   Feb–Apr 2026 used the 10th; from May 2026 onwards it's the 7th. */
+const rateDay = (y, m) => (y === 2026 && m <= 4) ? 10 : 7;
+
+/* A month is "current" only from its rate day onwards — that's when
+   the rate is recorded and the payment becomes due. Before that day,
    the current calendar month is still treated as upcoming. */
 const isCurr = (y, m) => {
   const t = today();
-  return y === t.y && m === t.m && t.day >= 10;
+  return y === t.y && m === t.m && t.day >= rateDay(y, m);
 };
 
-/* Upcoming = not past AND not current (which requires day >= 10).
-   So the current calendar month before the 10th is "upcoming". */
+/* Upcoming = not past AND not current (which requires day >= rateDay).
+   So the current calendar month before the rate day is "upcoming". */
 const isUpco = (y, m) => !isPast(y, m) && !isCurr(y, m);
 
 const getMonths = () => {
@@ -3896,7 +3907,7 @@ const renderRatePanel = () => {
   const panel = document.getElementById('ratePanelInner');
   const rateVal  = ri ? (`\u20B9${ri.rate.toFixed(4)}`) : 'TBD';
   const rateSrc  = ri ? ri.src : '\u2014';
-  const rateDate = ri ? (`10 ${SHORT_NAMES[t.m - 1]} ${t.y}`) : 'Not yet recorded';
+  const rateDate = ri ? (`${rateDay(t.y, t.m)} ${SHORT_NAMES[t.m - 1]} ${t.y}`) : 'Not yet recorded';
   const friendInr = ri ? fmt_inr(FRIEND_EUR * ri.rate) : 'TBD';
 
   panel.innerHTML =
@@ -4068,11 +4079,11 @@ let renderStats = () => {
     for (const mo of months) {
       const mk = mkey(mo.y, mo.m);
       if (!isUpco(mo.y, mo.m) && !payStatus[mk]) {
-        nextDue = `10 ${SHORT_NAMES[mo.m - 1]}`;
+        nextDue = `${rateDay(mo.y, mo.m)} ${SHORT_NAMES[mo.m - 1]}`;
         break;
       }
       if (isUpco(mo.y, mo.m)) {
-        nextDue = `10 ${SHORT_NAMES[mo.m - 1]}`;
+        nextDue = `${rateDay(mo.y, mo.m)} ${SHORT_NAMES[mo.m - 1]}`;
         break;
       }
     }
@@ -4085,14 +4096,14 @@ let renderStats = () => {
 ══════════════════════════════════════════════════════ */
 let activeFilter = 'all';
 let activeYear   = 'all';
-let activeRangeFrom = null;   // key like '2026-4'
+let activeRangeFrom = null;
 let activeRangeTo   = null;
 
 /* ── Populate date-range selects ── */
 const _populateRangeSelects = () => {
   const fromSel = document.getElementById('fRangeFrom');
   const toSel   = document.getElementById('fRangeTo');
-  if (!fromSel || !toSel) return;
+  if (!fromSel || !toSel || fromSel.options.length > 0) return;
   const months = getMonths();
   let html = '';
   for (const mo of months) {
@@ -4108,11 +4119,11 @@ const _applyCompoundFilters = () => {
   const ml = document.getElementById('monthList');
   if (!ml) return;
 
-  /* 1) CSS data-filter for type — primary mechanism */
+  /* 1) CSS data-filter for type */
   if (activeFilter === 'all') ml.removeAttribute('data-filter');
   else                        ml.setAttribute('data-filter', activeFilter);
 
-  /* 2) JS overlay for year + range (additive on top of CSS) */
+  /* 2) JS overlay for year + range */
   const hasYear  = activeYear !== 'all';
   const hasRange = activeRangeFrom && activeRangeTo;
 
@@ -4143,25 +4154,19 @@ const _applyCompoundFilters = () => {
 
 const setFilter = (f, _btn) => {
   activeFilter = f;
-
-  /* Close all open drawers */
   Object.keys(openDrawers).forEach(k => { openDrawers[k] = false; });
-
   _applyCompoundFilters();
 };
 
-/* Shared helper — updates tCount and year-sep visibility for the current compound filter.
-   Called by both _applyCompoundFilters and renderCards (after Firebase re-render). */
+/* Shared helper — updates tCount and year-sep visibility.
+   Called by _applyCompoundFilters and renderCards. */
 const _applyFilterUI = f => {
   const ml = document.getElementById('monthList');
   if (!ml) return;
 
-  /* Count visible cards — a card is visible if:
-     (a) it matches the CSS type filter, AND
-     (b) it's not JS-hidden (style.display !== 'none') */
   let count = 0;
   ml.querySelectorAll('.mcard').forEach(card => {
-    if (card.style.display === 'none') return;       // hidden by year/range
+    if (card.style.display === 'none') return;
     const st = card.getAttribute('data-status');
     if (
       f === 'all' ||
@@ -4174,7 +4179,6 @@ const _applyFilterUI = f => {
   const tCount = document.getElementById('tCount');
   if (tCount) tCount.textContent = `${count} / ${TOTAL_MONTHS}`;
 
-  /* Show year separators only if they precede at least one visible card */
   ml.querySelectorAll('.year-sep').forEach(sep => {
     const year = sep.getAttribute('aria-label');
     let hasVisible = false;
@@ -4212,7 +4216,7 @@ const _updatePillStates = () => {
     if (activeRangeFrom && activeRangeTo) {
       const [fy, fm] = activeRangeFrom.split('-').map(Number);
       const [ty, tm] = activeRangeTo.split('-').map(Number);
-      pillRange.textContent = `${SHORT_NAMES[fm - 1]} ${fy} – ${SHORT_NAMES[tm - 1]} ${ty}`;
+      pillRange.textContent = `${SHORT_NAMES[fm - 1]} ${fy} \u2013 ${SHORT_NAMES[tm - 1]} ${ty}`;
       pillRange.classList.add('active');
     } else {
       pillRange.textContent = 'Date range';
@@ -4220,11 +4224,9 @@ const _updatePillStates = () => {
     }
   }
 
-  /* Show/hide "Clear all filters" */
   const anyActive = activeFilter !== 'all' || activeYear !== 'all' || (activeRangeFrom && activeRangeTo);
   if (clearAll) clearAll.classList.toggle('visible', !!anyActive);
 
-  /* Update dropdown item selected states */
   document.querySelectorAll('#fDropType .f-drop-item').forEach(item => {
     const val = item.textContent.replace(/[✓◑✗]\s*/g, '').trim().toLowerCase();
     const match = val === activeFilter || (val === 'all' && activeFilter === 'all');
@@ -4257,16 +4259,13 @@ const toggleFilterDrop = (which) => {
   const drop = document.getElementById(dropId);
   const pill = document.getElementById(pillId);
   const isOpen = drop && drop.classList.contains('open');
-
   _closeAllDrops();
-
   if (!isOpen && drop && pill) {
     drop.classList.add('open');
     pill.setAttribute('aria-expanded', 'true');
   }
 };
 
-/* ── Type picker ── */
 const pickType = (val) => {
   activeFilter = val;
   Object.keys(openDrawers).forEach(k => { openDrawers[k] = false; });
@@ -4274,54 +4273,41 @@ const pickType = (val) => {
   _applyCompoundFilters();
 };
 
-/* ── Year picker ── */
 const pickYear = (val) => {
   activeYear = val;
   _closeAllDrops();
   _applyCompoundFilters();
 };
 
-/* ── Date range ── */
 const applyRange = () => {
   const fromSel = document.getElementById('fRangeFrom');
   const toSel   = document.getElementById('fRangeTo');
   if (!fromSel || !toSel) return;
-
-  const fv = fromSel.value;
-  const tv = toSel.value;
+  const fv = fromSel.value, tv = toSel.value;
   const [fy, fm] = fv.split('-').map(Number);
   const [ty, tm] = tv.split('-').map(Number);
-
-  /* Swap if from > to */
   if (fy * 100 + fm > ty * 100 + tm) {
-    activeRangeFrom = tv;
-    activeRangeTo   = fv;
+    activeRangeFrom = tv; activeRangeTo = fv;
   } else {
-    activeRangeFrom = fv;
-    activeRangeTo   = tv;
+    activeRangeFrom = fv; activeRangeTo = tv;
   }
   _closeAllDrops();
   _applyCompoundFilters();
 };
 
 const clearRange = () => {
-  activeRangeFrom = null;
-  activeRangeTo   = null;
+  activeRangeFrom = null; activeRangeTo = null;
   _closeAllDrops();
   _applyCompoundFilters();
 };
 
-/* ── Clear all ── */
 const clearAllFilters = () => {
-  activeFilter    = 'all';
-  activeYear      = 'all';
-  activeRangeFrom = null;
-  activeRangeTo   = null;
+  activeFilter = 'all'; activeYear = 'all';
+  activeRangeFrom = null; activeRangeTo = null;
   _closeAllDrops();
   _applyCompoundFilters();
 };
 
-/* ── Expose to window ── */
 window.toggleFilterDrop = toggleFilterDrop;
 window.pickType         = pickType;
 window.pickYear         = pickYear;
@@ -4602,7 +4588,7 @@ const buildCard = (mo, i, cmap) => {
 
   const nowBadge    = curr ? `<span class="mc-badge" aria-label="current month">now</span>` : '';
   const drawerRateNote = ri
-    ? `Rate: \u20B9${ri.rate.toFixed(4)}/\u20AC (${ri.src}, 10 ${SHORT_NAMES[m - 1]} ${y})`
+    ? `Rate: \u20B9${ri.rate.toFixed(4)}/\u20AC (${ri.src}, ${rateDay(y, m)} ${SHORT_NAMES[m - 1]} ${y})`
     : 'No rate recorded yet';
   const inputDisabled = ri ? '' : 'disabled';
   const drawerClass   = `mc-drawer${isOpen ? ' open' : ''}`;
@@ -5665,9 +5651,8 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   window.addEventListener('scroll', onScroll, { passive: true });
 
-  /* Click-outside closes any open drawer */
+  /* Click-outside closes filter dropdowns and open drawers */
   document.addEventListener('click', e => {
-    /* Close filter dropdowns if click is outside the toolbar */
     if (!e.target.closest('.toolbar')) _closeAllDrops();
 
     if (e.target.closest('.mcard')) return;
