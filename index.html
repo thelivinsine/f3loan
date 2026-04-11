@@ -758,35 +758,146 @@ html.dark .prog-timeline { border-top-color: var(--rule); }
   color: var(--ink4);
   margin-right: 4px;
 }
-.t-btn {
-  padding: var(--s10) 18px;
+.f-pill-wrap { position: relative; }
+.f-pill {
+  position: relative;
+  padding: var(--s10) 16px;
+  padding-right: 32px;
   border-radius: 99px;
   border: 1.5px solid var(--rule);
   background: var(--paper);
   color: var(--ink3);
   font-family: var(--font-display);
-  font-size: var(--text-md);
+  font-size: var(--text-sm);
   font-weight: 600;
   cursor: pointer;
   transition: all .18s;
   box-shadow: var(--shadow-sm);
   min-height: 44px;
   min-width: 44px;
+  white-space: nowrap;
 }
-.t-btn:hover { border-color: var(--navy); color: var(--navy); background: var(--cream); }
-.t-btn:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
-.t-btn.active {
+.f-pill::after {
+  content: '';
+  position: absolute;
+  right: 12px; top: 50%;
+  transform: translateY(-50%);
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid var(--ink4);
+  transition: transform .18s;
+  pointer-events: none;
+}
+.f-pill[aria-expanded="true"]::after { transform: translateY(-50%) rotate(180deg); }
+.f-pill:hover { border-color: var(--navy); color: var(--navy); background: var(--cream); }
+.f-pill:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+.f-pill.active {
   background: var(--navy);
   border-color: var(--navy);
   color: #fff;
   box-shadow: 0 3px 12px rgba(12,28,53,.22);
 }
-.t-count {
-  margin-left: auto;
-  font-family: 'Sora', sans-serif;
-  font-size: var(--text-xs);
-  color: var(--ink3);
+.f-pill.active::after { border-top-color: rgba(255,255,255,.7); }
+.f-drop {
+  display: none;
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 200;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-float);
+  min-width: 160px;
+  max-height: 240px;
+  overflow-y: auto;
+  padding: var(--s6) 0;
+  animation: fdropIn .15s cubic-bezier(.16,1,.3,1);
 }
+@keyframes fdropIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+.f-drop.open { display: block; }
+.f-drop-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: var(--s10) 16px;
+  border: none;
+  background: none;
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--ink2);
+  cursor: pointer;
+  text-align: left;
+  min-height: 44px;
+  transition: background .12s;
+}
+.f-drop-item:hover { background: var(--cream); }
+.f-drop-item.selected { color: var(--teal); font-weight: 700; }
+.f-drop-item.selected::before { content: '\2713'; font-size: 12px; margin-right: 2px; }
+.f-range-panel {
+  display: none;
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 200;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-float);
+  padding: var(--s14) 16px;
+  min-width: 240px;
+  animation: fdropIn .15s cubic-bezier(.16,1,.3,1);
+}
+.f-range-panel.open { display: block; }
+.f-range-row { display: flex; align-items: center; gap: 8px; margin-bottom: var(--s10); }
+.f-range-row:last-of-type { margin-bottom: 0; }
+.f-range-label {
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--ink4);
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  min-width: 36px;
+}
+.f-range-select {
+  flex: 1;
+  padding: var(--s8) var(--s10);
+  border: 1.5px solid var(--rule);
+  border-radius: var(--r-md);
+  background: var(--paper);
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--ink);
+  min-height: 40px;
+  cursor: pointer;
+}
+.f-range-select:focus-visible { outline: 2px solid var(--teal); outline-offset: 1px; }
+.f-range-actions { display: flex; gap: 8px; margin-top: var(--s10); padding-top: var(--s10); border-top: 1px solid var(--rule2); }
+.f-range-apply {
+  flex: 1; padding: var(--s8) var(--s14); border: none; border-radius: var(--r-md);
+  background: var(--teal); color: #fff; font-family: var(--font-display);
+  font-size: var(--text-sm); font-weight: 700; cursor: pointer; min-height: 40px; transition: background .15s;
+}
+.f-range-apply:hover { background: #0b7f74; }
+.f-range-clear {
+  padding: var(--s8) var(--s14); border: 1.5px solid var(--rule); border-radius: var(--r-md);
+  background: none; color: var(--ink3); font-family: var(--font-display);
+  font-size: var(--text-sm); font-weight: 600; cursor: pointer; min-height: 40px; transition: all .15s;
+}
+.f-range-clear:hover { border-color: var(--ink3); color: var(--ink); }
+.f-clear-all {
+  margin-left: auto; font-family: var(--font-display); font-size: var(--text-xs);
+  font-weight: 600; color: var(--teal); cursor: pointer; background: none; border: none;
+  padding: var(--s6) var(--s8); white-space: nowrap; transition: color .15s; min-height: 44px; display: none;
+}
+.f-clear-all:hover { color: #0b7f74; text-decoration: underline; }
+.f-clear-all.visible { display: inline-flex; align-items: center; }
+.t-count { margin-left: 8px; font-family: 'Sora', sans-serif; font-size: var(--text-xs); color: var(--ink3); }
+.t-btn { display: none; }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    MONTH CARD
@@ -1364,18 +1475,14 @@ html.dark .mc-log-btn.mc-log-paid:hover { background: rgba(13,148,136,.15); }
   .rp-cell  { padding: var(--s10) var(--s14) var(--s10) 0; }
   .rp-value { font-size: var(--text-lg); }
 
-  /* Toolbar: scrollable row */
-  .toolbar {
-    overflow-x: auto;
-    flex-wrap: nowrap;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: 4px;
-    /* hide scrollbar visually but keep functional */
-    scrollbar-width: none;
-  }
-  .toolbar::-webkit-scrollbar { display: none; }
-  .t-btn { flex-shrink: 0; }
+  /* Toolbar: wrap on mobile, no overflow clipping */
+  .toolbar { flex-wrap: wrap; padding-bottom: 4px; }
+  .f-pill { flex-shrink: 0; font-size: var(--text-xs); padding: var(--s8) 12px; padding-right: 28px; }
+  .f-pill::after { right: 10px; }
   .t-count { flex-shrink: 0; }
+  .f-clear-all { flex-shrink: 0; }
+  .f-drop { max-height: 200px; }
+  .f-range-panel { min-width: 220px; }
 
   /* Payment breakdown: 2-col */
   .pay-breakdown { grid-template-columns: repeat(2,1fr); }
@@ -1729,29 +1836,29 @@ html.dark .ph-edit-input { background: #20283a; border-color: var(--rule); color
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .upcoming-collapse {
   background: var(--paper);
-  border-radius: var(--r-lg);
-  padding: var(--s14) var(--s20);
+  border-radius: var(--r-xl);
+  padding: 18px 20px;
   text-align: center;
   cursor: pointer;
   font-family: var(--font-display);
   font-size: var(--text-md);
   font-weight: 600;
   color: var(--ink3);
-  border: 1.5px dashed var(--rule);
+  border: 1px solid var(--rule);
   transition: all .18s;
-  margin-top: var(--s6);
+  margin-top: 16px;
+  margin-bottom: 16px;
   box-shadow: var(--shadow-sm);
-  min-height: 44px;
+  min-height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: var(--s6);
 }
-.upcoming-collapse:hover { border-color: var(--teal); color: var(--teal); background: var(--cream); }
+.upcoming-collapse:hover { border-color: var(--navy); color: var(--navy); background: var(--cream); }
 html.dark .upcoming-collapse { background: var(--paper); border-color: var(--rule); }
-html.dark .upcoming-collapse:hover { border-color: var(--teal); }
-/* When upcoming is expanded, hide the collapse bar */
-#monthList.upcoming-expanded .upcoming-collapse { display: none; }
+html.dark .upcoming-collapse:hover { border-color: var(--teal); color: var(--teal); }
+/* Collapse bar stays visible in both states — JS toggles the label */
 /* When collapsed (default), hide upcoming cards — but NOT when the "upcoming" filter is active */
 #monthList:not(.upcoming-expanded):not([data-filter="upcoming"]) .mcard[data-status="upcoming"] { display: none !important; }
 /* Also hide year separators that only contain upcoming cards when collapsed */
@@ -2080,7 +2187,7 @@ html.dark .expiry-banner { background: var(--rule2); }
 
   /* ── Hide everything interactive ── */
   .skip-link, .export-btn, .sticky-bar,
-  .toolbar, .t-btn, .t-count,
+  .toolbar, .t-btn, .t-count, .f-pill, .f-drop, .f-range-panel, .f-clear-all,
   .mc-log-btn, .mc-action, .mc-drawer,
   .pay-history, .chart-legend,
   .mast-sync, .mast-bottom, .sync-pill,
@@ -2406,9 +2513,20 @@ html.dark .pay-input { color: var(--ink); }
 html.dark .pay-breakdown { border-color: var(--rule); }
 html.dark .pb-cell { background: var(--paper); border-right-color: var(--rule); }
 html.dark .pb-cell:hover { background: #1c2230; }
-html.dark .t-btn { background: var(--paper); border-color: var(--rule); color: var(--ink3); }
-html.dark .t-btn:hover { border-color: var(--teal); color: var(--ink); background: #1c2230; }
-html.dark .t-btn.active { background: var(--teal); border-color: var(--teal); }
+html.dark .f-pill { background: var(--paper); border-color: var(--rule); color: var(--ink3); }
+html.dark .f-pill:hover { border-color: var(--teal); color: var(--ink); background: #1c2230; }
+html.dark .f-pill.active { background: var(--teal); border-color: var(--teal); color: #fff; }
+html.dark .f-pill::after { border-top-color: var(--ink4); }
+html.dark .f-pill.active::after { border-top-color: rgba(255,255,255,.7); }
+html.dark .f-drop { background: var(--paper); border-color: var(--rule); }
+html.dark .f-drop-item { color: var(--ink2); }
+html.dark .f-drop-item:hover { background: rgba(255,255,255,.04); }
+html.dark .f-drop-item.selected { color: var(--teal); }
+html.dark .f-range-panel { background: var(--paper); border-color: var(--rule); }
+html.dark .f-range-select { background: var(--paper); border-color: var(--rule); color: var(--ink); }
+html.dark .f-range-clear { border-color: var(--rule); color: var(--ink3); }
+html.dark .f-range-actions { border-top-color: var(--rule); }
+html.dark .t-btn { display: none; }
 html.dark .pay-history { border-top-color: var(--rule); }
 html.dark .ph-entry { border-bottom-color: var(--rule2); }
 html.dark .ph-delete { border-color: var(--rule); background: transparent; }
@@ -3248,12 +3366,49 @@ const toggleTheme = () => {
   <!-- TOOLBAR + MONTH LIST -->
   <div class="section">
     <div class="section-head"><span class="section-head-label">Monthly Payments</span><span class="section-head-line"></span></div>
-    <div class="toolbar">
-      <button class="t-btn active" onclick="setFilter('all',this)" aria-label="Show all months" aria-pressed="true">All</button>
-      <button class="t-btn" onclick="setFilter('paid',this)" aria-label="Show paid months" aria-pressed="false">✓ Paid</button>
-      <button class="t-btn" onclick="setFilter('partial',this)" aria-label="Show partially paid months" aria-pressed="false">◑ Partial</button>
-      <button class="t-btn" onclick="setFilter('unpaid',this)" aria-label="Show unpaid months" aria-pressed="false">✗ Unpaid</button>
-      <button class="t-btn" onclick="setFilter('upcoming',this)" aria-label="Show upcoming months" aria-pressed="false">Upcoming</button>
+    <div class="toolbar" id="filterBar">
+      <div class="f-pill-wrap">
+        <button class="f-pill" id="fPillType" onclick="window.toggleFilterDrop('type')" aria-expanded="false" aria-haspopup="true">Type</button>
+        <div class="f-drop" id="fDropType" role="listbox" aria-label="Filter by status">
+          <button class="f-drop-item selected" onclick="window.pickType('all')" role="option" aria-selected="true">All</button>
+          <button class="f-drop-item" onclick="window.pickType('paid')" role="option" aria-selected="false">&#10003; Paid</button>
+          <button class="f-drop-item" onclick="window.pickType('partial')" role="option" aria-selected="false">&#9681; Partial</button>
+          <button class="f-drop-item" onclick="window.pickType('unpaid')" role="option" aria-selected="false">&#10007; Unpaid</button>
+          <button class="f-drop-item" onclick="window.pickType('upcoming')" role="option" aria-selected="false">Upcoming</button>
+        </div>
+      </div>
+      <div class="f-pill-wrap">
+        <button class="f-pill" id="fPillYear" onclick="window.toggleFilterDrop('year')" aria-expanded="false" aria-haspopup="true">Year</button>
+        <div class="f-drop" id="fDropYear" role="listbox" aria-label="Filter by year">
+          <button class="f-drop-item selected" onclick="window.pickYear('all')" role="option" aria-selected="true">All years</button>
+          <button class="f-drop-item" onclick="window.pickYear('2026')" role="option">2026</button>
+          <button class="f-drop-item" onclick="window.pickYear('2027')" role="option">2027</button>
+          <button class="f-drop-item" onclick="window.pickYear('2028')" role="option">2028</button>
+          <button class="f-drop-item" onclick="window.pickYear('2029')" role="option">2029</button>
+          <button class="f-drop-item" onclick="window.pickYear('2030')" role="option">2030</button>
+          <button class="f-drop-item" onclick="window.pickYear('2031')" role="option">2031</button>
+          <button class="f-drop-item" onclick="window.pickYear('2032')" role="option">2032</button>
+          <button class="f-drop-item" onclick="window.pickYear('2033')" role="option">2033</button>
+        </div>
+      </div>
+      <div class="f-pill-wrap">
+        <button class="f-pill" id="fPillRange" onclick="window.toggleFilterDrop('range')" aria-expanded="false" aria-haspopup="true">Date range</button>
+        <div class="f-range-panel" id="fDropRange">
+          <div class="f-range-row">
+            <span class="f-range-label">From</span>
+            <select class="f-range-select" id="fRangeFrom" aria-label="Range start"></select>
+          </div>
+          <div class="f-range-row">
+            <span class="f-range-label">To</span>
+            <select class="f-range-select" id="fRangeTo" aria-label="Range end"></select>
+          </div>
+          <div class="f-range-actions">
+            <button class="f-range-apply" onclick="window.applyRange()">Apply</button>
+            <button class="f-range-clear" onclick="window.clearRange()">Clear</button>
+          </div>
+        </div>
+      </div>
+      <button class="f-clear-all" id="fClearAll" onclick="window.clearAllFilters()">Clear all filters</button>
       <span class="t-count" id="tCount" aria-live="polite" aria-atomic="true"></span>
     </div>
     <div class="mt-sm">
@@ -3332,23 +3487,23 @@ const toggleTheme = () => {
       <div class="method-grid">
         <div class="method-section">
           <div class="method-section-title">Exchange rates</div>
-          <p>Each month uses the EUR→INR mid-market rate recorded on the <strong>10th of that specific month</strong>. Rates are hardcoded — no live API is used, so values are stable and auditable.</p>
-          <p>Sources: <span class="fn-source">poundsterlinglive.com</span> (Feb 2026) and <span class="fn-source">Xe.com</span> (Mar 2026 onwards). Future months show <em>Rate TBD</em> until the 10th of that month passes.</p>
+          <p>Each month uses the EUR→INR rate published by the <strong>European Central Bank (ECB)</strong>. For Feb–Apr 2026 the rate was recorded on the <strong>10th</strong>; from May 2026 onwards it is recorded on the <strong>7th</strong>. A GitHub Actions cron job runs on the 7th, fetches the rate from <span class="fn-source">frankfurter.app</span> (ECB reference data, no API key required), and writes it to Firebase automatically.</p>
+          <p>Historical rates: Feb 2026 was sourced from <span class="fn-source">poundsterlinglive.com</span> and Mar 2026 from <span class="fn-source">Xe.com</span> before the automated pipeline was set up. Future months show <em>Rate TBD</em> until the rate day passes.</p>
         </div>
         <div class="method-section">
           <div class="method-section-title">Column definitions</div>
           <dl class="method-dl">
             <dt>Net Remaining</dt>
-            <dd>Amount due minus amount paid for that specific month</dd>
+            <dd>Amount due minus amount paid for that specific month, converted at that month's rate</dd>
             <dt>Total Remaining</dt>
-            <dd>Running total of all outstanding amounts from Feb 2026 through that row</dd>
+            <dd>Running sum of each month's net remaining in &#8377;, where each month's EUR balance is converted at its own month's rate</dd>
             <dt>Your Share</dt>
             <dd>41.25% of the €268.91 total monthly EMI = €110.93 per month</dd>
           </dl>
         </div>
         <div class="method-section">
           <div class="method-section-title">Data &amp; sync</div>
-          <p>All payment entries are stored in Firebase Realtime Database and sync live between both devices. When your friend logs a payment in India, your dashboard updates within seconds — no refresh needed.</p>
+          <p>All payment entries and exchange rates are stored in Firebase Realtime Database and sync live between both devices. Rates are written to <code>loandata/rates/YYYY-M</code> by the automated pipeline, and payment data lives under <code>loandata/payStatus</code> and <code>loandata/payments</code>.</p>
           <p>The Firebase <code>apiKey</code> in the source is a project identifier, not a secret. Security is enforced by database rules that restrict access to the <code>loandata</code> path only.</p>
         </div>
       </div>
@@ -3370,7 +3525,8 @@ const SHORT_NAMES  = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct
 /* ══════════════════════════════════════════════════════
    VERIFIED STATIC RATES
    Source: poundsterlinglive.com & Xe.com
-   Rate = EUR to INR on the 10th of each month.
+   Rate = EUR to INR on the rate day of each month
+   (10th for Feb–Apr 2026, 7th from May 2026 onwards).
    null = not yet reached.
 ══════════════════════════════════════════════════════ */
 const RATES = {
@@ -3583,16 +3739,16 @@ const isPast = (y, m) => {
   return y < t.y || (y === t.y && m < t.m);
 };
 
-/* A month is "current" only from the 10th onwards — that's when
-   the rate is recorded and the payment becomes due. Before the 10th,
-   the current calendar month is still treated as upcoming. */
+/* Rate day: 10th for Feb–Apr 2026, 7th from May 2026 onwards */
+const rateDay = (y, m) => (y === 2026 && m <= 4) ? 10 : 7;
+
+/* A month is "current" only from its rate day onwards */
 const isCurr = (y, m) => {
   const t = today();
-  return y === t.y && m === t.m && t.day >= 10;
+  return y === t.y && m === t.m && t.day >= rateDay(y, m);
 };
 
-/* Upcoming = not past AND not current (which requires day >= 10).
-   So the current calendar month before the 10th is "upcoming". */
+/* Upcoming = not past AND not current (before rate day) */
 const isUpco = (y, m) => !isPast(y, m) && !isCurr(y, m);
 
 const getMonths = () => {
@@ -3645,14 +3801,16 @@ const buildCumulMap = () => {
   const map = {};
   const months = getMonths();
   let run = 0;
+  let hasGap = false;
   for (const mo of months) {
     const k = mkey(mo.y, mo.m);
     if (!isUpco(mo.y, mo.m)) {
-      run = parseFloat((run + monthNet(k)).toFixed(2));
-      map[k] = run;
-    } else {
-      map[k] = null;
-    }
+      const ri = getRate(mo.y, mo.m);
+      const net = monthNet(k);
+      if (ri) { run = parseFloat((run + net * ri.rate).toFixed(2)); }
+      else { hasGap = true; }
+      map[k] = hasGap ? null : run;
+    } else { map[k] = null; }
   }
   return map;
 };
@@ -3668,7 +3826,7 @@ const renderRatePanel = () => {
   const panel = document.getElementById('ratePanelInner');
   const rateVal  = ri ? (`\u20B9${ri.rate.toFixed(4)}`) : 'TBD';
   const rateSrc  = ri ? ri.src : '\u2014';
-  const rateDate = ri ? (`10 ${SHORT_NAMES[t.m - 1]} ${t.y}`) : 'Not yet recorded';
+  const rateDate = ri ? (`${rateDay(t.y, t.m)} ${SHORT_NAMES[t.m - 1]} ${t.y}`) : 'Not yet recorded';
   const friendInr = ri ? fmt_inr(FRIEND_EUR * ri.rate) : 'TBD';
 
   panel.innerHTML =
@@ -3840,11 +3998,11 @@ let renderStats = () => {
     for (const mo of months) {
       const mk = mkey(mo.y, mo.m);
       if (!isUpco(mo.y, mo.m) && !payStatus[mk]) {
-        nextDue = `10 ${SHORT_NAMES[mo.m - 1]}`;
+        nextDue = `${rateDay(mo.y, mo.m)} ${SHORT_NAMES[mo.m - 1]}`;
         break;
       }
       if (isUpco(mo.y, mo.m)) {
-        nextDue = `10 ${SHORT_NAMES[mo.m - 1]}`;
+        nextDue = `${rateDay(mo.y, mo.m)} ${SHORT_NAMES[mo.m - 1]}`;
         break;
       }
     }
@@ -3856,69 +4014,150 @@ let renderStats = () => {
    CARDS
 ══════════════════════════════════════════════════════ */
 let activeFilter = 'all';
+let activeYear   = 'all';
+let activeRangeFrom = null;
+let activeRangeTo   = null;
 
-const setFilter = (f, btn) => {
-  activeFilter = f;
-
-  /* Close all open drawers */
-  Object.keys(openDrawers).forEach(k => { openDrawers[k] = false; });
-
-  /* Apply CSS filter — primary visibility mechanism */
-  const ml = document.getElementById('monthList');
-  if (ml) {
-    if (f === 'all') ml.removeAttribute('data-filter');
-    else             ml.setAttribute('data-filter', f);
-  }
-
-  /* Update count, year separators, button states */
-  _applyFilterUI(f);
-
-  document.querySelectorAll('.t-btn').forEach(b => {
-    b.classList.remove('active');
-    b.setAttribute('aria-pressed', 'false');
-  });
-  btn.classList.add('active');
-  btn.setAttribute('aria-pressed', 'true');
+const _populateRangeSelects = () => {
+  const fromSel = document.getElementById('fRangeFrom');
+  const toSel   = document.getElementById('fRangeTo');
+  if (!fromSel || !toSel || fromSel.options.length > 0) return;
+  const months = getMonths();
+  let html = '';
+  for (const mo of months) html += `<option value="${mkey(mo.y, mo.m)}">${FULL_NAMES[mo.m - 1]} ${mo.y}</option>`;
+  fromSel.innerHTML = html;
+  toSel.innerHTML   = html;
+  toSel.value = mkey(months[months.length - 1].y, months[months.length - 1].m);
 };
 
-/* Shared helper — updates tCount and year-sep visibility for a given filter.
-   Called by both setFilter (on click) and renderCards (after Firebase re-render). */
+const _applyCompoundFilters = () => {
+  const ml = document.getElementById('monthList');
+  if (!ml) return;
+  if (activeFilter === 'all') ml.removeAttribute('data-filter');
+  else                        ml.setAttribute('data-filter', activeFilter);
+  const hasYear  = activeYear !== 'all';
+  const hasRange = activeRangeFrom && activeRangeTo;
+  ml.querySelectorAll('.mcard').forEach(card => {
+    let jsHidden = false;
+    if (hasYear && card.getAttribute('data-year') !== activeYear) jsHidden = true;
+    if (hasRange && !jsHidden) {
+      const cy = parseInt(card.getAttribute('data-year'));
+      const cm = parseInt(card.getAttribute('data-month'));
+      const [fy, fm] = activeRangeFrom.split('-').map(Number);
+      const [ty, tm] = activeRangeTo.split('-').map(Number);
+      const cv = cy * 100 + cm;
+      if (cv < fy * 100 + fm || cv > ty * 100 + tm) jsHidden = true;
+    }
+    card.style.display = jsHidden ? 'none' : '';
+  });
+  _applyFilterUI(activeFilter);
+  _updatePillStates();
+};
+
+const setFilter = (f, _btn) => {
+  activeFilter = f;
+  Object.keys(openDrawers).forEach(k => { openDrawers[k] = false; });
+  _applyCompoundFilters();
+};
+
 const _applyFilterUI = f => {
   const ml = document.getElementById('monthList');
   if (!ml) return;
-
-  /* Count visible cards */
   let count = 0;
   ml.querySelectorAll('.mcard').forEach(card => {
+    if (card.style.display === 'none') return;
     const st = card.getAttribute('data-status');
-    if (
-      f === 'all' ||
-      (f === 'paid'     && st === 'paid')    ||
-      (f === 'partial'  && st === 'partial') ||
-      (f === 'unpaid'   && (st === 'unpaid' || st === 'current')) ||
-      (f === 'upcoming' && st === 'upcoming')
+    if (f === 'all' || (f === 'paid' && st === 'paid') || (f === 'partial' && st === 'partial') ||
+        (f === 'unpaid' && (st === 'unpaid' || st === 'current')) || (f === 'upcoming' && st === 'upcoming')
     ) count++;
   });
   const tCount = document.getElementById('tCount');
   if (tCount) tCount.textContent = `${count} / ${TOTAL_MONTHS}`;
-
-  /* Show year separators only if they precede at least one visible card */
   ml.querySelectorAll('.year-sep').forEach(sep => {
     const year = sep.getAttribute('aria-label');
     let hasVisible = false;
     ml.querySelectorAll(`.mcard[id^="card-${year}-"]`).forEach(card => {
+      if (card.style.display === 'none') return;
       const st = card.getAttribute('data-status');
-      if (
-        f === 'all' ||
-        (f === 'paid'     && st === 'paid')    ||
-        (f === 'partial'  && st === 'partial') ||
-        (f === 'unpaid'   && (st === 'unpaid' || st === 'current')) ||
-        (f === 'upcoming' && st === 'upcoming')
+      if (f === 'all' || (f === 'paid' && st === 'paid') || (f === 'partial' && st === 'partial') ||
+          (f === 'unpaid' && (st === 'unpaid' || st === 'current')) || (f === 'upcoming' && st === 'upcoming')
       ) hasVisible = true;
     });
     sep.style.display = hasVisible ? '' : 'none';
   });
 };
+
+const _updatePillStates = () => {
+  const pillType = document.getElementById('fPillType');
+  const pillYear = document.getElementById('fPillYear');
+  const pillRange = document.getElementById('fPillRange');
+  const clearAll = document.getElementById('fClearAll');
+  if (pillType) {
+    pillType.textContent = activeFilter === 'all' ? 'Type' : `Type: ${activeFilter.charAt(0).toUpperCase() + activeFilter.slice(1)}`;
+    pillType.classList.toggle('active', activeFilter !== 'all');
+  }
+  if (pillYear) {
+    pillYear.textContent = activeYear === 'all' ? 'Year' : `Year: ${activeYear}`;
+    pillYear.classList.toggle('active', activeYear !== 'all');
+  }
+  if (pillRange) {
+    if (activeRangeFrom && activeRangeTo) {
+      const [fy, fm] = activeRangeFrom.split('-').map(Number);
+      const [ty, tm] = activeRangeTo.split('-').map(Number);
+      pillRange.textContent = `${SHORT_NAMES[fm - 1]} ${fy} \u2013 ${SHORT_NAMES[tm - 1]} ${ty}`;
+      pillRange.classList.add('active');
+    } else { pillRange.textContent = 'Date range'; pillRange.classList.remove('active'); }
+  }
+  const anyActive = activeFilter !== 'all' || activeYear !== 'all' || (activeRangeFrom && activeRangeTo);
+  if (clearAll) clearAll.classList.toggle('visible', !!anyActive);
+  document.querySelectorAll('#fDropType .f-drop-item').forEach(item => {
+    const val = item.textContent.replace(/[\u2713\u2717\u25D1]\s*/g, '').trim().toLowerCase();
+    const match = val === activeFilter || (val === 'all' && activeFilter === 'all');
+    item.classList.toggle('selected', match);
+    item.setAttribute('aria-selected', match ? 'true' : 'false');
+  });
+  document.querySelectorAll('#fDropYear .f-drop-item').forEach(item => {
+    const val = item.textContent.trim().toLowerCase().replace('all years', 'all');
+    item.classList.toggle('selected', val === activeYear);
+    item.setAttribute('aria-selected', val === activeYear ? 'true' : 'false');
+  });
+};
+
+const _closeAllDrops = () => {
+  ['fDropType', 'fDropYear', 'fDropRange'].forEach(id => { const el = document.getElementById(id); if (el) el.classList.remove('open'); });
+  ['fPillType', 'fPillYear', 'fPillRange'].forEach(id => { const el = document.getElementById(id); if (el) el.setAttribute('aria-expanded', 'false'); });
+};
+
+const toggleFilterDrop = (which) => {
+  const dropId = which === 'type' ? 'fDropType' : which === 'year' ? 'fDropYear' : 'fDropRange';
+  const pillId = which === 'type' ? 'fPillType' : which === 'year' ? 'fPillYear' : 'fPillRange';
+  const drop = document.getElementById(dropId);
+  const pill = document.getElementById(pillId);
+  const isOpen = drop && drop.classList.contains('open');
+  _closeAllDrops();
+  if (!isOpen && drop && pill) { drop.classList.add('open'); pill.setAttribute('aria-expanded', 'true'); }
+};
+
+const pickType = (val) => { activeFilter = val; Object.keys(openDrawers).forEach(k => { openDrawers[k] = false; }); _closeAllDrops(); _applyCompoundFilters(); };
+const pickYear = (val) => { activeYear = val; _closeAllDrops(); _applyCompoundFilters(); };
+const applyRange = () => {
+  const fromSel = document.getElementById('fRangeFrom'), toSel = document.getElementById('fRangeTo');
+  if (!fromSel || !toSel) return;
+  const fv = fromSel.value, tv = toSel.value;
+  const [fy, fm] = fv.split('-').map(Number), [ty, tm] = tv.split('-').map(Number);
+  if (fy * 100 + fm > ty * 100 + tm) { activeRangeFrom = tv; activeRangeTo = fv; }
+  else { activeRangeFrom = fv; activeRangeTo = tv; }
+  _closeAllDrops(); _applyCompoundFilters();
+};
+const clearRange = () => { activeRangeFrom = null; activeRangeTo = null; _closeAllDrops(); _applyCompoundFilters(); };
+const clearAllFilters = () => { activeFilter = 'all'; activeYear = 'all'; activeRangeFrom = null; activeRangeTo = null; _closeAllDrops(); _applyCompoundFilters(); };
+
+window.toggleFilterDrop = toggleFilterDrop;
+window.pickType         = pickType;
+window.pickYear         = pickYear;
+window.applyRange       = applyRange;
+window.clearRange       = clearRange;
+window.clearAllFilters  = clearAllFilters;
 
 const renderAll = () => { renderStats(); renderCards(); renderPrepayments(); };
 
@@ -3970,10 +4209,12 @@ const renderCards = () => {
     collapseBar.className = 'upcoming-collapse';
     collapseBar.setAttribute('role', 'button');
     collapseBar.setAttribute('tabindex', '0');
+    collapseBar.setAttribute('aria-expanded', 'false');
     collapseBar.innerHTML = `\u25BC ${upcoCards.length} upcoming months \u00B7 ${rangeStr}`;
     collapseBar.addEventListener('click', () => {
-      ml.classList.toggle('upcoming-expanded');
-      collapseBar.innerHTML = ml.classList.contains('upcoming-expanded')
+      const isExpanded = ml.classList.toggle('upcoming-expanded');
+      collapseBar.setAttribute('aria-expanded', String(isExpanded));
+      collapseBar.innerHTML = isExpanded
         ? `\u25B2 Collapse upcoming months`
         : `\u25BC ${upcoCards.length} upcoming months \u00B7 ${rangeStr}`;
     });
@@ -3989,15 +4230,11 @@ const renderCards = () => {
     });
   }
 
-  /* Re-apply CSS filter attribute so Firebase re-renders stay filtered */
-  if (activeFilter && activeFilter !== 'all') {
-    ml.setAttribute('data-filter', activeFilter);
-  } else {
-    ml.removeAttribute('data-filter');
-  }
+  /* Re-apply all compound filters after Firebase re-render */
+  _applyCompoundFilters();
 
-  /* Update visible count and year separators to match current filter */
-  _applyFilterUI(activeFilter);
+  /* Populate date range selects (idempotent) */
+  _populateRangeSelects();
 };
 
 const buildCard = (mo, i, cmap) => {
@@ -4005,7 +4242,7 @@ const buildCard = (mo, i, cmap) => {
 
   const ri       = getRate(y, m);
   const netEur   = monthNet(k);
-  const cumulEur = cmap[k];
+  const cumulInr = cmap[k];
 
   /* Card CSS class */
   let mc = 'mc-upcoming';
@@ -4064,18 +4301,14 @@ const buildCard = (mo, i, cmap) => {
 
   /* CUMULATIVE cell */
   let cumClass, cumPrim, cumNote;
-  if (cumulEur === null) {
+  if (cumulInr === null) {
     cumClass = 'c-muted'; cumPrim = '\u2014'; cumNote = 'upcoming';
-  } else if (cumulEur === 0) {
+  } else if (cumulInr === 0) {
     cumClass = 'c-green'; cumPrim = '\u20B90'; cumNote = 'all clear \u2713';
-  } else if (cumulEur < 0) {
-    cumClass = 'c-green';
-    cumPrim  = ri ? `\u2212${fmt_inr(-cumulEur * ri.rate)}` : '\u20B9 TBD';
-    cumNote  = 'net credit';
+  } else if (cumulInr < 0) {
+    cumClass = 'c-green'; cumPrim = `\u2212${fmt_inr(-cumulInr)}`; cumNote = 'net credit';
   } else {
-    cumClass = 'c-red';
-    cumPrim  = ri ? fmt_inr(cumulEur * ri.rate) : '\u20B9 TBD';
-    cumNote  = 'total owed';
+    cumClass = 'c-red'; cumPrim = fmt_inr(cumulInr); cumNote = 'total owed';
   }
   const cumHTML =
     `<div class="mc-cell col-cumul">
@@ -4114,12 +4347,12 @@ const buildCard = (mo, i, cmap) => {
     const pInr     = ri ? fmt_inr(paidEur * ri.rate) : '\u20B9\u2014';
     const remEur   = netEur;
     const remInr   = (ri && remEur > 0) ? fmt_inr(remEur * ri.rate) : '\u20B90';
-    const cval     = cumulEur !== null ? cumulEur : 0;
-    const cInr     = (ri && cval > 0) ? fmt_inr(cval * ri.rate) : '\u20B90';
+    const cval     = cumulInr !== null ? cumulInr : 0;
+    const cInr     = cval > 0 ? fmt_inr(cval) : '\u20B90';
     const remColor    = remEur > 0 ? 'c-red' : 'c-green';
     const remInrDisp  = remEur > 0 ? remInr : (remEur < 0 ? `\u2212${fmt_inr(-remEur * (ri ? ri.rate : 1))}` : '\u20B90');
     const cumColor    = cval > 0 ? 'c-red' : 'c-green';
-    const cumInrDisp  = cval > 0 ? cInr : (cval < 0 && ri ? `\u2212${fmt_inr(-cval * ri.rate)}` : '\u20B90');
+    const cumInrDisp  = cval > 0 ? cInr : (cval < 0 ? `\u2212${fmt_inr(-cval)}` : '\u20B90');
     bkdHTML =
       `<div class="pay-breakdown">
         <div class="pb-cell"><div class="pb-lbl">Due</div><div class="pb-val c-blue">${ri ? fmt_inr(FRIEND_EUR * ri.rate) : '\u20B9 TBD'}</div></div>
@@ -4170,12 +4403,12 @@ const buildCard = (mo, i, cmap) => {
   else                 mobPaid = ri ? fmt_inr(paidEur * ri.rate) : (payments[k] && payments[k].inr ? fmt_inr(payments[k].inr) : '\u20B9\u2014');
 
   let mobCumul = '';
-  if (cumulEur !== null) {
-    const mobCumC = cumulEur > 0 ? 'c-red' : 'c-green';
+  if (cumulInr !== null) {
+    const mobCumC = cumulInr > 0 ? 'c-red' : 'c-green';
     let mobCumV;
-    if (cumulEur === 0)    mobCumV = '\u20B90';
-    else if (cumulEur < 0) mobCumV = ri ? `\u2212${fmt_inr(-cumulEur * ri.rate)}` : '\u20B9 TBD';
-    else                   mobCumV = ri ? fmt_inr(cumulEur * ri.rate) : '\u20B9 TBD';
+    if (cumulInr === 0)    mobCumV = '\u20B90';
+    else if (cumulInr < 0) mobCumV = `\u2212${fmt_inr(-cumulInr)}`;
+    else                   mobCumV = fmt_inr(cumulInr);
     mobCumul = `<div class="mms-item"><span class="mms-label">Total Remaining</span><span class="mms-val ${mobCumC}">${mobCumV}</span></div>`;
   }
 
@@ -4197,7 +4430,7 @@ const buildCard = (mo, i, cmap) => {
 
   const nowBadge    = curr ? `<span class="mc-badge" aria-label="current month">now</span>` : '';
   const drawerRateNote = ri
-    ? `Rate: \u20B9${ri.rate.toFixed(4)}/\u20AC (${ri.src}, 10 ${SHORT_NAMES[m - 1]} ${y})`
+    ? `Rate: \u20B9${ri.rate.toFixed(4)}/\u20AC (${ri.src}, ${rateDay(y, m)} ${SHORT_NAMES[m - 1]} ${y})`
     : 'No rate recorded yet';
   const inputDisabled = ri ? '' : 'disabled';
   const drawerClass   = `mc-drawer${isOpen ? ' open' : ''}`;
@@ -4206,7 +4439,7 @@ const buildCard = (mo, i, cmap) => {
   const progColor = paidEur >= FRIEND_EUR ? 'var(--green)' : (paidEur > 0 ? '#f59e0b' : 'var(--red)');
   const progressBar = (!upco && pctPaid > 0 && pctPaid < 100) ? `<div class="card-progress"><div class="card-progress-fill" style="width:${pctPaid}%;background:${progColor};"></div></div>` : '';
 
-  return `<div class="mcard ${mc} ${dimClass}" id="card-${k}" role="listitem" aria-label="${monthLabel}" style="${delay}" data-status="${st}">
+  return `<div class="mcard ${mc} ${dimClass}" id="card-${k}" role="listitem" aria-label="${monthLabel}" style="${delay}" data-status="${st}" data-year="${y}" data-month="${m}">
     <div class="mcard-body">
       <div class="mc-num">${idx}</div>
       <div class="mc-info">
@@ -5260,8 +5493,10 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   window.addEventListener('scroll', onScroll, { passive: true });
 
-  /* Click-outside closes any open drawer */
+  /* Click-outside closes filter dropdowns and open drawers */
   document.addEventListener('click', e => {
+    if (!e.target.closest('.toolbar')) _closeAllDrops();
+
     if (e.target.closest('.mcard')) return;
     Object.keys(openDrawers).forEach(k => {
       if (openDrawers[k]) {
@@ -5274,9 +5509,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  /* Escape key closes open drawers and returns focus */
+  /* Escape key closes open drawers/dropdowns */
   document.addEventListener('keydown', e => {
     if (e.key !== 'Escape') return;
+    _closeAllDrops();
     Object.keys(openDrawers).forEach(k => {
       if (openDrawers[k]) {
         openDrawers[k] = false;
