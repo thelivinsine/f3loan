@@ -745,7 +745,6 @@ html.dark .prog-timeline { border-top-color: var(--rule); }
   align-items: center;
   flex-wrap: wrap;
   padding: 4px 0;
-  position: relative;
 }
 .toolbar-label {
   font-family: var(--font-display);
@@ -757,11 +756,12 @@ html.dark .prog-timeline { border-top-color: var(--rule); }
   margin-right: 4px;
 }
 
-/* Filter pill wrapper — provides positioning context for its dropdown */
+/* Filter pill wrapper — positioning context for dropdown */
 .f-pill-wrap { position: relative; }
 
 /* Filter pill buttons */
 .f-pill {
+  position: relative;
   padding: var(--s10) 16px;
   padding-right: 32px;
   border-radius: 99px;
@@ -801,7 +801,7 @@ html.dark .prog-timeline { border-top-color: var(--rule); }
 }
 .f-pill.active::after { border-top-color: rgba(255,255,255,.7); }
 
-/* Dropdown panels — anchored below their pill wrapper */
+/* Dropdown panels */
 .f-drop {
   display: none;
   position: absolute;
@@ -842,7 +842,7 @@ html.dark .prog-timeline { border-top-color: var(--rule); }
 .f-drop-item:hover { background: var(--cream); }
 .f-drop-item.selected { color: var(--teal); font-weight: 700; }
 .f-drop-item.selected::before {
-  content: '✓';
+  content: '\2713';
   font-size: 12px;
   margin-right: 2px;
 }
@@ -949,7 +949,6 @@ html.dark .prog-timeline { border-top-color: var(--rule); }
 .f-clear-all:hover { color: #0b7f74; text-decoration: underline; }
 .f-clear-all.visible { display: inline-flex; align-items: center; }
 
-/* t-count (preserved) */
 .t-count {
   margin-left: 8px;
   font-family: 'Sora', sans-serif;
@@ -957,7 +956,7 @@ html.dark .prog-timeline { border-top-color: var(--rule); }
   color: var(--ink3);
 }
 
-/* Legacy — keep alive for any external references */
+/* Legacy — hidden but kept for external references */
 .t-btn { display: none; }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -1536,15 +1535,11 @@ html.dark .mc-log-btn.mc-log-paid:hover { background: rgba(13,148,136,.15); }
   .rp-cell  { padding: var(--s10) var(--s14) var(--s10) 0; }
   .rp-value { font-size: var(--text-lg); }
 
-  /* Toolbar: scrollable row */
+  /* Toolbar: wrap on mobile, no overflow clipping */
   .toolbar {
-    overflow-x: auto;
-    flex-wrap: nowrap;
-    -webkit-overflow-scrolling: touch;
+    flex-wrap: wrap;
     padding-bottom: 4px;
-    scrollbar-width: none;
   }
-  .toolbar::-webkit-scrollbar { display: none; }
   .f-pill { flex-shrink: 0; font-size: var(--text-xs); padding: var(--s8) 12px; padding-right: 28px; }
   .f-pill::after { right: 10px; }
   .t-count { flex-shrink: 0; }
@@ -2593,7 +2588,6 @@ html.dark .f-drop-item.selected { color: var(--teal); }
 html.dark .f-range-panel { background: var(--paper); border-color: var(--rule); }
 html.dark .f-range-select { background: var(--paper); border-color: var(--rule); color: var(--ink); }
 html.dark .f-range-clear { border-color: var(--rule); color: var(--ink3); }
-html.dark .f-range-clear:hover { border-color: var(--ink3); color: var(--ink); }
 html.dark .f-range-actions { border-top-color: var(--rule); }
 html.dark .t-btn { display: none; }
 html.dark .pay-history { border-top-color: var(--rule); }
@@ -3436,18 +3430,16 @@ const toggleTheme = () => {
   <div class="section">
     <div class="section-head"><span class="section-head-label">Monthly Payments</span><span class="section-head-line"></span></div>
     <div class="toolbar" id="filterBar">
-      <!-- Type dropdown -->
       <div class="f-pill-wrap">
         <button class="f-pill" id="fPillType" onclick="window.toggleFilterDrop('type')" aria-expanded="false" aria-haspopup="true">Type</button>
         <div class="f-drop" id="fDropType" role="listbox" aria-label="Filter by status">
           <button class="f-drop-item selected" onclick="window.pickType('all')" role="option" aria-selected="true">All</button>
-          <button class="f-drop-item" onclick="window.pickType('paid')" role="option" aria-selected="false">✓ Paid</button>
-          <button class="f-drop-item" onclick="window.pickType('partial')" role="option" aria-selected="false">◑ Partial</button>
-          <button class="f-drop-item" onclick="window.pickType('unpaid')" role="option" aria-selected="false">✗ Unpaid</button>
+          <button class="f-drop-item" onclick="window.pickType('paid')" role="option" aria-selected="false">&#10003; Paid</button>
+          <button class="f-drop-item" onclick="window.pickType('partial')" role="option" aria-selected="false">&#9681; Partial</button>
+          <button class="f-drop-item" onclick="window.pickType('unpaid')" role="option" aria-selected="false">&#10007; Unpaid</button>
           <button class="f-drop-item" onclick="window.pickType('upcoming')" role="option" aria-selected="false">Upcoming</button>
         </div>
       </div>
-      <!-- Year dropdown -->
       <div class="f-pill-wrap">
         <button class="f-pill" id="fPillYear" onclick="window.toggleFilterDrop('year')" aria-expanded="false" aria-haspopup="true">Year</button>
         <div class="f-drop" id="fDropYear" role="listbox" aria-label="Filter by year">
@@ -3462,7 +3454,6 @@ const toggleTheme = () => {
           <button class="f-drop-item" onclick="window.pickYear('2033')" role="option">2033</button>
         </div>
       </div>
-      <!-- Date range -->
       <div class="f-pill-wrap">
         <button class="f-pill" id="fPillRange" onclick="window.toggleFilterDrop('range')" aria-expanded="false" aria-haspopup="true">Date range</button>
         <div class="f-range-panel" id="fDropRange">
@@ -3568,7 +3559,7 @@ const toggleTheme = () => {
             <dt>Net Remaining</dt>
             <dd>Amount due minus amount paid for that specific month, converted at that month's rate</dd>
             <dt>Total Remaining</dt>
-            <dd>Running sum of each month's net remaining in ₹, where each month's EUR balance is converted at its own month's rate — not a single EUR total converted at one rate</dd>
+            <dd>Running sum of each month's net remaining in &#8377;, where each month's EUR balance is converted at its own month's rate</dd>
             <dt>Your Share</dt>
             <dd>41.25% of the €268.91 total monthly EMI = €110.93 per month</dd>
           </dl>
@@ -3811,20 +3802,16 @@ const isPast = (y, m) => {
   return y < t.y || (y === t.y && m < t.m);
 };
 
-/* Rate day: the day of the month when the rate is recorded.
-   Feb–Apr 2026 used the 10th; from May 2026 onwards it's the 7th. */
+/* Rate day: 10th for Feb–Apr 2026, 7th from May 2026 onwards */
 const rateDay = (y, m) => (y === 2026 && m <= 4) ? 10 : 7;
 
-/* A month is "current" only from its rate day onwards — that's when
-   the rate is recorded and the payment becomes due. Before that day,
-   the current calendar month is still treated as upcoming. */
+/* A month is "current" only from its rate day onwards */
 const isCurr = (y, m) => {
   const t = today();
   return y === t.y && m === t.m && t.day >= rateDay(y, m);
 };
 
-/* Upcoming = not past AND not current (which requires day >= rateDay).
-   So the current calendar month before the rate day is "upcoming". */
+/* Upcoming = not past AND not current (before rate day) */
 const isUpco = (y, m) => !isPast(y, m) && !isCurr(y, m);
 
 const getMonths = () => {
@@ -3883,15 +3870,10 @@ const buildCumulMap = () => {
     if (!isUpco(mo.y, mo.m)) {
       const ri = getRate(mo.y, mo.m);
       const net = monthNet(k);
-      if (ri) {
-        run = parseFloat((run + net * ri.rate).toFixed(2));
-      } else {
-        hasGap = true;
-      }
+      if (ri) { run = parseFloat((run + net * ri.rate).toFixed(2)); }
+      else { hasGap = true; }
       map[k] = hasGap ? null : run;
-    } else {
-      map[k] = null;
-    }
+    } else { map[k] = null; }
   }
   return map;
 };
@@ -4099,40 +4081,31 @@ let activeYear   = 'all';
 let activeRangeFrom = null;
 let activeRangeTo   = null;
 
-/* ── Populate date-range selects ── */
 const _populateRangeSelects = () => {
   const fromSel = document.getElementById('fRangeFrom');
   const toSel   = document.getElementById('fRangeTo');
   if (!fromSel || !toSel || fromSel.options.length > 0) return;
   const months = getMonths();
   let html = '';
-  for (const mo of months) {
-    html += `<option value="${mkey(mo.y, mo.m)}">${FULL_NAMES[mo.m - 1]} ${mo.y}</option>`;
-  }
+  for (const mo of months) html += `<option value="${mkey(mo.y, mo.m)}">${FULL_NAMES[mo.m - 1]} ${mo.y}</option>`;
   fromSel.innerHTML = html;
   toSel.innerHTML   = html;
   toSel.value = mkey(months[months.length - 1].y, months[months.length - 1].m);
 };
 
-/* ── Core: apply all compound filters ── */
 const _applyCompoundFilters = () => {
   const ml = document.getElementById('monthList');
   if (!ml) return;
 
-  /* 1) CSS data-filter for type */
   if (activeFilter === 'all') ml.removeAttribute('data-filter');
   else                        ml.setAttribute('data-filter', activeFilter);
 
-  /* 2) JS overlay for year + range */
   const hasYear  = activeYear !== 'all';
   const hasRange = activeRangeFrom && activeRangeTo;
 
   ml.querySelectorAll('.mcard').forEach(card => {
     let jsHidden = false;
-
-    if (hasYear) {
-      if (card.getAttribute('data-year') !== activeYear) jsHidden = true;
-    }
+    if (hasYear && card.getAttribute('data-year') !== activeYear) jsHidden = true;
     if (hasRange && !jsHidden) {
       const cy = parseInt(card.getAttribute('data-year'));
       const cm = parseInt(card.getAttribute('data-month'));
@@ -4141,14 +4114,10 @@ const _applyCompoundFilters = () => {
       const cv = cy * 100 + cm;
       if (cv < fy * 100 + fm || cv > ty * 100 + tm) jsHidden = true;
     }
-
     card.style.display = jsHidden ? 'none' : '';
   });
 
-  /* 3) Update count + year-sep visibility */
   _applyFilterUI(activeFilter);
-
-  /* 4) Update pill labels + active states */
   _updatePillStates();
 };
 
@@ -4158,8 +4127,6 @@ const setFilter = (f, _btn) => {
   _applyCompoundFilters();
 };
 
-/* Shared helper — updates tCount and year-sep visibility.
-   Called by _applyCompoundFilters and renderCards. */
 const _applyFilterUI = f => {
   const ml = document.getElementById('monthList');
   if (!ml) return;
@@ -4197,7 +4164,6 @@ const _applyFilterUI = f => {
   });
 };
 
-/* ── Pill state management ── */
 const _updatePillStates = () => {
   const pillType  = document.getElementById('fPillType');
   const pillYear  = document.getElementById('fPillYear');
@@ -4228,7 +4194,7 @@ const _updatePillStates = () => {
   if (clearAll) clearAll.classList.toggle('visible', !!anyActive);
 
   document.querySelectorAll('#fDropType .f-drop-item').forEach(item => {
-    const val = item.textContent.replace(/[✓◑✗]\s*/g, '').trim().toLowerCase();
+    const val = item.textContent.replace(/[\u2713\u2717\u25D1]\s*/g, '').trim().toLowerCase();
     const match = val === activeFilter || (val === 'all' && activeFilter === 'all');
     item.classList.toggle('selected', match);
     item.setAttribute('aria-selected', match ? 'true' : 'false');
@@ -4241,7 +4207,6 @@ const _updatePillStates = () => {
   });
 };
 
-/* ── Dropdown open/close ── */
 const _closeAllDrops = () => {
   ['fDropType', 'fDropYear', 'fDropRange'].forEach(id => {
     const el = document.getElementById(id);
@@ -4286,11 +4251,8 @@ const applyRange = () => {
   const fv = fromSel.value, tv = toSel.value;
   const [fy, fm] = fv.split('-').map(Number);
   const [ty, tm] = tv.split('-').map(Number);
-  if (fy * 100 + fm > ty * 100 + tm) {
-    activeRangeFrom = tv; activeRangeTo = fv;
-  } else {
-    activeRangeFrom = fv; activeRangeTo = tv;
-  }
+  if (fy * 100 + fm > ty * 100 + tm) { activeRangeFrom = tv; activeRangeTo = fv; }
+  else { activeRangeFrom = fv; activeRangeTo = tv; }
   _closeAllDrops();
   _applyCompoundFilters();
 };
@@ -5667,7 +5629,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  /* Escape key closes open drawers/dropdowns and returns focus */
+  /* Escape key closes open drawers/dropdowns */
   document.addEventListener('keydown', e => {
     if (e.key !== 'Escape') return;
     _closeAllDrops();
