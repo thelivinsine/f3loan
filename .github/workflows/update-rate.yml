@@ -2,8 +2,8 @@ name: Auto-update EUR/INR rate
 
 on:
   schedule:
-    # Runs at 08:00 UTC on the 10th of every month
-    - cron: '0 8 10 * *'
+    # Runs at 06:00 UTC on the 10th of every month
+    - cron: '0 6 7 * *'
   workflow_dispatch:
     # Also allows manual trigger from GitHub Actions UI (for testing)
 
@@ -17,7 +17,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
       - name: Install firebase-admin
         run: npm install firebase-admin node-fetch
